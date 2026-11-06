@@ -1,0 +1,47 @@
+
+# Normalize line endings
+* text=auto eol=lf
+
+# Source code
+*.cs text
+*.csx text
+*.fs text
+*.vb text
+
+# Configuration
+*.json text
+*.yml text
+*.yaml text
+*.xml text
+*.props text
+*.targets text
+*.editorconfig text
+*.gitattributes text
+*.gitignore text
+*.dockerignore text
+
+# Documentation
+*.md text
+
+# Shell scripts
+*.sh text eol=lf
+
+# Windows scripts
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary files
+*.dll binary
+*.exe binary
+*.pdb binary
+*.so binary
+*.dylib binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.nupkg binary
