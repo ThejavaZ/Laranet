@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  repository-validation:
+    name: Repository validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate required files
+        run: |
+          test -f README.md
+          test -f LICENSE
+          test -f global.json
+          test -f Directory.Build.props
+          test -f Directory.Packages.props
+          test -f .editorconfig
+          test -f .gitattributes
+          test -f .gitignore
+
+      - name: Validate whitespace
+        run: git diff --check HEAD^ HEAD
