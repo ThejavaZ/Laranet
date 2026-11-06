@@ -1,0 +1,43 @@
+name: Documentation
+description: Report an issue or suggest an improvement to the documentation.
+title: "[Docs]: "
+labels: ["documentation"]
+body:
+  - type: textarea
+    id: location
+    attributes:
+      label: Documentation Location
+      description: Which page, file, or section needs attention?
+      placeholder: "docs/getting-started/installation.md"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Type of Documentation Issue
+      options:
+        - Incorrect information
+        - Missing information
+        - Unclear explanation
+        - Broken example
+        - Typographical error
+        - Improvement suggestion
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Explain what should be corrected or improved.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Improvement
+      description: If possible, describe how the documentation should be changed.
+    validations:
+      required: false

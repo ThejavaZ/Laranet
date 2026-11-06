@@ -1,0 +1,67 @@
+name: Feature Request
+description: Suggest a new feature or improvement for Laranet.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an improvement!
+
+        Laranet aims to improve the .NET developer experience.
+        Please explain the problem before proposing a solution.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem are you trying to solve?
+      placeholder: |
+        As a developer, I find it difficult to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: Describe how you think Laranet could solve this problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: api-example
+    attributes:
+      label: Proposed API or Usage Example
+      description: Show how you imagine developers would use this feature.
+      render: csharp
+      placeholder: |
+        var result = await query.PaginateAsync();
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered other approaches?
+    validations:
+      required: false
+
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility Considerations
+      description: Could this affect existing APIs, dependencies, or supported frameworks?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues for similar proposals.
+          required: true
+        - label: This proposal solves a concrete developer experience problem.
+          required: true
