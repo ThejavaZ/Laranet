@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Laranet/Laranet.csproj" />
+    <ProjectReference Include="..\..\src\Laranet.Data\Laranet.Data.csproj" />
   </ItemGroup>
 
 </Project>

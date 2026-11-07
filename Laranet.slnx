@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Laranet.Data/Laranet.Data.csproj" />
     <Project Path="src/Laranet/Laranet.csproj" />
   </Folder>
   <Folder Name="/tests/">
