@@ -67,4 +67,32 @@ public class SearchTests
             product => product.Name is null
         );
     }
+
+    [Fact]
+    public void Search_ShouldThrow_WhenSourceIsNull()
+    {
+        IQueryable<Product> source = null!;
+
+        Assert.Throws<ArgumentNullException>(() =>
+            source.Search(product => product.Name, "Keyboard")
+        );
+    }
+
+    [Fact]
+    public void Search_ShouldThrow_WhenSelectorIsNull()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            Products.Search<Product>(null!, "Keyboard")
+        );
+    }
+
+    [Fact]
+    public void Search_ShouldComposeWithExistingFilters()
+    {
+        var result = Products
+            .Where(product => product.Name != null)
+            .Search(product => product.Name, "Keyboard");
+
+        Assert.Equal(2, result.Count());
+    }
 }
