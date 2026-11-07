@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- Package metadata -->
+    <PackageId>Laranet</PackageId>
+    <Version>0.1.0</Version>
+    <Description>
+      A Laravel-inspired toolkit for .NET, bringing expressive APIs,
+      developer-friendly abstractions, and elegant patterns to the C# ecosystem.
+    </Description>
+    <Authors>TheJavaZ</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/TheJavaZ/Laranet</RepositoryUrl>
+    <PackageTags>dotnet;toolkit;developer-experience;laravel-inspired</PackageTags>
+
+  </PropertyGroup>
+
+</Project>

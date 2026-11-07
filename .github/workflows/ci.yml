@@ -15,24 +15,27 @@ permissions:
   contents: read
 
 jobs:
-  repository-validation:
-    name: Repository validation
+  build-and-test:
+    name: Build and test
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Validate required files
-        run: |
-          test -f README.md
-          test -f LICENSE
-          test -f global.json
-          test -f Directory.Build.props
-          test -f Directory.Packages.props
-          test -f .editorconfig
-          test -f .gitattributes
-          test -f .gitignore
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
 
-      - name: Validate whitespace
-        run: git diff --check HEAD^ HEAD
+      - name: Display .NET version
+        run: dotnet --version
+
+      - name: Restore dependencies
+        run: dotnet restore Laranet.slnx
+
+      - name: Build solution
+        run: dotnet build Laranet.slnx --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test Laranet.slnx --configuration Release --no-build --logger "console;verbosity=normal"
