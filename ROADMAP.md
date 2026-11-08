@@ -34,14 +34,14 @@ Laranet is a **toolkit, not an opinionated application framework**.
 
 ## 3. Planned package ecosystem
 
-| Package                       | Responsibility                                   | Status                           |
-| ----------------------------- | ------------------------------------------------ | -------------------------------- |
-| `Laranet`                     | Core abstractions and shared functionality       | Initial project                  |
-| `Laranet.Data`                | Query extensions, pagination, searching, sorting | Implemented and stabilized       |
-| `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Implemented                      |
-| `Laranet.AspNetCore`          | ASP.NET Core integration                         | Planned                          |
-| `Laranet.Cli`                 | Project and code generation commands             | Planned                          |
-| `Laranet.Application`         | Application-level utilities, only if justified   | Under evaluation                 |
+| Package                       | Responsibility                                   | Status                     |
+| ----------------------------- | ------------------------------------------------ | -------------------------- |
+| `Laranet`                     | Core abstractions and shared functionality       | Initial project            |
+| `Laranet.Data`                | Query extensions, pagination, searching, sorting | Implemented and stabilized |
+| `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Implemented                |
+| `Laranet.AspNetCore`          | ASP.NET Core integration                         | Implemented                |
+| `Laranet.Cli`                 | Project and code generation commands             | Planned                    |
+| `Laranet.Application`         | Application-level utilities, only if justified   | Under evaluation           |
 
 Packages should remain independently consumable. Shared package versions will initially follow the same Laranet release.
 
@@ -135,24 +135,25 @@ Create `Laranet.EntityFrameworkCore`.
 
 ### Sprint 5 — ASP.NET Core integration
 
-**Status: Next**
+**Status: Completed**
 **Priority: Medium**
 
 Create `Laranet.AspNetCore`.
 
 Potential capabilities:
 
-- [ ] Dependency injection extensions where useful.
-- [ ] Pagination response integration.
-- [ ] HTTP-friendly validation and error handling utilities, if justified.
-- [ ] Request/query binding helpers, if they solve a real problem.
-- [ ] Integration examples with `Laranet.Data`.
-- [ ] Integration tests using ASP.NET Core.
+- [x] Evaluate dependency injection registration helpers; not added because no registration requirement exists yet.
+- [x] Pagination response integration through HTTP headers and Minimal API results.
+- [x] Evaluate HTTP-friendly validation and error handling utilities; not added because native ASP.NET Core covers them.
+- [x] Evaluate request/query binding helpers; native model binding is sufficient for the current scope.
+- [x] Integration examples with `Laranet.Data`.
+- [x] Integration tests using ASP.NET Core.
 
 Avoid building a second web framework or replacing native ASP.NET Core features without a strong reason.
 
 ### Sprint 6 — Laranet CLI
 
+**Status: Next**
 **Priority: High**
 
 Create `Laranet.Cli`.
@@ -268,11 +269,11 @@ Before marking it complete, verify:
 
 ## 8. Current project state
 
-**Current milestone:** Sprint 5 — ASP.NET Core integration.
+**Current milestone:** Sprint 6 — Laranet CLI.
 
-`Laranet.Data` is stabilized and `Laranet.EntityFrameworkCore` provides optional
-asynchronous pagination without coupling EF Core to the provider-neutral package. The
-next objective is to evaluate a focused ASP.NET Core integration where it solves a
-real problem, without building a second web framework.
+`Laranet.Data` is stabilized, `Laranet.EntityFrameworkCore` provides optional
+asynchronous pagination, and `Laranet.AspNetCore` exposes pagination metadata through
+HTTP headers and Minimal API results. The next objective is to design the CLI and its
+project and code generation commands without introducing mandatory runtime metadata.
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.
