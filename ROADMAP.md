@@ -38,7 +38,7 @@ Laranet is a **toolkit, not an opinionated application framework**.
 | ----------------------------- | ------------------------------------------------ | -------------------------------- |
 | `Laranet`                     | Core abstractions and shared functionality       | Initial project                  |
 | `Laranet.Data`                | Query extensions, pagination, searching, sorting | Implemented and stabilized       |
-| `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Planned                          |
+| `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Implemented                      |
 | `Laranet.AspNetCore`          | ASP.NET Core integration                         | Planned                          |
 | `Laranet.Cli`                 | Project and code generation commands             | Planned                          |
 | `Laranet.Application`         | Application-level utilities, only if justified   | Under evaluation                 |
@@ -115,26 +115,27 @@ Packages should remain independently consumable. Shared package versions will in
 
 ### Sprint 4 — Entity Framework Core integration
 
-**Status: Next**
+**Status: Completed**
 **Priority: High**
 
 Create `Laranet.EntityFrameworkCore`.
 
-- [ ] Create the independent integration project.
-- [ ] Reference `Laranet.Data`.
-- [ ] Add EF Core dependencies only to this integration package.
-- [ ] Implement `PaginateAsync()`.
-- [ ] Preserve provider-side query execution.
-- [ ] Support cancellation tokens.
-- [ ] Verify generated SQL.
-- [ ] Test with SQLite.
-- [ ] Evaluate SQL Server and PostgreSQL compatibility.
-- [ ] Document supported EF Core versions.
+- [x] Create the independent integration project.
+- [x] Reference `Laranet.Data`.
+- [x] Add EF Core dependencies only to this integration package.
+- [x] Implement `PaginateAsync()`.
+- [x] Preserve provider-side query execution.
+- [x] Support cancellation tokens.
+- [x] Verify generated SQL.
+- [x] Test with SQLite.
+- [x] Evaluate SQL Server and PostgreSQL compatibility.
+- [x] Document supported EF Core versions.
 
 **Architectural constraint:** `Laranet.Data` must remain independent of EF Core.
 
 ### Sprint 5 — ASP.NET Core integration
 
+**Status: Next**
 **Priority: Medium**
 
 Create `Laranet.AspNetCore`.
@@ -267,8 +268,11 @@ Before marking it complete, verify:
 
 ## 8. Current project state
 
-**Current milestone:** Sprint 4 — Entity Framework Core integration.
+**Current milestone:** Sprint 5 — ASP.NET Core integration.
 
-The `Laranet.Data` implementation and stabilization are complete. Its public API, dependencies, packaging, documentation, and provider expectations have been reviewed. The next objective is to create the optional `Laranet.EntityFrameworkCore` integration without coupling EF Core to `Laranet.Data`.
+`Laranet.Data` is stabilized and `Laranet.EntityFrameworkCore` provides optional
+asynchronous pagination without coupling EF Core to the provider-neutral package. The
+next objective is to evaluate a focused ASP.NET Core integration where it solves a
+real problem, without building a second web framework.
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.
