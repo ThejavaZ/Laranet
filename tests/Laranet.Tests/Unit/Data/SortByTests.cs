@@ -98,4 +98,82 @@ public class SortByTests
             result.Select(product => product.Name)
         );
     }
+
+    [Fact]
+    public void ThenBy_ShouldApplyAscendingDirection()
+    {
+        var products = new[]
+        {
+            new Product("Mouse", 100),
+            new Product("Keyboard", 100),
+            new Product("Monitor", 50)
+        }.AsQueryable();
+
+        var result = products
+            .SortBy(product => product.Price)
+            .ThenBy(product => product.Name, SortDirection.Ascending)
+            .ToList();
+
+        Assert.Equal(
+            new[] { "Monitor", "Keyboard", "Mouse" },
+            result.Select(product => product.Name)
+        );
+    }
+
+    [Fact]
+    public void ThenBy_ShouldApplyDescendingDirection()
+    {
+        var products = new[]
+        {
+            new Product("Mouse", 100),
+            new Product("Keyboard", 100),
+            new Product("Monitor", 50)
+        }.AsQueryable();
+
+        var result = products
+            .SortBy(product => product.Price)
+            .ThenBy(product => product.Name, SortDirection.Descending)
+            .ToList();
+
+        Assert.Equal(
+            new[] { "Monitor", "Mouse", "Keyboard" },
+            result.Select(product => product.Name)
+        );
+    }
+
+    [Fact]
+    public void ThenBy_ShouldThrow_WhenSourceIsNull()
+    {
+        IOrderedQueryable<Product> source = null!;
+
+        Assert.Throws<ArgumentNullException>(() =>
+            source.ThenBy(
+                product => product.Price,
+                SortDirection.Ascending)
+        );
+    }
+
+    [Fact]
+    public void ThenBy_ShouldThrow_WhenSelectorIsNull()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            Products
+                .SortBy(product => product.Price)
+                .ThenBy<Product, decimal>(
+                    null!,
+                    SortDirection.Ascending)
+        );
+    }
+
+    [Fact]
+    public void ThenBy_ShouldThrow_WhenDirectionIsInvalid()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            Products
+                .SortBy(product => product.Price)
+                .ThenBy(
+                    product => product.Name,
+                    (SortDirection)99)
+        );
+    }
 }

@@ -1,50 +1,29 @@
-
 using Laranet.Data.Extensions;
 using Laranet.Data.Sorting;
-using Microsoft.Data.Sqlite;
+using Laranet.Tests.Integration.Data.TestSupport;
 using Microsoft.EntityFrameworkCore;
 
 namespace Laranet.Tests.Integration.Data;
 
 public class SortByIntegrationTests
 {
-    private static async Task<(
-        SqliteConnection Connection,
-        SearchTestDbContext Context)> CreateContextAsync()
+    private static void SeedProducts(DataTestDbContext context)
     {
-        var connection = new SqliteConnection("Data Source=:memory:");
-
-        await connection.OpenAsync();
-
-        var options = new DbContextOptionsBuilder<SearchTestDbContext>()
-            .UseSqlite(connection)
-            .Options;
-
-        var context = new SearchTestDbContext(options);
-
-        await context.Database.EnsureCreatedAsync();
-
         context.Products.AddRange(
-            new SearchTestProduct { Name = "Keyboard" },
-            new SearchTestProduct { Name = "Mouse" },
-            new SearchTestProduct { Name = "Monitor" },
-            new SearchTestProduct { Name = "Keyboard" }
+            new DataTestProduct { Name = "Keyboard" },
+            new DataTestProduct { Name = "Mouse" },
+            new DataTestProduct { Name = "Monitor" },
+            new DataTestProduct { Name = "Keyboard" }
         );
-
-        await context.SaveChangesAsync();
-
-        return (connection, context);
     }
 
     [Fact]
     public async Task SortBy_ShouldTranslateAscendingToSql()
     {
-        var (connection, context) = await CreateContextAsync();
+        await using var database = await SqliteTestContextFactory.CreateAsync(
+            seed: SeedProducts);
 
-        await using var dbConnection = connection;
-        await using var dbContext = context;
-
-        var query = context.Products
+        var query = database.Context.Products
             .SortBy(product => product.Name);
 
         var sql = query.ToQueryString();
@@ -64,12 +43,10 @@ public class SortByIntegrationTests
     [Fact]
     public async Task SortBy_ShouldTranslateDescendingToSql()
     {
-        var (connection, context) = await CreateContextAsync();
+        await using var database = await SqliteTestContextFactory.CreateAsync(
+            seed: SeedProducts);
 
-        await using var dbConnection = connection;
-        await using var dbContext = context;
-
-        var query = context.Products
+        var query = database.Context.Products
             .SortBy(product => product.Id, SortDirection.Descending);
 
         var sql = query.ToQueryString();
@@ -86,14 +63,34 @@ public class SortByIntegrationTests
     [Fact]
     public async Task SortBy_ShouldSupportThenByDescendingWithSqlite()
     {
-        var (connection, context) = await CreateContextAsync();
+        await using var database = await SqliteTestContextFactory.CreateAsync(
+            seed: SeedProducts);
 
-        await using var dbConnection = connection;
-        await using var dbContext = context;
-
-        var query = context.Products
+        var query = database.Context.Products
             .SortBy(product => product.Name)
             .ThenByDescending(product => product.Id);
+
+        var sql = query.ToQueryString();
+
+        Assert.Contains("ORDER BY", sql, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("DESC", sql, StringComparison.OrdinalIgnoreCase);
+
+        var results = await query
+            .Select(product => product.Id)
+            .ToListAsync();
+
+        Assert.Equal(new[] { 4, 1, 3, 2 }, results);
+    }
+
+    [Fact]
+    public async Task SortBy_ShouldSupportThenByWithDirectionWithSqlite()
+    {
+        await using var database = await SqliteTestContextFactory.CreateAsync(
+            seed: SeedProducts);
+
+        var query = database.Context.Products
+            .SortBy(product => product.Name)
+            .ThenBy(product => product.Id, SortDirection.Descending);
 
         var sql = query.ToQueryString();
 
