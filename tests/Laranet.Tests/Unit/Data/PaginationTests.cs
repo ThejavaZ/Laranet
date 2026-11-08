@@ -63,7 +63,12 @@ public class PaginationTests
         );
 
         Assert.Empty(result.Items);
+        Assert.Equal(10, result.Page);
+        Assert.Equal(10, result.PageSize);
         Assert.Equal(50, result.TotalCount);
+        Assert.Equal(5, result.TotalPages);
+        Assert.True(result.HasPreviousPage);
+        Assert.False(result.HasNextPage);
     }
 
     [Fact]
@@ -74,8 +79,12 @@ public class PaginationTests
             .Paginate();
 
         Assert.Empty(result.Items);
+        Assert.Equal(1, result.Page);
+        Assert.Equal(15, result.PageSize);
         Assert.Equal(0, result.TotalCount);
         Assert.Equal(0, result.TotalPages);
+        Assert.False(result.HasPreviousPage);
+        Assert.False(result.HasNextPage);
     }
 
     [Fact]

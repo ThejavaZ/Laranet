@@ -45,6 +45,10 @@ public static class QueryablePaginationExtensions
     /// count.
     /// </para>
     /// <para>
+    /// When the query is empty or the requested page is beyond the available results,
+    /// only the count query is executed.
+    /// </para>
+    /// <para>
     /// This method is synchronous and executes two queries: one to obtain the total
     /// count and one to obtain the requested page. Asynchronous execution belongs to
     /// provider-specific integrations.
@@ -75,6 +79,16 @@ public static class QueryablePaginationExtensions
         }
 
         var totalCount = source.Count();
+
+        if (totalCount == 0 || skip >= totalCount)
+        {
+            return new PagedResult<T>(
+                Array.Empty<T>(),
+                page,
+                effectivePageSize,
+                totalCount
+            );
+        }
 
         var items = source
             .Skip((int)skip)
