@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Laranet.AspNetCore/Laranet.AspNetCore.csproj" />
     <Project Path="src/Laranet.Data/Laranet.Data.csproj" />
     <Project Path="src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj" />
     <Project Path="src/Laranet/Laranet.csproj" />
