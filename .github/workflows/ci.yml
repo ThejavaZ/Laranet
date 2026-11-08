@@ -46,6 +46,7 @@ jobs:
           dotnet pack src/Laranet/Laranet.csproj --configuration Release --no-build --output artifacts/packages
           dotnet pack src/Laranet.Data/Laranet.Data.csproj --configuration Release --no-build --output artifacts/packages
           dotnet pack src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj --configuration Release --no-build --output artifacts/packages
+          dotnet pack src/Laranet.AspNetCore/Laranet.AspNetCore.csproj --configuration Release --no-build --output artifacts/packages
 
       - name: Verify production packages
         shell: bash
@@ -56,22 +57,25 @@ jobs:
             find artifacts/packages -maxdepth 1 \
               \( -name 'Laranet.[0-9]*.nupkg' \
                  -o -name 'Laranet.Data.[0-9]*.nupkg' \
-                 -o -name 'Laranet.EntityFrameworkCore.[0-9]*.nupkg' \) \
+                 -o -name 'Laranet.EntityFrameworkCore.[0-9]*.nupkg' \
+                 -o -name 'Laranet.AspNetCore.[0-9]*.nupkg' \) \
               | sort
           )
 
-          if [ "${#packages[@]}" -ne 3 ]; then
-            echo "::error::Expected exactly three production packages, found ${#packages[@]}."
+          if [ "${#packages[@]}" -ne 4 ]; then
+            echo "::error::Expected exactly four production packages, found ${#packages[@]}."
             exit 1
           fi
 
           core_package="$(find artifacts/packages -maxdepth 1 -name 'Laranet.[0-9]*.nupkg')"
           data_package="$(find artifacts/packages -maxdepth 1 -name 'Laranet.Data.[0-9]*.nupkg')"
           ef_package="$(find artifacts/packages -maxdepth 1 -name 'Laranet.EntityFrameworkCore.[0-9]*.nupkg')"
+          aspnet_package="$(find artifacts/packages -maxdepth 1 -name 'Laranet.AspNetCore.[0-9]*.nupkg')"
 
           core_nuspec="$(unzip -p "$core_package" '*.nuspec')"
           data_nuspec="$(unzip -p "$data_package" '*.nuspec')"
           ef_nuspec="$(unzip -p "$ef_package" '*.nuspec')"
+          aspnet_nuspec="$(unzip -p "$aspnet_package" '*.nuspec')"
 
           for package in "$core_package" "$data_package"; do
             nuspec="$(unzip -p "$package" '*.nuspec')"
@@ -82,31 +86,48 @@ jobs:
             fi
           done
 
-          core_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$core_nuspec" | head -n 1)"
-          data_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$data_nuspec" | head -n 1)"
-          ef_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$ef_nuspec" | head -n 1)"
-
           if grep -Eq 'Microsoft\.AspNetCore' <<< "$ef_nuspec"; then
             echo "::error::Forbidden ASP.NET Core dependency found in $ef_package."
             exit 1
           fi
 
-          if ! grep -q "<dependency id=\"Laranet.Data\" version=\"$data_version\"" <<< "$ef_nuspec"; then
-            echo "::error::$ef_package must depend on Laranet.Data $data_version."
+          if grep -Eq 'Microsoft\.EntityFrameworkCore' <<< "$aspnet_nuspec"; then
+            echo "::error::Forbidden EF Core dependency found in $aspnet_package."
             exit 1
           fi
+
+          if ! grep -q '<frameworkReference name="Microsoft.AspNetCore.App" />' <<< "$aspnet_nuspec"; then
+            echo "::error::$aspnet_package must reference the Microsoft.AspNetCore.App framework."
+            exit 1
+          fi
+
+          core_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$core_nuspec" | head -n 1)"
+          data_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$data_nuspec" | head -n 1)"
+          ef_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$ef_nuspec" | head -n 1)"
+          aspnet_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$aspnet_nuspec" | head -n 1)"
+
+          for package in "$ef_package" "$aspnet_package"; do
+            nuspec="$(unzip -p "$package" '*.nuspec')"
+
+            if ! grep -q "<dependency id=\"Laranet.Data\" version=\"$data_version\"" <<< "$nuspec"; then
+              echo "::error::$package must depend on Laranet.Data $data_version."
+              exit 1
+            fi
+          done
 
           if ! grep -q '<dependency id="Microsoft.EntityFrameworkCore" version="10.0.14"' <<< "$ef_nuspec"; then
             echo "::error::$ef_package must depend on Microsoft.EntityFrameworkCore 10.0.14."
             exit 1
           fi
 
-          if [ "$core_version" != "$data_version" ] || [ "$core_version" != "$ef_version" ]; then
-            echo "::error::Package versions are not synchronized: Laranet=$core_version, Laranet.Data=$data_version, Laranet.EntityFrameworkCore=$ef_version."
+          if [ "$core_version" != "$data_version" ] \
+            || [ "$core_version" != "$ef_version" ] \
+            || [ "$core_version" != "$aspnet_version" ]; then
+            echo "::error::Package versions are not synchronized: Laranet=$core_version, Laranet.Data=$data_version, Laranet.EntityFrameworkCore=$ef_version, Laranet.AspNetCore=$aspnet_version."
             exit 1
           fi
 
-          for nuspec in "$data_nuspec" "$ef_nuspec"; do
+          for nuspec in "$data_nuspec" "$ef_nuspec" "$aspnet_nuspec"; do
             grep -q '<readme>README.md</readme>' <<< "$nuspec"
             grep -q '<license type="expression">MIT</license>' <<< "$nuspec"
             grep -q '<authors>TheJavaZ</authors>' <<< "$nuspec"
