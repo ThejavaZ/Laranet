@@ -104,4 +104,94 @@ public class DynamicSortTests
             CreateQuery().OrderBy("Name", (SortDirection)99)
         );
     }
+
+    [Fact]
+    public void OrderBy_ShouldSort_WhenPropertyIsAllowed()
+    {
+        var result = CreateQuery()
+            .OrderBy("Price", ["Price"], SortDirection.Descending)
+            .ToList();
+
+        Assert.Equal(
+            new[] { 200m, 100m, 75m, 50m },
+            result.Select(product => product.Price)
+        );
+    }
+
+    [Fact]
+    public void OrderBy_ShouldThrow_WhenPropertyIsNotAllowed()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            CreateQuery().OrderBy("Price", ["Name"])
+        );
+    }
+
+    [Fact]
+    public void OrderBy_ShouldThrow_WhenAllowedPropertiesAreNull()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            CreateQuery().OrderBy("Name", null!)
+        );
+    }
+
+    [Fact]
+    public void OrderBy_ShouldRejectEveryProperty_WhenAllowlistIsEmpty()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            CreateQuery().OrderBy("Name", Array.Empty<string>())
+        );
+    }
+
+    [Fact]
+    public void OrderBy_ShouldRejectPropertyNotAllowed_BeforeCheckingType()
+    {
+        var exception = Assert.Throws<ArgumentException>(() =>
+            CreateQuery().OrderBy("Unknown", ["Name"])
+        );
+
+        Assert.Contains(
+            "not allowed",
+            exception.Message,
+            StringComparison.OrdinalIgnoreCase
+        );
+    }
+
+    [Fact]
+    public void OrderBy_ShouldComparePropertyNamesCaseSensitively()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            CreateQuery().OrderBy("name", ["Name"])
+        );
+    }
+
+    [Fact]
+    public void ThenBy_ShouldSort_WhenPropertyIsAllowed()
+    {
+        var products = new[]
+        {
+            new Product("Keyboard", 100),
+            new Product("Keyboard", 50),
+            new Product("Mouse", 75)
+        }.AsQueryable();
+
+        var result = products
+            .OrderBy("Name")
+            .ThenBy("Price", ["Price"], SortDirection.Descending)
+            .ToList();
+
+        Assert.Equal(
+            new[] { 100m, 50m, 75m },
+            result.Select(product => product.Price)
+        );
+    }
+
+    [Fact]
+    public void ThenBy_ShouldThrow_WhenPropertyIsNotAllowed()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            CreateQuery()
+                .OrderBy("Name")
+                .ThenBy("Price", ["Name"])
+        );
+    }
 }
