@@ -39,3 +39,53 @@ jobs:
 
       - name: Run tests
         run: dotnet test Laranet.slnx --configuration Release --no-build --logger "console;verbosity=normal"
+
+      - name: Pack production packages
+        run: |
+          mkdir -p artifacts/packages
+          dotnet pack src/Laranet/Laranet.csproj --configuration Release --no-build --output artifacts/packages
+          dotnet pack src/Laranet.Data/Laranet.Data.csproj --configuration Release --no-build --output artifacts/packages
+
+      - name: Verify production packages
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mapfile -t packages < <(
+            find artifacts/packages -maxdepth 1 \
+              \( -name 'Laranet.[0-9]*.nupkg' -o -name 'Laranet.Data.[0-9]*.nupkg' \) \
+              | sort
+          )
+
+          if [ "${#packages[@]}" -ne 2 ]; then
+            echo "::error::Expected exactly two production packages, found ${#packages[@]}."
+            exit 1
+          fi
+
+          for package in "${packages[@]}"; do
+            nuspec="$(unzip -p "$package" '*.nuspec')"
+
+            if grep -Eq 'Microsoft\.EntityFrameworkCore|Microsoft\.AspNetCore' <<< "$nuspec"; then
+              echo "::error::Forbidden dependency found in $package."
+              exit 1
+            fi
+          done
+
+          data_package="$(find artifacts/packages -maxdepth 1 -name 'Laranet.Data.[0-9]*.nupkg')"
+          core_package="$(find artifacts/packages -maxdepth 1 -name 'Laranet.[0-9]*.nupkg')"
+
+          core_version="$(unzip -p "$core_package" '*.nuspec' | grep -oP '(?<=<version>)[^<]+' | head -n 1)"
+          data_nuspec="$(unzip -p "$data_package" '*.nuspec')"
+          data_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$data_nuspec" | head -n 1)"
+
+          if [ "$core_version" != "$data_version" ]; then
+            echo "::error::Package versions are not synchronized: Laranet=$core_version, Laranet.Data=$data_version."
+            exit 1
+          fi
+
+          grep -q '<readme>README.md</readme>' <<< "$data_nuspec"
+          grep -q '<license type="expression">MIT</license>' <<< "$data_nuspec"
+          grep -q '<authors>TheJavaZ</authors>' <<< "$data_nuspec"
+          grep -q '<repository ' <<< "$data_nuspec"
+
+          echo "Production packages passed validation (version $data_version)."
