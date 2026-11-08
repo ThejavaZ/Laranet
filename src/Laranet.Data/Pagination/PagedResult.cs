@@ -17,7 +17,7 @@ public sealed class PagedResult<T>
     public int Page { get; }
 
     /// <summary>
-    /// Gets the number of items requested per page.
+    /// Gets the effective number of items per page after applying the maximum page size.
     /// </summary>
     public int PageSize { get; }
 
@@ -29,6 +29,9 @@ public sealed class PagedResult<T>
     /// <summary>
     /// Gets the total number of available pages.
     /// </summary>
+    /// <remarks>
+    /// The value is 0 when <see cref="TotalCount"/> is 0.
+    /// </remarks>
     public int TotalPages { get; }
 
     /// <summary>
@@ -44,6 +47,15 @@ public sealed class PagedResult<T>
     /// <summary>
     /// Initializes a new instance of the <see cref="PagedResult{T}"/> class.
     /// </summary>
+    /// <param name="items">The items in the current page.</param>
+    /// <param name="page">The current page number, starting at 1.</param>
+    /// <param name="pageSize">The effective number of items per page.</param>
+    /// <param name="totalCount">The total number of items across all pages.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="items"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="page"/> or <paramref name="pageSize"/> is less than 1, or
+    /// <paramref name="totalCount"/> is negative.
+    /// </exception>
     public PagedResult(
         IReadOnlyList<T> items,
         int page,

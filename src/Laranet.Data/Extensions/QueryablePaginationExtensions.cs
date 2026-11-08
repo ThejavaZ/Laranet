@@ -22,10 +22,34 @@ public static class QueryablePaginationExtensions
     /// </summary>
     /// <typeparam name="T">The type of the collection items.</typeparam>
     /// <param name="source">The queryable collection.</param>
-    /// <param name="page">The requested page number.</param>
+    /// <param name="page">The requested page number, starting at 1.</param>
     /// <param name="pageSize">The requested number of items per page.</param>
     /// <param name="maxPageSize">The maximum number of items allowed per page.</param>
     /// <returns>A paginated result containing the requested items and metadata.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="page"/>, <paramref name="pageSize"/>, or
+    /// <paramref name="maxPageSize"/> is less than 1, or the requested page offset
+    /// exceeds <see cref="int.MaxValue"/>.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Order the query before paginating. Without a deterministic <c>ORDER BY</c>, the
+    /// provider does not guarantee a stable row order, and items may be duplicated or
+    /// omitted across pages. Ordering by a unique key is recommended.
+    /// </para>
+    /// <para>
+    /// The effective page size is the smaller of <paramref name="pageSize"/> and
+    /// <paramref name="maxPageSize"/>. A page beyond the available results returns an
+    /// empty <see cref="PagedResult{T}.Items"/> collection while preserving the total
+    /// count.
+    /// </para>
+    /// <para>
+    /// This method is synchronous and executes two queries: one to obtain the total
+    /// count and one to obtain the requested page. Asynchronous execution belongs to
+    /// provider-specific integrations.
+    /// </para>
+    /// </remarks>
     public static PagedResult<T> Paginate<T>(
         this IQueryable<T> source,
         int page = 1,
