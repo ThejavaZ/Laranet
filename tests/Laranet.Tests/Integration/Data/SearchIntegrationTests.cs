@@ -1,41 +1,30 @@
-
 using Laranet.Data.Extensions;
 using Laranet.Tests.Integration.Data.TestSupport;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace Laranet.Tests.Integration.Data;
 
 public class SearchIntegrationTests
 {
+    private static void SeedProducts(DataTestDbContext context)
+    {
+        context.Products.AddRange(
+            new DataTestProduct { Name = "Mechanical Keyboard" },
+            new DataTestProduct { Name = "Gaming Mouse" },
+            new DataTestProduct { Name = "Wireless Keyboard" },
+            new DataTestProduct { Name = null }
+        );
+    }
+
     [Fact]
     public async Task Search_ShouldBeTranslatedAndExecutedBySqlite()
     {
         // Arrange
-        await using var connection =
-            new SqliteConnection("Data Source=:memory:");
-
-        await connection.OpenAsync();
-
-        var options = new DbContextOptionsBuilder<SearchTestDbContext>()
-            .UseSqlite(connection)
-            .Options;
-
-        await using var context = new SearchTestDbContext(options);
-
-        await context.Database.EnsureCreatedAsync();
-
-        context.Products.AddRange(
-            new SearchTestProduct { Name = "Mechanical Keyboard" },
-            new SearchTestProduct { Name = "Gaming Mouse" },
-            new SearchTestProduct { Name = "Wireless Keyboard" },
-            new SearchTestProduct { Name = null }
-        );
-
-        await context.SaveChangesAsync();
+        await using var database = await SqliteTestContextFactory.CreateAsync(
+            seed: SeedProducts);
 
         // Act
-        var query = context.Products.Search(
+        var query = database.Context.Products.Search(
             product => product.Name,
             "Keyboard"
         );
@@ -61,35 +50,14 @@ public class SearchIntegrationTests
     public async Task Search_ShouldParameterizeTerm_WhenExecutedBySqlite()
     {
         // Arrange
-        await using var connection =
-            new SqliteConnection("Data Source=:memory:");
-
-        await connection.OpenAsync();
-
         var interceptor = new CommandCaptureInterceptor();
 
-        var options = new DbContextOptionsBuilder<SearchTestDbContext>()
-            .UseSqlite(connection)
-            .AddInterceptors(interceptor)
-            .Options;
-
-        await using var context = new SearchTestDbContext(options);
-
-        await context.Database.EnsureCreatedAsync();
-
-        context.Products.AddRange(
-            new SearchTestProduct { Name = "Mechanical Keyboard" },
-            new SearchTestProduct { Name = "Gaming Mouse" },
-            new SearchTestProduct { Name = "Wireless Keyboard" },
-            new SearchTestProduct { Name = null }
-        );
-
-        await context.SaveChangesAsync();
-
-        interceptor.Clear();
+        await using var database = await SqliteTestContextFactory.CreateAsync(
+            interceptor,
+            SeedProducts);
 
         // Act
-        var results = await context.Products
+        var results = await database.Context.Products
             .Search(product => product.Name, "Keyboard")
             .OrderBy(product => product.Id)
             .ToListAsync();
@@ -121,18 +89,4 @@ public class SearchIntegrationTests
             parameter => Equals(parameter.Value, "Keyboard")
         );
     }
-}
-
-internal sealed class SearchTestDbContext(
-    DbContextOptions<SearchTestDbContext> options
-) : DbContext(options)
-{
-    public DbSet<SearchTestProduct> Products => Set<SearchTestProduct>();
-}
-
-internal sealed class SearchTestProduct
-{
-    public int Id { get; set; }
-
-    public string? Name { get; set; }
 }
