@@ -22,7 +22,8 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Laranet/Laranet.csproj" />
-    <ProjectReference Include="..\..\src\Laranet.Data\Laranet.Data.csproj" />
+    <ProjectReference Include="../../src/Laranet.Data/Laranet.Data.csproj" />
+    <ProjectReference Include="../../src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj" />
   </ItemGroup>
 
 </Project>

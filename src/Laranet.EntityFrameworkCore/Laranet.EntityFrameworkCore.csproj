@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- Package metadata -->
+    <PackageId>Laranet.EntityFrameworkCore</PackageId>
+    <Version>0.1.0</Version>
+    <Description>
+      Entity Framework Core integration for Laranet.Data asynchronous query
+      execution.
+    </Description>
+    <Authors>TheJavaZ</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/TheJavaZ/Laranet</RepositoryUrl>
+    <PackageTags>dotnet;toolkit;data;entity-framework-core;ef-core;pagination;async</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Laranet.Data/Laranet.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
