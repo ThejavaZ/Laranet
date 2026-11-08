@@ -37,6 +37,18 @@ verifies:
 - Out-of-range pages and empty collections execute only the count query.
 - Pagination metadata remains correct in all covered cases.
 - Composition between search, filtering, sorting, and pagination.
+- Asynchronous pagination through `Laranet.EntityFrameworkCore`, including command
+  execution, metadata, cancellation, and composition.
+
+## Entity Framework Core Integration
+
+`Laranet.EntityFrameworkCore` adds asynchronous execution on top of `Laranet.Data`.
+It is verified with SQLite through Entity Framework Core. Other EF Core providers
+inherit the same status as their provider row above: they are expected to work, but
+they are not verified in the current CI matrix.
+
+The package depends on `Microsoft.EntityFrameworkCore` 10.x. The synchronous behavior
+of `Laranet.Data` remains provider-neutral and does not reference EF Core.
 
 ## Provider Requirements
 

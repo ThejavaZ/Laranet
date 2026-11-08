@@ -17,6 +17,8 @@ Changes that are planned or currently under development.
 - Typed `ThenBy` overload for `IOrderedQueryable<T>` that accepts a `SortDirection`.
 - Dynamic `OrderBy` and `ThenBy` overloads that validate property names against an `IReadOnlyCollection<string>` allowlist.
 - Provider compatibility documentation for `Laranet.Data`.
+- `Laranet.EntityFrameworkCore` package with asynchronous pagination through `PaginateAsync()`.
+- Cancellation token support for asynchronous pagination.
 
 ### Changed
 
@@ -26,6 +28,7 @@ Changes that are planned or currently under development.
 - CI now packs production packages and validates their `.nuspec` dependencies and metadata.
 - Expanded the `Laranet.Data` README with sorting, allowlist, conditional filtering, composition, and provider guidance.
 - Centralized the SQLite integration test infrastructure in shared test support types.
+- CI now packs and validates three production packages and permits EF Core only in `Laranet.EntityFrameworkCore`.
 
 ### Deprecated
 
