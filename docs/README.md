@@ -56,6 +56,7 @@ Learn about supported .NET versions, compatibility guarantees, and migration pro
 
 - [Support Policy](compatibility/support-policy.md)
 - [Versioning](compatibility/versioning.md)
+- [Provider Compatibility](compatibility/providers.md)
 - [Migration Guide](compatibility/migration-guide.md)
 
 ### Development
