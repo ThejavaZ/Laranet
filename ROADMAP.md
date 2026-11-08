@@ -37,7 +37,7 @@ Laranet is a **toolkit, not an opinionated application framework**.
 | Package                       | Responsibility                                   | Status                           |
 | ----------------------------- | ------------------------------------------------ | -------------------------------- |
 | `Laranet`                     | Core abstractions and shared functionality       | Initial project                  |
-| `Laranet.Data`                | Query extensions, pagination, searching, sorting | Implemented, needs stabilization |
+| `Laranet.Data`                | Query extensions, pagination, searching, sorting | Implemented and stabilized       |
 | `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Planned                          |
 | `Laranet.AspNetCore`          | ASP.NET Core integration                         | Planned                          |
 | `Laranet.Cli`                 | Project and code generation commands             | Planned                          |
@@ -63,7 +63,7 @@ Packages should remain independently consumable. Shared package versions will in
 
 ### Sprint 1 — Laranet.Data initial implementation
 
-**Status: Implemented; pending stabilization**
+**Status: Completed**
 
 - [x] `Search()`
 - [x] `SortBy()`
@@ -77,42 +77,45 @@ Packages should remain independently consumable. Shared package versions will in
 
 ### Sprint 2 — Stabilization and package quality
 
+**Status: Completed**
 **Priority: High**
 
-- [ ] Remove SQLite package references from production projects.
-- [ ] Keep SQLite dependency exclusively in test projects.
-- [ ] Validate production package dependency graphs.
-- [ ] Complete `Laranet.Data` NuGet metadata.
-- [ ] Synchronize package versions to `0.1.0`.
-- [ ] Review XML documentation.
-- [ ] Document pagination ordering requirements.
-- [ ] Document provider-dependent search behavior.
-- [ ] Document dynamic sorting and input allowlisting.
-- [ ] Document synchronous pagination and its two-query behavior.
-- [ ] Correct pagination integration tests to exercise `Paginate()` itself.
-- [ ] Review search expression parameterization.
-- [ ] Add package generation and dependency checks to CI.
-- [ ] Inspect generated `.nupkg` files and their `.nuspec` metadata.
-- [ ] Update README and CHANGELOG.
+- [x] Remove SQLite package references from production projects.
+- [x] Keep SQLite dependency exclusively in test projects.
+- [x] Validate production package dependency graphs.
+- [x] Complete `Laranet.Data` NuGet metadata.
+- [x] Synchronize package versions to `0.1.0`.
+- [x] Review XML documentation.
+- [x] Document pagination ordering requirements.
+- [x] Document provider-dependent search behavior.
+- [x] Document dynamic sorting and input allowlisting.
+- [x] Document synchronous pagination and its two-query behavior.
+- [x] Correct pagination integration tests to exercise `Paginate()` itself.
+- [x] Review search expression parameterization.
+- [x] Add package generation and dependency checks to CI.
+- [x] Inspect generated `.nupkg` files and their `.nuspec` metadata.
+- [x] Update README and CHANGELOG.
 
 **Definition of done:** production packages contain only their intended dependencies, tests pass, and packages can be built and inspected reliably.
 
 ### Sprint 3 — Data API refinement
 
+**Status: Completed**
 **Priority: High**
 
-- [ ] Review consistency between expression-based and dynamic sorting APIs.
-- [ ] Evaluate expression-based `ThenBy()` overloads.
-- [ ] Review pagination behavior for pages beyond the available results.
-- [ ] Improve XML documentation and usage examples.
-- [ ] Evaluate provider compatibility beyond SQLite.
-- [ ] Add reusable integration test support.
-- [ ] Review public API naming and consistency before stabilizing the API.
+- [x] Review consistency between expression-based and dynamic sorting APIs.
+- [x] Evaluate expression-based `ThenBy()` overloads.
+- [x] Review pagination behavior for pages beyond the available results.
+- [x] Improve XML documentation and usage examples.
+- [x] Evaluate provider compatibility beyond SQLite.
+- [x] Add reusable integration test support.
+- [x] Review public API naming and consistency before stabilizing the API.
 
 **Important:** don't introduce keyset pagination or additional abstractions without a concrete use case.
 
 ### Sprint 4 — Entity Framework Core integration
 
+**Status: Next**
 **Priority: High**
 
 Create `Laranet.EntityFrameworkCore`.
@@ -264,8 +267,8 @@ Before marking it complete, verify:
 
 ## 8. Current project state
 
-**Current milestone:** Sprint 2 — Stabilization and package quality.
+**Current milestone:** Sprint 4 — Entity Framework Core integration.
 
-The initial implementation of `Laranet.Data` is complete. The next objective is to make its public API, dependencies, packaging, and documentation reliable before expanding the toolkit.
+The `Laranet.Data` implementation and stabilization are complete. Its public API, dependencies, packaging, documentation, and provider expectations have been reviewed. The next objective is to create the optional `Laranet.EntityFrameworkCore` integration without coupling EF Core to `Laranet.Data`.
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.
