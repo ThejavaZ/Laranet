@@ -1,4 +1,5 @@
 using Laranet.Data.Extensions;
+using Laranet.Tests.Integration.Data.TestSupport;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,17 +9,22 @@ public class PaginationIntegrationTests
 {
     private static async Task<(
         SqliteConnection Connection,
-        SearchTestDbContext Context)> CreateContextAsync()
+        SearchTestDbContext Context)> CreateContextAsync(
+        CommandCaptureInterceptor? interceptor = null)
     {
         var connection = new SqliteConnection("Data Source=:memory:");
 
         await connection.OpenAsync();
 
-        var options = new DbContextOptionsBuilder<SearchTestDbContext>()
-            .UseSqlite(connection)
-            .Options;
+        var optionsBuilder = new DbContextOptionsBuilder<SearchTestDbContext>()
+            .UseSqlite(connection);
 
-        var context = new SearchTestDbContext(options);
+        if (interceptor is not null)
+        {
+            optionsBuilder.AddInterceptors(interceptor);
+        }
+
+        var context = new SearchTestDbContext(optionsBuilder.Options);
 
         await context.Database.EnsureCreatedAsync();
 
@@ -36,22 +42,55 @@ public class PaginationIntegrationTests
     }
 
     [Fact]
-    public async Task Paginate_ShouldTranslateToSql()
+    public async Task Paginate_ShouldExecuteCountAndPagedQueryWithOrdering()
     {
-        var (connection, context) = await CreateContextAsync();
+        var interceptor = new CommandCaptureInterceptor();
+
+        var (connection, context) = await CreateContextAsync(interceptor);
 
         await using var dbConnection = connection;
         await using var dbContext = context;
 
-        var query = context.Products
+        interceptor.Clear();
+
+        var result = context.Products
             .OrderBy(product => product.Id)
-            .Skip(10)
-            .Take(10);
+            .Paginate(page: 2, pageSize: 10);
 
-        var sql = query.ToQueryString();
+        Assert.Equal(50, result.TotalCount);
+        Assert.Equal(2, result.Page);
+        Assert.Equal(10, result.Items.Count);
 
-        Assert.Contains("LIMIT", sql, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("OFFSET", sql, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("Product 11", result.Items[0].Name);
+        Assert.Equal("Product 20", result.Items[^1].Name);
+
+        Assert.Equal(2, interceptor.Commands.Count);
+
+        Assert.Contains(
+            "COUNT",
+            interceptor.Commands[0].CommandText,
+            StringComparison.OrdinalIgnoreCase
+        );
+
+        var pageCommand = interceptor.Commands[1];
+
+        Assert.Contains(
+            "ORDER BY",
+            pageCommand.CommandText,
+            StringComparison.OrdinalIgnoreCase
+        );
+
+        Assert.Contains(
+            "LIMIT",
+            pageCommand.CommandText,
+            StringComparison.OrdinalIgnoreCase
+        );
+
+        Assert.Contains(
+            "OFFSET",
+            pageCommand.CommandText,
+            StringComparison.OrdinalIgnoreCase
+        );
     }
 
     [Fact]
