@@ -36,6 +36,23 @@ Laranet is currently in early development.
 
 APIs, architecture, and package boundaries are subject to change.
 
+## Documentation
+
+- [Documentation](docs/README.md)
+- [Installation](docs/getting-started/installation.md)
+- [Quick start](docs/getting-started/quick-start.md)
+- [Package overview](docs/packages/README.md)
+
+## Samples
+
+- [Console sample](samples/Laranet.Samples.Console)
+- [Web API sample](samples/Laranet.Samples.WebApi)
+
+## Contributing
+
+- [Contributing guidelines](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+
 ## Roadmap
 
 - [Project roadmap](docs/roadmap/README.md)

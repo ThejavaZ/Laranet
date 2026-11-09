@@ -13,6 +13,7 @@ Their purpose is to preserve architectural knowledge and provide transparency in
 | [0001](0001-independent-core.md)       | Keep the Core Independent               | Accepted |
 | [0002](0002-optional-integrations.md)  | Use Optional Framework Integrations     | Accepted |
 | [0003](0003-independent-versioning.md) | Maintain Independent Project Versioning | Accepted |
+| [0004](0004-editable-generated-code.md) | Generate Ordinary, Editable C#         | Accepted |
 
 ## ADR Status
 

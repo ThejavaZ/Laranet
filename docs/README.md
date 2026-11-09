@@ -2,15 +2,14 @@
 
 Welcome to the official documentation of **Laranet**.
 
-Laranet is a Laravel-inspired toolkit for .NET, designed to improve the developer experience through expressive APIs, reusable abstractions, and developer-friendly patterns.
+Laranet is a Laravel-inspired toolkit for .NET, designed to improve the developer
+experience through expressive APIs, reusable abstractions, and developer-friendly
+patterns.
 
-Our goal is not to make .NET look like Laravel, but to make .NET feel better to work with.
+Our goal is not to make .NET look like Laravel, but to make .NET feel better to work
+with.
 
-## Documentation
-
-Explore the documentation based on what you want to accomplish.
-
-### Getting Started
+## Getting Started
 
 Learn how to install Laranet and start building applications with it.
 
@@ -18,48 +17,59 @@ Learn how to install Laranet and start building applications with it.
 - [Quick Start](getting-started/quick-start.md)
 - [First Application](getting-started/first-application.md)
 
-### Concepts
+## Concepts
 
-Understand the fundamental concepts and philosophy behind Laranet.
+Understand the philosophy and boundaries behind the toolkit.
 
 - [Project Philosophy](concepts/philosophy.md)
-- Core Concepts
-- Dependency Injection
-- Extensibility
+- [Design Principles](architecture/design-principles.md)
+- [Modularity](architecture/modularity.md)
 
-### Architecture
+## Architecture
 
-Explore the internal architecture, design principles, and modular structure of Laranet.
+Explore the internal architecture and the decisions that shape it.
 
 - [Architecture Overview](architecture/overview.md)
 - [Design Principles](architecture/design-principles.md)
 - [Modularity](architecture/modularity.md)
-- Architecture Decision Records (ADRs)
+- [Architecture Decision Records](architecture/decisions/README.md)
 
-### Guides
+## Guides
 
-Practical guides for working with Laranet features.
+Practical guides for the implemented features.
 
-- Data Access
-- Relationships
-- Pagination
-- Validation
-- Error Handling
+- [Data Access](guides/data-access.md)
+- [Pagination](guides/pagination.md)
+- [CLI](guides/cli.md)
 
-### API Reference
+## Packages
 
-Explore the public APIs, packages, classes, and available extensions.
+Understand what each package provides and when to use it.
 
-### Compatibility
+- [Package Overview](packages/README.md)
+- [`Laranet`](../src/Laranet/README.md)
+- [`Laranet.Data`](../src/Laranet.Data/README.md)
+- [`Laranet.EntityFrameworkCore`](../src/Laranet.EntityFrameworkCore/README.md)
+- [`Laranet.AspNetCore`](../src/Laranet.AspNetCore/README.md)
+- [`Laranet.Cli`](../src/Laranet.Cli/README.md)
 
-Learn about supported .NET versions, compatibility guarantees, and migration procedures.
+## Samples
+
+Runnable applications that combine the packages:
+
+- [Console sample](../samples/Laranet.Samples.Console)
+- [Web API sample](../samples/Laranet.Samples.WebApi)
+
+## Compatibility
+
+Learn about supported .NET versions, compatibility guarantees, and upgrade procedures.
 
 - [Support Policy](compatibility/support-policy.md)
 - [Versioning](compatibility/versioning.md)
 - [Provider Compatibility](compatibility/providers.md)
 - [Migration Guide](compatibility/migration-guide.md)
 
-### Roadmap
+## Roadmap
 
 Track current and future work.
 
@@ -67,28 +77,31 @@ Track current and future work.
 - [Version 1](roadmap/v1.md)
 - [Version 2](roadmap/v2.md)
 
-### Development
+## Development
 
 Resources for developers contributing to Laranet.
 
-- Coding Guidelines
-- Testing Guidelines
-- Development Workflow
-
-For contribution instructions, see the repository's [CONTRIBUTING.md](../CONTRIBUTING.md).
+- [Testing](development/testing.md)
+- [Release Process](development/release.md)
+- [Contributing](../CONTRIBUTING.md)
+- [Security Policy](../SECURITY.md)
 
 ## Project Status
 
 Laranet is currently in early development.
 
-Its APIs, architecture, and package structure may evolve as the project progresses. Some documentation sections are still being written and certain features may not be available yet.
+Its APIs, architecture, and package structure may evolve as the project progresses.
+Some documentation sections are still being written and certain features may not be
+available yet.
 
 ## Contributing
 
-Laranet welcomes bug reports, feature requests, documentation improvements, and code contributions.
+Laranet welcomes bug reports, feature requests, documentation improvements, and code
+contributions.
 
 Before contributing, please read our [Contributing Guidelines](../CONTRIBUTING.md).
 
 ## License
 
-Laranet is open source. See the repository's [LICENSE](../LICENSE) file for license details.
+Laranet is open source. See the repository's [LICENSE](../LICENSE) file for license
+details.
