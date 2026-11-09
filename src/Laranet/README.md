@@ -5,9 +5,12 @@
 Laranet brings expressive APIs, developer-friendly abstractions, and elegant patterns
 to the C# ecosystem without replacing the native .NET building blocks.
 
-This package is the foundation of the Laranet toolkit. It is intentionally small and
-contains no public API yet. Functionality is distributed in independent, optional
-packages:
+This package is the foundation of the Laranet toolkit. It is intentionally empty in
+the `0.1.x` line: it will only receive an abstraction when at least two published
+modules need it and cannot depend on each other. See
+[ADR-0005](https://github.com/TheJavaZ/Laranet/blob/main/docs/architecture/decisions/0005-intentionally-empty-core.md).
+
+Functionality is distributed in independent, optional packages:
 
 | Package | Purpose |
 | --- | --- |

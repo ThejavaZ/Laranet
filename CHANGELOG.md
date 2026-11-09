@@ -32,6 +32,7 @@ Changes that are planned or currently under development.
 - Package overview and practical guides for data access, pagination, and the CLI.
 - Migration and upgrade guidance for the initial `0.x` release period.
 - ADR-0004 documenting the decision to generate ordinary, editable C#.
+- ADR-0005 documenting the decision to keep the `Laranet` core package intentionally empty.
 - Tag-driven release workflow that validates, packs, and publishes the five production packages to NuGet.org.
 - `SECURITY.md` with the private vulnerability reporting process.
 - Package README for the `Laranet` core package and CI validation of its NuGet metadata.
