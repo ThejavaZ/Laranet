@@ -33,6 +33,10 @@ Changes that are planned or currently under development.
 - Migration and upgrade guidance for the initial `0.x` release period.
 - ADR-0004 documenting the decision to generate ordinary, editable C#.
 - ADR-0005 documenting the decision to keep the `Laranet` core package intentionally empty.
+- Ecosystem architecture document defining package boundaries, dependency rules, architectural profiles, and the `0.1.0` → `1.0.0` roadmap.
+- ADR-0006 positioning Laranet as a modular toolkit with framework-like tooling.
+- ADR-0007 establishing the `simple` generation profile as the default.
+- Version 3 roadmap covering standards, project templates, `make:crud`, EF Core conventions, validation, and `laranet doctor`.
 - Tag-driven release workflow that validates, packs, and publishes the five production packages to NuGet.org.
 - `SECURITY.md` with the private vulnerability reporting process.
 - Package README for the `Laranet` core package and CI validation of its NuGet metadata.

@@ -12,6 +12,7 @@ The roadmap is organized by release so completed and future work stay separated.
 | --- | --- | --- |
 | [Version 1](v1.md) | Core, Data, EntityFrameworkCore, AspNetCore, and CLI; first public release | Released `0.1.0`; feedback pending |
 | [Version 2](v2.md) | Adoption, provider verification, feedback-gated depth, and 1.0 readiness | Planning |
+| [Version 3](v3.md) | Application experience: standards, templates, CRUD generation, EF conventions, validation, and doctor | Planning |
 
 ## Project vision
 
@@ -50,7 +51,10 @@ Laranet is a **toolkit, not an opinionated application framework**.
 | `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Published `0.1.0`         |
 | `Laranet.AspNetCore`          | ASP.NET Core integration                         | Published `0.1.0`         |
 | `Laranet.Cli`                 | Project and code generation commands             | Published `0.1.0`         |
-| `Laranet.Application`         | Application-level utilities, only if justified   | Under evaluation           |
+| `Laranet.AspNetCore.Validation` | Optional request validation integration        | Planned for Version 3     |
+| `Laranet.Analyzers`           | Optional Roslyn diagnostics                      | Candidate                 |
+| `Laranet.Admin`               | Admin resource abstractions                      | Candidate for Version 4   |
+| `Laranet.Application`         | Application-level utilities, only if justified   | Not scheduled             |
 
 Packages should remain independently consumable. Shared package versions will initially follow the same Laranet release.
 
@@ -116,6 +120,9 @@ HTTP headers and Minimal API results, and `Laranet.Cli` creates projects and gen
 code. Version 2 focuses on adoption and stability: release `0.1.1`, collect real
 feedback, verify SQL Server and PostgreSQL in CI, and add depth only when a concrete
 use case justifies it. The `Laranet` core package remains intentionally empty until a
-shared abstraction is required by at least two modules.
+shared abstraction is required by at least two modules. [Version 3](v3.md) is planned
+as the application-experience milestone: standards, project templates, `make:crud`,
+EF Core conventions, validation, and `laranet doctor`. Its admin-panel proposal is a
+candidate that requires an ADR and a validated use case.
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.
