@@ -33,7 +33,7 @@ coverage.*
 *.nupkg
 *.snupkg
 .nuget/
-packages/
+/packages/
 
 # Generated documentation
 *.xml
