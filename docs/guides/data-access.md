@@ -25,6 +25,22 @@ var products = db.Products
 - Null property values never match.
 - Case sensitivity and collation depend on the provider and database configuration.
 
+### Multi-column search
+
+Pass several selectors to match the term in any of them:
+
+```csharp
+var products = dbContext.Products
+    .Search(
+        [product => product.Name, product => product.Description],
+        request.Search);
+```
+
+The selectors are combined with a logical `OR` in a single expression tree, so the
+provider receives one translated query. An item matches when any selected property
+contains the term. Null properties never match, and the comparison rules are the same
+as with a single column.
+
 ## Typed sorting
 
 Sort by a property with an explicit direction:

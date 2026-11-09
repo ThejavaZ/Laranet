@@ -13,6 +13,7 @@ Changes that are planned or currently under development.
 - Initial repository structure and project documentation.
 - Repository development conventions and configuration.
 - `Laranet.Data` package with `IQueryable` search, sorting, conditional filtering, and pagination utilities.
+- Multi-column `Search` overload that matches a term in any of several string properties using a single translated `OR` expression.
 - Package README for `Laranet.Data`.
 - Typed `ThenBy` overload for `IOrderedQueryable<T>` that accepts a `SortDirection`.
 - Dynamic `OrderBy` and `ThenBy` overloads that validate property names against an `IReadOnlyCollection<string>` allowlist.

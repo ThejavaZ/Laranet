@@ -30,6 +30,7 @@ The integration test suite runs against SQLite through Entity Framework Core and
 verifies:
 
 - `Search` translation and parameterization of the search term.
+- Multi-column `Search`, translated into a single `OR` expression.
 - Typed and dynamic sorting, including secondary ordering.
 - Dynamic sorting allowlists reject disallowed names before any command executes.
 - `WhereIf` adds or omits a filter based on its condition.

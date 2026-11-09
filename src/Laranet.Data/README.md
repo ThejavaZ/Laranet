@@ -32,6 +32,20 @@ underlying provider. Empty or whitespace-only terms leave the query unchanged.
 The search term is sent to the provider as a parameter rather than embedded in the
 command text.
 
+To search across several properties at once, pass a collection of selectors. The
+properties are combined with a logical `OR` in a single expression tree, so the
+provider still receives one query:
+
+```csharp
+var products = dbContext.Products
+    .Search(
+        [product => product.Name, product => product.Description],
+        request.Search);
+```
+
+An item matches when any selected property contains the term. Null properties never
+match, and the same provider-dependent comparison rules apply.
+
 ### Sorting
 
 ```csharp
