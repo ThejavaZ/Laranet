@@ -17,12 +17,14 @@ internal static class GenerationPlanner
             GeneratorKind.Model => [CreateModel(name, baseNamespace, outputDirectory, flat)],
             GeneratorKind.Service => [CreateService(name, baseNamespace, outputDirectory, flat)],
             GeneratorKind.Controller => [CreateController(name, baseNamespace, outputDirectory, flat)],
+            GeneratorKind.Middleware => [CreateMiddleware(name, baseNamespace, outputDirectory, flat)],
             GeneratorKind.Resource =>
             [
                 CreateModel(name, baseNamespace, outputDirectory, flat),
                 CreateService(name, baseNamespace, outputDirectory, flat),
                 CreateController(name, baseNamespace, outputDirectory, flat),
             ],
+            GeneratorKind.Repository => [CreateRepository(name, baseNamespace, outputDirectory, flat)],
             _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
         };
 
@@ -69,6 +71,34 @@ internal static class GenerationPlanner
         return new GeneratedFile(
             System.IO.Path.Combine(target.Directory, $"{typeName}.cs"),
             CodeTemplates.Controller(target.Namespace, typeName));
+    }
+
+    private static GeneratedFile CreateMiddleware(
+        string name,
+        string baseNamespace,
+        string outputDirectory,
+        bool flat)
+    {
+        var target = ResolveTarget(outputDirectory, baseNamespace, "Middleware", flat);
+        var typeName = NameNormalizer.EnsureSuffix(name, "Middleware");
+
+        return new GeneratedFile(
+            Path.Combine(target.Directory, $"{typeName}.cs"),
+            CodeTemplates.Middleware(target.Namespace, typeName));
+    }
+
+    private static GeneratedFile CreateRepository(
+        string name,
+        string baseNamespace,
+        string outputDirectory,
+        bool flat)
+    {
+        var target = ResolveTarget(outputDirectory, baseNamespace, "Repositories", flat);
+        var typeName = NameNormalizer.EnsureSuffix(name, "Repository");
+
+        return new GeneratedFile(
+            Path.Combine(target.Directory, $"{typeName}.cs"),
+            CodeTemplates.Repository(target.Namespace, typeName));
     }
 
     private static (string Directory, string Namespace) ResolveTarget(

@@ -32,9 +32,23 @@ internal static class MakeCommands
             error);
 
         yield return Create(
+            "make:middleware",
+            "Generates an ASP.NET Core middleware.",
+            GeneratorKind.Middleware,
+            output,
+            error);
+
+        yield return Create(
             "make:resource",
             "Generates a model, a service, and a controller together.",
             GeneratorKind.Resource,
+            output,
+            error);
+
+        yield return Create(
+            "make:repository",
+            "Generates an optional repository scaffold. Use it only when the abstraction is justified.",
+            GeneratorKind.Repository,
             output,
             error);
     }

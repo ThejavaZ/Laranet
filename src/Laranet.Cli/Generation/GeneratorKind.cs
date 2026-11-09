@@ -8,5 +8,7 @@ internal enum GeneratorKind
     Model,
     Service,
     Controller,
+    Middleware,
     Resource,
+    Repository,
 }

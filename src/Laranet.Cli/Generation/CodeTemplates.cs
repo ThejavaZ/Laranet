@@ -37,6 +37,40 @@ internal static class CodeTemplates
 
         """;
 
+    private const string MiddlewareTemplate = """
+        using Microsoft.AspNetCore.Http;
+
+        namespace {{Namespace}};
+
+        public sealed class {{Name}}
+        {
+            private readonly RequestDelegate _next;
+
+            public {{Name}}(RequestDelegate next)
+            {
+                _next = next;
+            }
+
+            public async Task InvokeAsync(HttpContext context)
+            {
+                await _next(context);
+            }
+        }
+
+        """;
+
+    private const string RepositoryTemplate = """
+        namespace {{Namespace}};
+
+        /// <summary>
+        /// Optional repository scaffold. Use it only when the abstraction is justified.
+        /// </summary>
+        public sealed class {{Name}}
+        {
+        }
+
+        """;
+
     public static string Model(string @namespace, string name)
     {
         return Render(ModelTemplate, @namespace, name);
@@ -50,6 +84,16 @@ internal static class CodeTemplates
     public static string Controller(string @namespace, string name)
     {
         return Render(ControllerTemplate, @namespace, name);
+    }
+
+    public static string Middleware(string @namespace, string name)
+    {
+        return Render(MiddlewareTemplate, @namespace, name);
+    }
+
+    public static string Repository(string @namespace, string name)
+    {
+        return Render(RepositoryTemplate, @namespace, name);
     }
 
     private static string Render(string template, string @namespace, string name)
