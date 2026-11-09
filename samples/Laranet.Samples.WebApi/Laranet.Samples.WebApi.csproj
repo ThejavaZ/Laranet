@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Laranet.AspNetCore/Laranet.AspNetCore.csproj" />
+    <ProjectReference Include="../../src/Laranet.Data/Laranet.Data.csproj" />
+    <ProjectReference Include="../../src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+</Project>

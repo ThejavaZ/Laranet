@@ -6,6 +6,10 @@
     <Project Path="src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj" />
     <Project Path="src/Laranet/Laranet.csproj" />
   </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/Laranet.Samples.Console/Laranet.Samples.Console.csproj" />
+    <Project Path="samples/Laranet.Samples.WebApi/Laranet.Samples.WebApi.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Laranet.Tests/Laranet.Tests.csproj" />
   </Folder>
