@@ -115,7 +115,8 @@ middleware, and resources. Sprint 7 added runnable samples, installation and pac
 guides, migration guidance, ADR-0004, and a tag-driven NuGet release workflow.
 Sprint 8 reviewed the public APIs, verified package metadata and dependencies, ran
 the full test suite, and built the `0.1.0` packages. Publishing the first public
-release is pending the `NUGET_API_KEY` secret and an explicit release decision.
+release is pending the active NuGet Trusted Publishing policy, the workflow change
+pushed to `main`, and an explicit release decision.
 Gathering community feedback and planning the next iteration remain open. Additional
 generators and extensible conventions are deferred to [Version 2](v2.md).
 

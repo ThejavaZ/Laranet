@@ -90,22 +90,45 @@ The workflow:
 4. Packs the five packages.
 5. Verifies that exactly five `.nupkg` files were produced with the expected
    version and valid metadata.
-6. Pushes them to NuGet.org with `--skip-duplicate`.
+6. Requests a short-lived NuGet API key through GitHub OIDC.
+7. Pushes the packages to NuGet.org with `--skip-duplicate`.
 
 CI and the release workflow share `.github/scripts/verify-packages.sh`, so a package
 that fails metadata or dependency validation in CI cannot be published.
 
-### Required secret
+### Trusted Publishing
 
-Configure a repository secret named `NUGET_API_KEY` with a NuGet.org API key that
-has push permission for the Laranet package IDs. The workflow fails with an explicit
-error when the secret is missing.
+The release workflow uses [NuGet Trusted Publishing](https://learn.microsoft.com/nuget/nuget-org/trusted-publishing)
+instead of a long-lived API key. The workflow requests an OIDC token, exchanges it
+for a temporary key valid for one hour, and publishes the packages.
+
+The NuGet.org policy must match the repository:
+
+| Field | Value |
+| --- | --- |
+| Policy name | `Laranet-GitHub-Actions` |
+| Package owner | `ThejavaZ` |
+| Repository owner | `ThejavaZ` |
+| Repository | `Laranet` |
+| Workflow file | `release.yml` |
+| Environment | Empty |
+| Scopes | Push new packages and package versions |
+| Glob patterns | `Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`, `Laranet.AspNetCore`, `Laranet.Cli` |
+
+The `user` input of `NuGet/login@v1` must be the NuGet.org account username. The
+workflow currently uses `ThejavaZ`.
+
+No `NUGET_API_KEY` secret is required. Private repositories may show the policy as
+temporarily active for seven days until the first successful publish provides the
+repository and owner IDs.
 
 No GitHub Packages feed is used. Publication targets NuGet.org only.
 
 ## Manual publication
 
-If the workflow is unavailable, publish the locally packed files:
+If the workflow is unavailable, publish the locally packed files with a personal
+NuGet.org API key. The temporary key from the workflow is not available outside
+GitHub Actions.
 
 ```bash
 dotnet nuget push artifacts/packages/Laranet.0.1.0.nupkg \

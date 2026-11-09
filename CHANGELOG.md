@@ -47,6 +47,7 @@ Changes that are planned or currently under development.
 - Expanded the documentation index to link only to pages that exist.
 - Added `PackageProjectUrl` and `PackageReleaseNotes` to all production packages and CI validation for both.
 - Extracted shared NuGet package validation into `.github/scripts/verify-packages.sh`, used by both CI and the release workflow.
+- The release workflow now publishes through NuGet Trusted Publishing (`NuGet/login@v1` with GitHub OIDC and a short-lived key) instead of a stored `NUGET_API_KEY` secret.
 
 ### Deprecated
 
