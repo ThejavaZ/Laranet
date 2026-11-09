@@ -172,9 +172,9 @@ The CLI should be inspired by the productivity of Laravel Artisan and NestJS CLI
 - [x] `laranet make:model`
 - [x] `laranet make:service`
 - [x] `laranet make:controller`
-- [ ] `laranet make:middleware`
+- [x] `laranet make:middleware`
 - [x] `laranet make:resource`
-- [ ] `laranet make:repository`, only as an optional template.
+- [x] `laranet make:repository`, only as an optional template.
 - [ ] Additional generators based on actual usage.
 
 **Resource generation**
@@ -274,8 +274,8 @@ Before marking it complete, verify:
 `Laranet.Data` is stabilized, `Laranet.EntityFrameworkCore` provides optional
 asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
 HTTP headers and Minimal API results, and `Laranet.Cli` creates projects and
-generates models, services, controllers, and resources. The next objective is
-additional generators and template customization, without introducing mandatory
-runtime metadata.
+generates models, services, controllers, middleware, and resources. The next
+objective is additional generators and template customization, without
+introducing mandatory runtime metadata.
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.

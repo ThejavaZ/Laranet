@@ -90,7 +90,9 @@ Requested package references use the same version as the CLI.
 | `laranet make:model <name>` | A model class in `Models/` |
 | `laranet make:service <name>` | A service class in `Services/` |
 | `laranet make:controller <name>` | An ASP.NET Core controller in `Controllers/` |
+| `laranet make:middleware <name>` | An ASP.NET Core middleware in `Middleware/` |
 | `laranet make:resource <name>` | A model, a service, and a controller together |
+| `laranet make:repository <name>` | An optional repository scaffold in `Repositories/` |
 
 Names are normalized to PascalCase. For example, `product-category`,
 `product_category`, and `productCategory` all generate `ProductCategory`.
@@ -152,6 +154,27 @@ src/MyApp/
 └── Controllers/ProductController.cs
 ```
 
+Generate a middleware:
+
+```bash
+laranet make:middleware RequestLogging
+```
+
+This creates `Middleware/RequestLoggingMiddleware.cs` with a standard
+`RequestDelegate` pipeline component. Register it with
+`app.UseMiddleware<RequestLoggingMiddleware>()`.
+
+The repository generator is optional and intentionally minimal. Laranet does
+not assume a repository layer:
+
+```bash
+laranet make:repository Product
+```
+
+This creates an empty `Repositories/ProductRepository.cs` scaffold. Complete it
+only when the abstraction solves a real problem in your application. It is never
+included in `make:resource`.
+
 ## Generation options
 
 | Option | Description |
@@ -178,6 +201,8 @@ Convention folders are appended to the base namespace:
 | `make:model Product` | `<base>.Models` |
 | `make:service Product` | `<base>.Services` |
 | `make:controller Product` | `<base>.Controllers` |
+| `make:middleware Product` | `<base>.Middleware` |
+| `make:repository Product` | `<base>.Repositories` |
 
 With `--flat`, files use the base namespace directly.
 

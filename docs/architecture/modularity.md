@@ -126,7 +126,7 @@ Its initial scope includes:
 
 - Project creation from built-in templates.
 - Optional package references during project creation.
-- Code generation for models, services, controllers, and resources.
+- Code generation for models, services, controllers, middleware, resources, and optional repository scaffolds.
 - Conventional output folders.
 - Namespace inference from the nearest project.
 

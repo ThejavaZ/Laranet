@@ -144,7 +144,7 @@ The CLI module provides command-line code generation for Laranet applications.
 Its initial scope includes:
 
 - Creating Web API and console projects.
-- Generating models, services, controllers, and resources.
+- Generating models, services, controllers, middleware, resources, and optional repository scaffolds.
 - Inferring namespaces and using conventional folders.
 
 The CLI must generate normal, editable C# and must not introduce mandatory runtime metadata.
