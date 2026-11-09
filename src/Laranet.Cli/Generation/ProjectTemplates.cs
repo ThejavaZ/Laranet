@@ -89,6 +89,19 @@ internal static class ProjectTemplates
 
         """;
 
+    private const string RepositoryReadmeTemplate = """
+        # {{ProjectName}}
+
+        Project generated with [Laranet](https://github.com/TheJavaZ/Laranet).
+
+        ## Getting started
+
+        ```bash
+        dotnet run --project src/{{ProjectName}}/{{ProjectName}}.csproj
+        ```
+
+        """;
+
     /// <summary>
     /// Parses a template name supplied on the command line.
     /// </summary>
@@ -242,5 +255,31 @@ internal static class ProjectTemplates
             "{{ProjectName}}",
             projectName,
             StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Generates the content of the repository README.
+    /// </summary>
+    /// <param name="projectName">The project folder name.</param>
+    /// <returns>The file content.</returns>
+    public static string RepositoryReadme(string projectName)
+    {
+        return RepositoryReadmeTemplate.Replace(
+            "{{ProjectName}}",
+            projectName,
+            StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Generates a solution file that references a single project.
+    /// </summary>
+    /// <param name="projectPath">The project path relative to the solution.</param>
+    /// <returns>The file content.</returns>
+    public static string Solution(string projectPath)
+    {
+        return string.Join('\n',
+                "<Solution>",
+                $"  <Project Path=\"{projectPath}\" />",
+                "</Solution>") + "\n";
     }
 }

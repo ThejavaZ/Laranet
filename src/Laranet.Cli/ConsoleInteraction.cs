@@ -50,6 +50,18 @@ internal sealed class ConsoleInteraction(TextReader input, TextWriter output)
     }
 
     /// <summary>
+    /// Prompts for a project layout, using <c>project</c> when the user accepts the default.
+    /// </summary>
+    /// <returns>The selected layout.</returns>
+    public ProjectLayout AskLayout()
+    {
+        return AskUntil(
+            "Layout [project/repository] (project): ",
+            value => ProjectLayoutParser.Parse(
+                string.IsNullOrWhiteSpace(value) ? "project" : value));
+    }
+
+    /// <summary>
     /// Asks a yes/no question. Only <c>y</c> and <c>yes</c> are accepted.
     /// </summary>
     /// <param name="prompt">The prompt text.</param>

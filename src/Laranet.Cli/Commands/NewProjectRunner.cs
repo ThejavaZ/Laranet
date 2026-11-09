@@ -31,6 +31,11 @@ internal static class NewProjectRunner
                 ? interaction.AskTemplate()
                 : ProjectTemplates.Parse(templateValue);
 
+            var layoutValue = parseResult.GetValue(arguments.Layout);
+            var layout = interaction is not null && string.IsNullOrWhiteSpace(layoutValue)
+                ? interaction.AskLayout()
+                : ProjectLayoutParser.Parse(layoutValue);
+
             var withData = parseResult.GetValue(arguments.WithData);
             var withEfCore = parseResult.GetValue(arguments.WithEfCore);
             var withAspNetCore = parseResult.GetValue(arguments.WithAspNetCore);
@@ -100,6 +105,8 @@ internal static class NewProjectRunner
                 rootNamespace,
                 projectDirectory,
                 template,
+                layout,
+                parseResult.GetValue(arguments.Sln),
                 packages);
 
             var exitCode = new GenerationWriter(output, error, outputRoot, interaction).Write(
@@ -112,7 +119,16 @@ internal static class NewProjectRunner
                 output.WriteLine();
                 output.WriteLine("Next steps:");
                 output.WriteLine($"  cd \"{projectDirectory}\"");
-                output.WriteLine("  dotnet run");
+
+                if (layout == ProjectLayout.Repository)
+                {
+                    output.WriteLine(
+                        $"  dotnet run --project src/{projectName}/{projectName}.csproj");
+                }
+                else
+                {
+                    output.WriteLine("  dotnet run");
+                }
             }
 
             return exitCode;
@@ -141,6 +157,8 @@ internal sealed record NewProjectArguments(
     Option<string> Output,
     Option<string?> Namespace,
     Option<string?> Template,
+    Option<string?> Layout,
+    Option<bool> Sln,
     Option<bool> WithData,
     Option<bool> WithEfCore,
     Option<bool> WithAspNetCore,

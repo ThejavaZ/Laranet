@@ -31,6 +31,14 @@ internal static class NewCommand
             {
                 Description = "The project template: webapi (default) or console.",
             },
+            new Option<string?>("--layout", "-l")
+            {
+                Description = "The project layout: project (default) or repository.",
+            },
+            new Option<bool>("--sln")
+            {
+                Description = "Creates a solution file in the project layout.",
+            },
             new Option<bool>("--with-data")
             {
                 Description = "References the Laranet.Data package.",
@@ -62,6 +70,8 @@ internal static class NewCommand
         command.Options.Add(arguments.Output);
         command.Options.Add(arguments.Namespace);
         command.Options.Add(arguments.Template);
+        command.Options.Add(arguments.Layout);
+        command.Options.Add(arguments.Sln);
         command.Options.Add(arguments.WithData);
         command.Options.Add(arguments.WithEfCore);
         command.Options.Add(arguments.WithAspNetCore);
