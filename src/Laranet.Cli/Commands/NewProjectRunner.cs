@@ -11,13 +11,37 @@ internal static class NewProjectRunner
     public static int Run(
         ParseResult parseResult,
         NewProjectArguments arguments,
+        TextReader input,
         TextWriter output,
         TextWriter error)
     {
         try
         {
-            var projectName = ProjectName.Folder(
-                parseResult.GetValue(arguments.Name) ?? string.Empty);
+            var interaction = parseResult.GetValue(arguments.Interactive)
+                ? new ConsoleInteraction(input, output)
+                : null;
+
+            var rawName = parseResult.GetValue(arguments.Name);
+            var projectName = interaction is not null && string.IsNullOrWhiteSpace(rawName)
+                ? interaction.AskUntil("Project name: ", ProjectName.Folder)
+                : ProjectName.Folder(rawName ?? string.Empty);
+
+            var templateValue = parseResult.GetValue(arguments.Template);
+            var template = interaction is not null && string.IsNullOrWhiteSpace(templateValue)
+                ? interaction.AskTemplate()
+                : ProjectTemplates.Parse(templateValue);
+
+            var withData = parseResult.GetValue(arguments.WithData);
+            var withEfCore = parseResult.GetValue(arguments.WithEfCore);
+            var withAspNetCore = parseResult.GetValue(arguments.WithAspNetCore);
+
+            if (interaction is not null && !withData && !withEfCore && !withAspNetCore)
+            {
+                withData = interaction.Confirm("Reference Laranet.Data? [y/N] ");
+                withEfCore = interaction.Confirm("Reference Laranet.EntityFrameworkCore? [y/N] ");
+                withAspNetCore = interaction.Confirm("Reference Laranet.AspNetCore? [y/N] ");
+            }
+
             var outputRoot = Path.GetFullPath(
                 parseResult.GetValue(arguments.Output) ?? ".");
             var projectDirectory = Path.Combine(outputRoot, projectName);
@@ -28,10 +52,23 @@ internal static class NewProjectRunner
                 && Directory.Exists(projectDirectory)
                 && Directory.EnumerateFileSystemEntries(projectDirectory).Any())
             {
-                error.WriteLine(
-                    $"error: {projectName} already exists and is not empty. Use --force to write into it anyway.");
+                if (interaction is null)
+                {
+                    error.WriteLine(
+                        $"error: {projectName} already exists and is not empty. Use --force to write into it anyway.");
 
-                return 1;
+                    return 1;
+                }
+
+                if (!interaction.Confirm(
+                    $"{projectName} already exists and is not empty. Write into it anyway? [y/N] "))
+                {
+                    error.WriteLine("error: cancelled.");
+
+                    return 1;
+                }
+
+                force = true;
             }
 
             var explicitNamespace = parseResult.GetValue(arguments.Namespace);
@@ -43,17 +80,17 @@ internal static class NewProjectRunner
 
             var packages = new List<string>();
 
-            if (parseResult.GetValue(arguments.WithData))
+            if (withData)
             {
                 packages.Add("Laranet.Data");
             }
 
-            if (parseResult.GetValue(arguments.WithEfCore))
+            if (withEfCore)
             {
                 packages.Add("Laranet.EntityFrameworkCore");
             }
 
-            if (parseResult.GetValue(arguments.WithAspNetCore))
+            if (withAspNetCore)
             {
                 packages.Add("Laranet.AspNetCore");
             }
@@ -62,10 +99,10 @@ internal static class NewProjectRunner
                 projectName,
                 rootNamespace,
                 projectDirectory,
-                ProjectTemplates.Parse(parseResult.GetValue(arguments.Template)),
+                template,
                 packages);
 
-            var exitCode = new GenerationWriter(output, error, outputRoot).Write(
+            var exitCode = new GenerationWriter(output, error, outputRoot, interaction).Write(
                 plan,
                 force,
                 dryRun);
@@ -100,7 +137,7 @@ internal static class NewProjectRunner
 /// Holds the command-line symbols used by the project creation command.
 /// </summary>
 internal sealed record NewProjectArguments(
-    Argument<string> Name,
+    Argument<string?> Name,
     Option<string> Output,
     Option<string?> Namespace,
     Option<string?> Template,
@@ -108,4 +145,5 @@ internal sealed record NewProjectArguments(
     Option<bool> WithEfCore,
     Option<bool> WithAspNetCore,
     Option<bool> Force,
-    Option<bool> DryRun);
+    Option<bool> DryRun,
+    Option<bool> Interactive);

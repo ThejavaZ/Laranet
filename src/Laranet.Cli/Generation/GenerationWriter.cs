@@ -8,7 +8,8 @@ namespace Laranet.Cli.Generation;
 internal sealed class GenerationWriter(
     TextWriter output,
     TextWriter error,
-    string displayBaseDirectory)
+    string displayBaseDirectory,
+    ConsoleInteraction? interaction = null)
 {
     private static readonly Encoding Utf8WithoutBom = new UTF8Encoding(
         encoderShouldEmitUTF8Identifier: false);
@@ -21,13 +22,32 @@ internal sealed class GenerationWriter(
 
         if (conflicts.Length > 0 && !force)
         {
-            foreach (var conflict in conflicts)
+            if (interaction is null)
             {
-                error.WriteLine(
-                    $"error: {DisplayPath(conflict.Path)} already exists. Use --force to overwrite.");
+                foreach (var conflict in conflicts)
+                {
+                    error.WriteLine(
+                        $"error: {DisplayPath(conflict.Path)} already exists. Use --force to overwrite.");
+                }
+
+                return 1;
             }
 
-            return 1;
+            output.WriteLine("The following files already exist:");
+
+            foreach (var conflict in conflicts)
+            {
+                output.WriteLine($"  {DisplayPath(conflict.Path)}");
+            }
+
+            if (!interaction.Confirm("Overwrite them? [y/N] "))
+            {
+                error.WriteLine("error: cancelled.");
+
+                return 1;
+            }
+
+            force = true;
         }
 
         foreach (var file in plan.Files)

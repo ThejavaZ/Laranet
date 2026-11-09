@@ -8,49 +8,58 @@ namespace Laranet.Cli.Commands;
 /// </summary>
 internal static class MakeCommands
 {
-    public static IEnumerable<Command> Create(TextWriter output, TextWriter error)
+    public static IEnumerable<Command> Create(
+        TextWriter output,
+        TextWriter error,
+        TextReader input)
     {
         yield return Create(
             "make:model",
             "Generates a model class.",
             GeneratorKind.Model,
             output,
-            error);
+            error,
+            input);
 
         yield return Create(
             "make:service",
             "Generates a service class.",
             GeneratorKind.Service,
             output,
-            error);
+            error,
+            input);
 
         yield return Create(
             "make:controller",
             "Generates an ASP.NET Core controller.",
             GeneratorKind.Controller,
             output,
-            error);
+            error,
+            input);
 
         yield return Create(
             "make:middleware",
             "Generates an ASP.NET Core middleware.",
             GeneratorKind.Middleware,
             output,
-            error);
+            error,
+            input);
 
         yield return Create(
             "make:resource",
             "Generates a model, a service, and a controller together.",
             GeneratorKind.Resource,
             output,
-            error);
+            error,
+            input);
 
         yield return Create(
             "make:repository",
             "Generates an optional repository scaffold. Use it only when the abstraction is justified.",
             GeneratorKind.Repository,
             output,
-            error);
+            error,
+            input);
     }
 
     private static Command Create(
@@ -58,12 +67,14 @@ internal static class MakeCommands
         string description,
         GeneratorKind kind,
         TextWriter output,
-        TextWriter error)
+        TextWriter error,
+        TextReader input)
     {
         var arguments = new GeneratorArguments(
-            new Argument<string>("name")
+            new Argument<string?>("name")
             {
                 Description = "The name of the type to generate.",
+                Arity = ArgumentArity.ZeroOrOne,
             },
             new Option<string>("--output", "-o")
             {
@@ -85,6 +96,10 @@ internal static class MakeCommands
             new Option<bool>("--flat")
             {
                 Description = "Places files directly in the output directory instead of convention folders.",
+            },
+            new Option<bool>("--interactive", "-i")
+            {
+                Description = "Prompts for missing values and overwrite confirmation.",
             });
 
         var command = new Command(name, description);
@@ -95,12 +110,14 @@ internal static class MakeCommands
         command.Options.Add(arguments.Force);
         command.Options.Add(arguments.DryRun);
         command.Options.Add(arguments.Flat);
+        command.Options.Add(arguments.Interactive);
 
         command.SetAction(
             parseResult => GeneratorRunner.Run(
                 kind,
                 parseResult,
                 arguments,
+                input,
                 output,
                 error));
 

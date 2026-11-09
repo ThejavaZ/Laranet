@@ -7,12 +7,16 @@ namespace Laranet.Cli.Commands;
 /// </summary>
 internal static class NewCommand
 {
-    public static Command Create(TextWriter output, TextWriter error)
+    public static Command Create(
+        TextWriter output,
+        TextWriter error,
+        TextReader input)
     {
         var arguments = new NewProjectArguments(
-            new Argument<string>("name")
+            new Argument<string?>("name")
             {
                 Description = "The project name, also used as the folder name.",
+                Arity = ArgumentArity.ZeroOrOne,
             },
             new Option<string>("--output", "-o")
             {
@@ -46,6 +50,10 @@ internal static class NewCommand
             new Option<bool>("--dry-run")
             {
                 Description = "Shows the files that would be generated without writing them.",
+            },
+            new Option<bool>("--interactive", "-i")
+            {
+                Description = "Prompts for missing values and overwrite confirmation.",
             });
 
         var command = new Command("new", "Creates a new Laranet project.");
@@ -59,11 +67,13 @@ internal static class NewCommand
         command.Options.Add(arguments.WithAspNetCore);
         command.Options.Add(arguments.Force);
         command.Options.Add(arguments.DryRun);
+        command.Options.Add(arguments.Interactive);
 
         command.SetAction(
             parseResult => NewProjectRunner.Run(
                 parseResult,
                 arguments,
+                input,
                 output,
                 error));
 
