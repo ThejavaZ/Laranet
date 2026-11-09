@@ -30,6 +30,7 @@ Understand the philosophy and boundaries behind the toolkit.
 Explore the internal architecture and the decisions that shape it.
 
 - [Architecture Overview](architecture/overview.md)
+- [Ecosystem Architecture](architecture/ecosystem.md)
 - [Design Principles](architecture/design-principles.md)
 - [Modularity](architecture/modularity.md)
 - [Architecture Decision Records](architecture/decisions/README.md)
