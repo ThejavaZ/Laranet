@@ -305,6 +305,108 @@ public class CliGenerationTests
         Assert.NotEqual(0, result.ExitCode);
     }
 
+    [Fact]
+    public void MakeMiddleware_ShouldGenerateMiddlewareFile()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:middleware",
+            "request-logging",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App");
+
+        Assert.Equal(0, result.ExitCode);
+
+        var path = directory.GetPath("Middleware", "RequestLoggingMiddleware.cs");
+        Assert.True(File.Exists(path));
+
+        var content = File.ReadAllText(path);
+        Assert.Contains("using Microsoft.AspNetCore.Http;", content);
+        Assert.Contains("namespace Test.App.Middleware;", content);
+        Assert.Contains("public sealed class RequestLoggingMiddleware", content);
+        Assert.Contains("RequestDelegate _next", content);
+        Assert.Contains("public async Task InvokeAsync(HttpContext context)", content);
+        Assert.Contains("await _next(context);", content);
+    }
+
+    [Fact]
+    public void MakeMiddleware_ShouldNotDuplicateSuffix()
+    {
+        using var directory = new TemporaryDirectory();
+
+        Run(
+            "make:middleware",
+            "AuthMiddleware",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App");
+
+        Assert.True(File.Exists(directory.GetPath("Middleware", "AuthMiddleware.cs")));
+        Assert.False(File.Exists(directory.GetPath("Middleware", "AuthMiddlewareMiddleware.cs")));
+    }
+
+    [Fact]
+    public void MakeRepository_ShouldGenerateRepositoryFile()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:repository",
+            "product",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App");
+
+        Assert.Equal(0, result.ExitCode);
+
+        var path = directory.GetPath("Repositories", "ProductRepository.cs");
+        Assert.True(File.Exists(path));
+
+        var content = File.ReadAllText(path);
+        Assert.Contains("namespace Test.App.Repositories;", content);
+        Assert.Contains("public sealed class ProductRepository", content);
+        Assert.Contains("Use it only when the abstraction is justified.", content);
+    }
+
+    [Fact]
+    public void MakeRepository_ShouldNotDuplicateSuffix()
+    {
+        using var directory = new TemporaryDirectory();
+
+        Run(
+            "make:repository",
+            "ProductRepository",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App");
+
+        Assert.True(File.Exists(directory.GetPath("Repositories", "ProductRepository.cs")));
+        Assert.False(File.Exists(directory.GetPath("Repositories", "ProductRepositoryRepository.cs")));
+    }
+
+    [Fact]
+    public void MakeResource_ShouldNotGenerateOptionalFiles()
+    {
+        using var directory = new TemporaryDirectory();
+
+        Run(
+            "make:resource",
+            "product",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App");
+
+        Assert.False(File.Exists(directory.GetPath("Middleware", "ProductMiddleware.cs")));
+        Assert.False(File.Exists(directory.GetPath("Repositories", "ProductRepository.cs")));
+    }
+
     private static CommandResult Run(params string[] args)
     {
         using var output = new StringWriter();
