@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- Tool metadata -->
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>laranet</ToolCommandName>
+
+    <!-- Package metadata -->
+    <PackageId>Laranet.Cli</PackageId>
+    <Version>0.1.0</Version>
+    <Description>
+      Command-line tool for generating Laranet application code.
+    </Description>
+    <Authors>TheJavaZ</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/TheJavaZ/Laranet</RepositoryUrl>
+    <PackageTags>dotnet;toolkit;cli;code-generation;scaffolding</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Laranet.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
