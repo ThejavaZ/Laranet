@@ -1,6 +1,6 @@
 # Laranet.Cli
 
-Command-line code generation for Laranet applications.
+Command-line project creation and code generation for Laranet applications.
 
 The CLI generates normal, editable C# files. It does not add runtime metadata,
 attributes, or hidden configuration to your project.
@@ -20,10 +20,73 @@ dotnet new tool-manifest
 dotnet tool install --local Laranet.Cli
 ```
 
+## Create a project
+
+```bash
+laranet new my-api
+```
+
+This creates a Web API project in `./my-api`:
+
+```text
+my-api/
+├── .gitignore
+├── appsettings.Development.json
+├── appsettings.json
+├── my-api.csproj
+├── Program.cs
+├── Properties/launchSettings.json
+└── README.md
+```
+
+Then run it:
+
+```bash
+cd my-api
+dotnet run
+```
+
+Choose another template:
+
+```bash
+laranet new my-console --template console
+```
+
+The `console` template creates a single executable project with no ASP.NET Core
+files:
+
+```text
+my-console/
+├── .gitignore
+├── my-console.csproj
+├── Program.cs
+└── README.md
+```
+
+### Project options
+
+| Option | Description |
+| --- | --- |
+| `-o`, `--output <dir>` | Directory where the project folder is created. Defaults to the current directory. |
+| `-n`, `--namespace <ns>` | Root namespace. Derived from the project name by default. |
+| `-t`, `--template <name>` | `webapi` (default) or `console`. |
+| `--with-data` | References the `Laranet.Data` package. |
+| `--with-efcore` | References the `Laranet.EntityFrameworkCore` package. |
+| `--with-aspnetcore` | References the `Laranet.AspNetCore` package. |
+| `-f`, `--force` | Writes into an existing non-empty directory and overwrites generated files. |
+| `--dry-run` | Shows the files that would be generated without writing them. |
+
+The project folder keeps the name you pass, while the root namespace is
+normalized to PascalCase: `laranet new my-api` creates the `my-api` folder with
+the `MyApi` namespace.
+
+Requested package references use the same version as the CLI.
+
 ## Commands
 
 | Command | Generates |
 | --- | --- |
+| `laranet new <name>` | A new project |
 | `laranet make:model <name>` | A model class in `Models/` |
 | `laranet make:service <name>` | A service class in `Services/` |
 | `laranet make:controller <name>` | An ASP.NET Core controller in `Controllers/` |
@@ -89,7 +152,7 @@ src/MyApp/
 └── Controllers/ProductController.cs
 ```
 
-## Options
+## Generation options
 
 | Option | Description |
 | --- | --- |
@@ -125,6 +188,10 @@ If no project file can be found, pass `--namespace` explicitly.
 Existing files are never overwritten unless `--force` is specified. When a
 command generates several files, all conflicts are reported before anything is
 written, so a failed command does not leave a partial result.
+
+`laranet new` also refuses to write into a directory that already contains
+files, unless `--force` is specified. Unrelated files in that directory are
+never deleted.
 
 Use `--dry-run` to inspect the planned files first:
 

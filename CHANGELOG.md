@@ -21,6 +21,7 @@ Changes that are planned or currently under development.
 - Cancellation token support for asynchronous pagination.
 - `Laranet.AspNetCore` package with pagination HTTP headers and Minimal API results.
 - `Laranet.Cli` .NET tool with `make:model`, `make:service`, `make:controller`, and `make:resource` code generation commands.
+- `laranet new` command that creates `webapi` and `console` projects with namespace inference, optional solution-free structure, and optional `Laranet.Data`, `Laranet.EntityFrameworkCore`, and `Laranet.AspNetCore` package references.
 - Namespace inference from the nearest project file and conventional output folders for generated code.
 
 ### Changed

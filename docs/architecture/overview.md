@@ -143,6 +143,7 @@ The CLI module provides command-line code generation for Laranet applications.
 
 Its initial scope includes:
 
+- Creating Web API and console projects.
 - Generating models, services, controllers, and resources.
 - Inferring namespaces and using conventional folders.
 
