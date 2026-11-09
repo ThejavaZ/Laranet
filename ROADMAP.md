@@ -40,7 +40,7 @@ Laranet is a **toolkit, not an opinionated application framework**.
 | `Laranet.Data`                | Query extensions, pagination, searching, sorting | Implemented and stabilized |
 | `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Implemented                |
 | `Laranet.AspNetCore`          | ASP.NET Core integration                         | Implemented                |
-| `Laranet.Cli`                 | Project and code generation commands             | In progress                |
+| `Laranet.Cli`                 | Project and code generation commands             | Implemented                |
 | `Laranet.Application`         | Application-level utilities, only if justified   | Under evaluation           |
 
 Packages should remain independently consumable. Shared package versions will initially follow the same Laranet release.
@@ -153,7 +153,7 @@ Avoid building a second web framework or replacing native ASP.NET Core features 
 
 ### Sprint 6 — Laranet CLI
 
-**Status: In progress**
+**Status: Completed**
 **Priority: High**
 
 Create `Laranet.Cli`.
@@ -175,7 +175,6 @@ The CLI should be inspired by the productivity of Laravel Artisan and NestJS CLI
 - [x] `laranet make:middleware`
 - [x] `laranet make:resource`
 - [x] `laranet make:repository`, only as an optional template.
-- [ ] Additional generators based on actual usage.
 
 **Resource generation**
 
@@ -190,10 +189,17 @@ The CLI should be inspired by the productivity of Laravel Artisan and NestJS CLI
 - [x] Useful error messages.
 - [x] Interactive commands where appropriate.
 - [x] Consistent command naming.
-- [ ] Extensible conventions.
+
+**Deferred to v2**
+
+- Additional generators based on actual usage.
+- Extensible conventions.
+
+Versioned roadmaps will be tracked under `docs/roadmap/`.
 
 ### Sprint 7 — Documentation, samples and developer adoption
 
+**Status: Next**
 **Priority: Medium**
 
 - [ ] Create practical sample applications.
@@ -269,14 +275,14 @@ Before marking it complete, verify:
 
 ## 8. Current project state
 
-**Current milestone:** Sprint 6 — Laranet CLI.
+**Current milestone:** Sprint 7 — Documentation, samples and developer adoption.
 
 `Laranet.Data` is stabilized, `Laranet.EntityFrameworkCore` provides optional
 asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
 HTTP headers and Minimal API results, and `Laranet.Cli` creates projects with
 `project` or `repository` layouts and generates models, services, controllers,
-middleware, and resources. The next objective is extensible conventions and
-additional generators based on actual usage, without introducing mandatory
-runtime metadata.
+middleware, and resources. The next objective is documentation, samples, and
+developer adoption. Additional generators and extensible conventions are deferred
+to v2.
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.

@@ -59,6 +59,13 @@ Learn about supported .NET versions, compatibility guarantees, and migration pro
 - [Provider Compatibility](compatibility/providers.md)
 - [Migration Guide](compatibility/migration-guide.md)
 
+### Roadmap
+
+Track current and future work.
+
+- [Roadmap](../ROADMAP.md)
+- Versioned roadmaps are tracked under `docs/roadmap/`.
+
 ### Development
 
 Resources for developers contributing to Laranet.
