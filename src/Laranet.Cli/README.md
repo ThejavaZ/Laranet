@@ -75,6 +75,7 @@ my-console/
 | `--with-aspnetcore` | References the `Laranet.AspNetCore` package. |
 | `-f`, `--force` | Writes into an existing non-empty directory and overwrites generated files. |
 | `--dry-run` | Shows the files that would be generated without writing them. |
+| `-i`, `--interactive` | Prompts for missing values and overwrite confirmation. |
 
 The project folder keeps the name you pass, while the root namespace is
 normalized to PascalCase: `laranet new my-api` creates the `my-api` folder with
@@ -184,6 +185,7 @@ included in `make:resource`.
 | `-f`, `--force` | Overwrites existing files. |
 | `--dry-run` | Shows the files that would be generated without writing them. |
 | `--flat` | Places files directly in the output directory instead of convention folders. |
+| `-i`, `--interactive` | Prompts for missing values and overwrite confirmation. |
 
 ## Namespace inference
 
@@ -252,6 +254,37 @@ content. Empty template files are rejected with an error.
 
 Project templates created by `laranet new` are built in and are not customized
 through this mechanism yet.
+
+## Interactive mode
+
+Add `--interactive` (`-i`) to `new` or any `make` command to be prompted for
+missing values and overwrite confirmations:
+
+```text
+$ laranet new --interactive
+Project name: shop-api
+Template [webapi/console] (webapi): webapi
+Reference Laranet.Data? [y/N] n
+Reference Laranet.EntityFrameworkCore? [y/N] y
+Reference Laranet.AspNetCore? [y/N] n
+```
+
+```text
+$ laranet make:model --interactive
+Name: Product
+Namespace: Shop.Api
+```
+
+Behavior:
+
+- Values provided on the command line are never asked again.
+- Supplying any `--with-*` flag skips the package questions and uses exactly the
+  requested packages.
+- In `make` commands, the namespace is only requested when it cannot be inferred
+  from a project file.
+- Invalid names and namespaces are reported and re-prompted.
+- Existing files prompt once for confirmation before anything is written.
+- Without `--interactive`, commands never read from standard input.
 
 ## Overwrite protection
 

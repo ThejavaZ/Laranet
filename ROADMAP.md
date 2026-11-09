@@ -188,7 +188,7 @@ The CLI should be inspired by the productivity of Laravel Artisan and NestJS CLI
 
 - [x] Clear help and command documentation.
 - [x] Useful error messages.
-- [ ] Interactive commands where appropriate.
+- [x] Interactive commands where appropriate.
 - [x] Consistent command naming.
 - [ ] Extensible conventions.
 
@@ -275,7 +275,7 @@ Before marking it complete, verify:
 asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
 HTTP headers and Minimal API results, and `Laranet.Cli` creates projects and
 generates models, services, controllers, middleware, and resources. The next
-objective is interactive commands and extensible conventions, without introducing
-mandatory runtime metadata.
+objective is extensible conventions and additional generators based on actual
+usage, without introducing mandatory runtime metadata.
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.

@@ -24,6 +24,7 @@ Changes that are planned or currently under development.
 - `laranet new` command that creates `webapi` and `console` projects with namespace inference, optional solution-free structure, and optional `Laranet.Data`, `Laranet.EntityFrameworkCore`, and `Laranet.AspNetCore` package references.
 - Namespace inference from the nearest project file and conventional output folders for generated code.
 - User-defined templates that override the built-in code generators through a `.laranet/templates` directory, using `{{Name}}` and `{{Namespace}}` placeholders.
+- Interactive mode (`--interactive`) for project creation and code generators, with prompts for missing names, templates, package references, namespaces, and overwrite confirmation.
 
 ### Changed
 

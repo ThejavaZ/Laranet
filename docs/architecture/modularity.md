@@ -130,6 +130,7 @@ Its initial scope includes:
 - Conventional output folders.
 - Namespace inference from the nearest project.
 - User-defined templates discovered in a `.laranet/templates` directory.
+- Optional interactive prompts for missing values and overwrite confirmation.
 
 The CLI generates normal, editable C# and must not introduce runtime dependencies or mandatory metadata into generated applications.
 

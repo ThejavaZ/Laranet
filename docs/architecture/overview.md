@@ -147,6 +147,7 @@ Its initial scope includes:
 - Generating models, services, controllers, middleware, resources, and optional repository scaffolds.
 - Inferring namespaces and using conventional folders.
 - Overriding built-in templates from a `.laranet/templates` directory.
+- Optional interactive prompts for missing values and overwrite confirmation.
 
 The CLI must generate normal, editable C# and must not introduce mandatory runtime metadata.
 
