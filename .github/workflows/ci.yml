@@ -150,7 +150,7 @@ jobs:
             exit 1
           fi
 
-          for nuspec in "$data_nuspec" "$ef_nuspec" "$aspnet_nuspec" "$cli_nuspec"; do
+          for nuspec in "$core_nuspec" "$data_nuspec" "$ef_nuspec" "$aspnet_nuspec" "$cli_nuspec"; do
             grep -q '<readme>README.md</readme>' <<< "$nuspec"
             grep -q '<license type="expression">MIT</license>' <<< "$nuspec"
             grep -q '<authors>TheJavaZ</authors>' <<< "$nuspec"
