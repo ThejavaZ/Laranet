@@ -52,6 +52,9 @@ Laranet
 ├── AspNetCore
 │   └── ASP.NET Core integration
 │
+├── Cli
+│   └── Command-line code generation
+│
 └── Application
     └── Application-level utilities and patterns
 ```
@@ -133,6 +136,17 @@ Potential responsibilities include:
 - Reusable application services.
 
 Its scope will be determined by actual use cases rather than speculative abstractions.
+
+### 3.6 Command-Line Tooling
+
+The CLI module provides command-line code generation for Laranet applications.
+
+Its initial scope includes:
+
+- Generating models, services, controllers, and resources.
+- Inferring namespaces and using conventional folders.
+
+The CLI must generate normal, editable C# and must not introduce mandatory runtime metadata.
 
 ## 4. Dependency Rules
 

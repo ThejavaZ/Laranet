@@ -25,6 +25,8 @@ Laranet
 │
 ├── AspNetCore
 │
+├── Cli
+│
 └── Application
 ```
 
@@ -116,7 +118,21 @@ This module is not mandatory for the initial release.
 
 Its implementation will depend on actual use cases and the need for a separate responsibility boundary.
 
-## 7. Dependency Boundaries
+## 7. CLI Module
+
+The CLI provides command-line tooling for creating and extending Laranet applications.
+
+Its initial scope includes:
+
+- Code generation for models, services, controllers, and resources.
+- Conventional output folders.
+- Namespace inference from the nearest project.
+
+The CLI generates normal, editable C# and must not introduce runtime dependencies or mandatory metadata into generated applications.
+
+New commands should build on existing .NET tooling whenever it provides the required behavior.
+
+## 8. Dependency Boundaries
 
 The following rules define the intended module boundaries:
 
@@ -126,6 +142,7 @@ The following rules define the intended module boundaries:
 4. AspNetCore may depend on Core and other modules when integration requires it.
 5. Application must not introduce framework dependencies into Core.
 6. Optional integrations must remain independently installable whenever technically feasible.
+7. Runtime modules must not depend on the CLI.
 
 Dependencies should be explicit and justified.
 
@@ -149,7 +166,7 @@ Dependencies should be explicit and justified.
 
 This diagram represents conceptual relationships. The final project references will be determined by the actual public contracts and implementation requirements.
 
-## 8. Package Distribution
+## 9. Package Distribution
 
 Modules intended for independent consumption should be distributed as separate NuGet packages.
 
@@ -161,6 +178,7 @@ The initial package names are expected to follow this convention:
 | Data                  | Laranet.Data                |
 | Entity Framework Core | Laranet.EntityFrameworkCore |
 | ASP.NET Core          | Laranet.AspNetCore          |
+| Command line          | Laranet.Cli                 |
 | Application           | Laranet.Application         |
 
 Package names may change before the first stable release.
@@ -169,7 +187,7 @@ Not every logical module necessarily needs its own package or project.
 
 Package boundaries should reflect actual dependency and distribution requirements.
 
-## 9. Adding New Modules
+## 10. Adding New Modules
 
 A new module should only be introduced when at least one of the following conditions is met:
 
@@ -183,7 +201,7 @@ Before creating a module, evaluate whether the functionality belongs in an exist
 
 Avoid splitting functionality into projects solely for organizational purposes.
 
-## 10. Integration Guidelines
+## 11. Integration Guidelines
 
 Integrations should follow these guidelines:
 
@@ -196,7 +214,7 @@ Integrations should follow these guidelines:
 
 Integrations should extend Laranet rather than redefine the behavior of the frameworks they connect to.
 
-## 11. Architectural Evolution
+## 12. Architectural Evolution
 
 The modular structure is expected to evolve as Laranet gains functionality.
 
@@ -204,7 +222,7 @@ New modules, integrations, or abstractions must be evaluated against the project
 
 Significant changes to module responsibilities or dependency boundaries should be documented through Architecture Decision Records.
 
-## 12. Final Principle
+## 13. Final Principle
 
 Modularity exists to reduce coupling and improve flexibility, not to increase project complexity.
 

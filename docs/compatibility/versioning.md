@@ -90,6 +90,7 @@ For example:
 | Laranet.Data                | 0.1.0   |
 | Laranet.EntityFrameworkCore | 0.1.0   |
 | Laranet.AspNetCore          | 0.1.0   |
+| Laranet.Cli                 | 0.1.0   |
 
 Packages that are not part of a particular release do not need to be published.
 

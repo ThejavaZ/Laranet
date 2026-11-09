@@ -20,13 +20,15 @@ Changes that are planned or currently under development.
 - `Laranet.EntityFrameworkCore` package with asynchronous pagination through `PaginateAsync()`.
 - Cancellation token support for asynchronous pagination.
 - `Laranet.AspNetCore` package with pagination HTTP headers and Minimal API results.
+- `Laranet.Cli` .NET tool with `make:model`, `make:service`, `make:controller`, and `make:resource` code generation commands.
+- Namespace inference from the nearest project file and conventional output folders for generated code.
 
 ### Changed
 
 - Aligned the `Laranet.Data` package version with the core package at `0.1.0`.
 - Added NuGet metadata to `Laranet.Data`: description, authors, MIT license, repository, tags, and README.
 - Expanded XML documentation for provider-dependent search, sorting, and pagination behavior.
-- CI now packs and validates four production packages, including `.nuspec` dependencies, metadata, version consistency, and module-specific framework restrictions (EF Core only in `Laranet.EntityFrameworkCore`, ASP.NET Core only in `Laranet.AspNetCore`).
+- CI now packs and validates five production packages, including `.nuspec` dependencies, metadata, version consistency, module-specific framework restrictions (EF Core only in `Laranet.EntityFrameworkCore`, ASP.NET Core only in `Laranet.AspNetCore`), and .NET tool packaging for `Laranet.Cli`.
 - Expanded the `Laranet.Data` README with sorting, allowlist, conditional filtering, composition, and provider guidance.
 - Centralized the SQLite integration test infrastructure in shared test support types.
 

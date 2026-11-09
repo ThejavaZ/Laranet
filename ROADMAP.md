@@ -40,7 +40,7 @@ Laranet is a **toolkit, not an opinionated application framework**.
 | `Laranet.Data`                | Query extensions, pagination, searching, sorting | Implemented and stabilized |
 | `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Implemented                |
 | `Laranet.AspNetCore`          | ASP.NET Core integration                         | Implemented                |
-| `Laranet.Cli`                 | Project and code generation commands             | Planned                    |
+| `Laranet.Cli`                 | Project and code generation commands             | In progress                |
 | `Laranet.Application`         | Application-level utilities, only if justified   | Under evaluation           |
 
 Packages should remain independently consumable. Shared package versions will initially follow the same Laranet release.
@@ -153,7 +153,7 @@ Avoid building a second web framework or replacing native ASP.NET Core features 
 
 ### Sprint 6 — Laranet CLI
 
-**Status: Next**
+**Status: In progress**
 **Priority: High**
 
 Create `Laranet.Cli`.
@@ -169,27 +169,27 @@ The CLI should be inspired by the productivity of Laravel Artisan and NestJS CLI
 
 **Code generation**
 
-- [ ] `laranet make:model`
-- [ ] `laranet make:service`
-- [ ] `laranet make:controller`
+- [x] `laranet make:model`
+- [x] `laranet make:service`
+- [x] `laranet make:controller`
 - [ ] `laranet make:middleware`
-- [ ] `laranet make:resource`
+- [x] `laranet make:resource`
 - [ ] `laranet make:repository`, only as an optional template.
 - [ ] Additional generators based on actual usage.
 
 **Resource generation**
 
-- [ ] Generate related files together.
+- [x] Generate related files together.
 - [ ] Allow customization of generated files.
 - [ ] Support user-defined templates.
-- [ ] Avoid mandatory runtime metadata.
+- [x] Avoid mandatory runtime metadata.
 
 **Developer experience**
 
-- [ ] Clear help and command documentation.
-- [ ] Useful error messages.
+- [x] Clear help and command documentation.
+- [x] Useful error messages.
 - [ ] Interactive commands where appropriate.
-- [ ] Consistent command naming.
+- [x] Consistent command naming.
 - [ ] Extensible conventions.
 
 ### Sprint 7 — Documentation, samples and developer adoption
@@ -272,8 +272,9 @@ Before marking it complete, verify:
 **Current milestone:** Sprint 6 — Laranet CLI.
 
 `Laranet.Data` is stabilized, `Laranet.EntityFrameworkCore` provides optional
-asynchronous pagination, and `Laranet.AspNetCore` exposes pagination metadata through
-HTTP headers and Minimal API results. The next objective is to design the CLI and its
-project and code generation commands without introducing mandatory runtime metadata.
+asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
+HTTP headers and Minimal API results, and `Laranet.Cli` generates models, services,
+controllers, and resources. The next objective is project creation and additional
+generators, without introducing mandatory runtime metadata.
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.
