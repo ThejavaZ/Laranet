@@ -18,6 +18,34 @@ Packages in a release:
 
 The release workflow fails when the tag does not match every declared version.
 
+## Public API review
+
+Before a release, review the public surface:
+
+- Public types exist only in the package that needs them. `Laranet` remains empty
+  until it has a justified shared abstraction.
+- Extension methods live in their documented namespaces:
+  `Laranet.Data.Extensions`, `Laranet.EntityFrameworkCore.Extensions`, and
+  `Laranet.AspNetCore.Extensions`.
+- Every public member has XML documentation. The build treats missing documentation
+  as an error.
+- `PagedResult<T>` remains the only pagination result type.
+- No EF Core or ASP.NET Core dependency leaks into `Laranet.Data`.
+- The CLI is distributed as a .NET tool and does not expose a runtime API.
+
+## Package metadata
+
+CI validates the generated `.nuspec` files for every release package:
+
+- Package ID, synchronized version, description, and tags.
+- MIT license expression, author, and repository URL.
+- `README.md`, project URL, and release-notes URL.
+- `Laranet.Data` has no framework dependencies.
+- `Laranet.EntityFrameworkCore` depends on `Laranet.Data` and EF Core only.
+- `Laranet.AspNetCore` references the ASP.NET Core shared framework and
+  `Laranet.Data`.
+- `Laranet.Cli` is a `DotnetTool` package with the `laranet` command.
+
 ## Preparing a release
 
 1. Confirm the scope in the [roadmap](../roadmap/README.md).
@@ -61,8 +89,11 @@ The workflow:
 3. Restores, builds, and runs the full test suite.
 4. Packs the five packages.
 5. Verifies that exactly five `.nupkg` files were produced with the expected
-   version.
+   version and valid metadata.
 6. Pushes them to NuGet.org with `--skip-duplicate`.
+
+CI and the release workflow share `.github/scripts/verify-packages.sh`, so a package
+that fails metadata or dependency validation in CI cannot be published.
 
 ### Required secret
 

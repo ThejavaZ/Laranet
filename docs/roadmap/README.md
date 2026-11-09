@@ -105,15 +105,18 @@ Before marking it complete, verify:
 
 ## Current project state
 
-**Current milestone:** [Version 1, Sprint 7 — Documentation, samples and developer adoption](v1.md).
+**Current milestone:** [Version 1, Sprint 8 — Release preparation](v1.md).
 
 `Laranet.Data` is stabilized, `Laranet.EntityFrameworkCore` provides optional
 asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
 HTTP headers and Minimal API results, and `Laranet.Cli` creates projects with
 `project` or `repository` layouts and generates models, services, controllers,
-middleware, and resources. Sprint 7 adds runnable samples, installation and package
-guides, migration guidance, ADR-0004, and a tag-driven NuGet release workflow. The
-remaining Sprint 7 item is gathering feedback from .NET developers. Additional
+middleware, and resources. Sprint 7 added runnable samples, installation and package
+guides, migration guidance, ADR-0004, and a tag-driven NuGet release workflow.
+Sprint 8 reviewed the public APIs, verified package metadata and dependencies, ran
+the full test suite, and built the `0.1.0` packages. Publishing the first public
+release is pending the `NUGET_API_KEY` secret and an explicit release decision.
+Gathering community feedback and planning the next iteration remain open. Additional
 generators and extensible conventions are deferred to [Version 2](v2.md).
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.

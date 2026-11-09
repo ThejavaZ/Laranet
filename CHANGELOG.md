@@ -45,6 +45,8 @@ Changes that are planned or currently under development.
 - Centralized the SQLite integration test infrastructure in shared test support types.
 - Completed the contribution guide with development, testing, commit, pull request, documentation, and security workflows.
 - Expanded the documentation index to link only to pages that exist.
+- Added `PackageProjectUrl` and `PackageReleaseNotes` to all production packages and CI validation for both.
+- Extracted shared NuGet package validation into `.github/scripts/verify-packages.sh`, used by both CI and the release workflow.
 
 ### Deprecated
 
