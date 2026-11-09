@@ -36,6 +36,12 @@ Laranet is currently in early development.
 
 APIs, architecture, and package boundaries are subject to change.
 
+## Roadmap
+
+- [Project roadmap](docs/roadmap/README.md)
+- [Version 1](docs/roadmap/v1.md)
+- [Version 2](docs/roadmap/v2.md)
+
 ## License
 
 Laranet is licensed under the [MIT License](LICENSE).

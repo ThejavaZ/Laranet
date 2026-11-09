@@ -63,8 +63,9 @@ Learn about supported .NET versions, compatibility guarantees, and migration pro
 
 Track current and future work.
 
-- [Roadmap](../ROADMAP.md)
-- Versioned roadmaps are tracked under `docs/roadmap/`.
+- [Roadmap](roadmap/README.md)
+- [Version 1](roadmap/v1.md)
+- [Version 2](roadmap/v2.md)
 
 ### Development
 
