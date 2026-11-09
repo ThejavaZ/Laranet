@@ -16,7 +16,9 @@ internal static class CliApplication
         error ??= Console.Error;
 
         var rootCommand = new RootCommand(
-            "Generates Laranet application code from the command line.");
+            "Creates Laranet projects and generates application code from the command line.");
+
+        rootCommand.Subcommands.Add(NewCommand.Create(output, error));
 
         foreach (var command in MakeCommands.Create(output, error))
         {
