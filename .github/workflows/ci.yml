@@ -47,6 +47,7 @@ jobs:
           dotnet pack src/Laranet.Data/Laranet.Data.csproj --configuration Release --no-build --output artifacts/packages
           dotnet pack src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj --configuration Release --no-build --output artifacts/packages
           dotnet pack src/Laranet.AspNetCore/Laranet.AspNetCore.csproj --configuration Release --no-build --output artifacts/packages
+          dotnet pack src/Laranet.Cli/Laranet.Cli.csproj --configuration Release --no-build --output artifacts/packages
 
       - name: Verify production packages
         shell: bash
@@ -58,12 +59,13 @@ jobs:
               \( -name 'Laranet.[0-9]*.nupkg' \
                  -o -name 'Laranet.Data.[0-9]*.nupkg' \
                  -o -name 'Laranet.EntityFrameworkCore.[0-9]*.nupkg' \
-                 -o -name 'Laranet.AspNetCore.[0-9]*.nupkg' \) \
+                 -o -name 'Laranet.AspNetCore.[0-9]*.nupkg' \
+                 -o -name 'Laranet.Cli.[0-9]*.nupkg' \) \
               | sort
           )
 
-          if [ "${#packages[@]}" -ne 4 ]; then
-            echo "::error::Expected exactly four production packages, found ${#packages[@]}."
+          if [ "${#packages[@]}" -ne 5 ]; then
+            echo "::error::Expected exactly five production packages, found ${#packages[@]}."
             exit 1
           fi
 
@@ -71,11 +73,13 @@ jobs:
           data_package="$(find artifacts/packages -maxdepth 1 -name 'Laranet.Data.[0-9]*.nupkg')"
           ef_package="$(find artifacts/packages -maxdepth 1 -name 'Laranet.EntityFrameworkCore.[0-9]*.nupkg')"
           aspnet_package="$(find artifacts/packages -maxdepth 1 -name 'Laranet.AspNetCore.[0-9]*.nupkg')"
+          cli_package="$(find artifacts/packages -maxdepth 1 -name 'Laranet.Cli.[0-9]*.nupkg')"
 
           core_nuspec="$(unzip -p "$core_package" '*.nuspec')"
           data_nuspec="$(unzip -p "$data_package" '*.nuspec')"
           ef_nuspec="$(unzip -p "$ef_package" '*.nuspec')"
           aspnet_nuspec="$(unzip -p "$aspnet_package" '*.nuspec')"
+          cli_nuspec="$(unzip -p "$cli_package" '*.nuspec')"
 
           for package in "$core_package" "$data_package"; do
             nuspec="$(unzip -p "$package" '*.nuspec')"
@@ -101,10 +105,28 @@ jobs:
             exit 1
           fi
 
+          if grep -Eq 'Microsoft\.EntityFrameworkCore|Microsoft\.AspNetCore' <<< "$cli_nuspec"; then
+            echo "::error::Forbidden dependency found in $cli_package."
+            exit 1
+          fi
+
+          if ! grep -q '<packageType name="DotnetTool" />' <<< "$cli_nuspec"; then
+            echo "::error::$cli_package must be a .NET tool package."
+            exit 1
+          fi
+
+          cli_tool_settings="$(unzip -p "$cli_package" 'tools/*/any/DotnetToolSettings.xml')"
+
+          if ! grep -q '<Command Name="laranet"' <<< "$cli_tool_settings"; then
+            echo "::error::$cli_package must expose the laranet command."
+            exit 1
+          fi
+
           core_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$core_nuspec" | head -n 1)"
           data_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$data_nuspec" | head -n 1)"
           ef_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$ef_nuspec" | head -n 1)"
           aspnet_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$aspnet_nuspec" | head -n 1)"
+          cli_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$cli_nuspec" | head -n 1)"
 
           for package in "$ef_package" "$aspnet_package"; do
             nuspec="$(unzip -p "$package" '*.nuspec')"
@@ -122,12 +144,13 @@ jobs:
 
           if [ "$core_version" != "$data_version" ] \
             || [ "$core_version" != "$ef_version" ] \
-            || [ "$core_version" != "$aspnet_version" ]; then
-            echo "::error::Package versions are not synchronized: Laranet=$core_version, Laranet.Data=$data_version, Laranet.EntityFrameworkCore=$ef_version, Laranet.AspNetCore=$aspnet_version."
+            || [ "$core_version" != "$aspnet_version" ] \
+            || [ "$core_version" != "$cli_version" ]; then
+            echo "::error::Package versions are not synchronized: Laranet=$core_version, Laranet.Data=$data_version, Laranet.EntityFrameworkCore=$ef_version, Laranet.AspNetCore=$aspnet_version, Laranet.Cli=$cli_version."
             exit 1
           fi
 
-          for nuspec in "$data_nuspec" "$ef_nuspec" "$aspnet_nuspec"; do
+          for nuspec in "$data_nuspec" "$ef_nuspec" "$aspnet_nuspec" "$cli_nuspec"; do
             grep -q '<readme>README.md</readme>' <<< "$nuspec"
             grep -q '<license type="expression">MIT</license>' <<< "$nuspec"
             grep -q '<authors>TheJavaZ</authors>' <<< "$nuspec"
