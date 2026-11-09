@@ -31,7 +31,8 @@ internal static class GeneratorRunner
                 name,
                 baseNamespace,
                 outputDirectory,
-                parseResult.GetValue(arguments.Flat));
+                parseResult.GetValue(arguments.Flat),
+                TemplateCatalog.Discover(outputDirectory));
 
             return new GenerationWriter(output, error, outputDirectory).Write(
                 plan,

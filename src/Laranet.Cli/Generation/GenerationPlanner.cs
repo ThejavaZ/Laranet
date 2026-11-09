@@ -10,21 +10,27 @@ internal static class GenerationPlanner
         string name,
         string baseNamespace,
         string outputDirectory,
-        bool flat)
+        bool flat,
+        TemplateCatalog templates)
     {
         IReadOnlyList<GeneratedFile> files = kind switch
         {
-            GeneratorKind.Model => [CreateModel(name, baseNamespace, outputDirectory, flat)],
-            GeneratorKind.Service => [CreateService(name, baseNamespace, outputDirectory, flat)],
-            GeneratorKind.Controller => [CreateController(name, baseNamespace, outputDirectory, flat)],
-            GeneratorKind.Middleware => [CreateMiddleware(name, baseNamespace, outputDirectory, flat)],
+            GeneratorKind.Model =>
+                [CreateModel(name, baseNamespace, outputDirectory, flat, templates)],
+            GeneratorKind.Service =>
+                [CreateService(name, baseNamespace, outputDirectory, flat, templates)],
+            GeneratorKind.Controller =>
+                [CreateController(name, baseNamespace, outputDirectory, flat, templates)],
+            GeneratorKind.Middleware =>
+                [CreateMiddleware(name, baseNamespace, outputDirectory, flat, templates)],
             GeneratorKind.Resource =>
             [
-                CreateModel(name, baseNamespace, outputDirectory, flat),
-                CreateService(name, baseNamespace, outputDirectory, flat),
-                CreateController(name, baseNamespace, outputDirectory, flat),
+                CreateModel(name, baseNamespace, outputDirectory, flat, templates),
+                CreateService(name, baseNamespace, outputDirectory, flat, templates),
+                CreateController(name, baseNamespace, outputDirectory, flat, templates),
             ],
-            GeneratorKind.Repository => [CreateRepository(name, baseNamespace, outputDirectory, flat)],
+            GeneratorKind.Repository =>
+                [CreateRepository(name, baseNamespace, outputDirectory, flat, templates)],
             _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
         };
 
@@ -35,70 +41,112 @@ internal static class GenerationPlanner
         string name,
         string baseNamespace,
         string outputDirectory,
-        bool flat)
+        bool flat,
+        TemplateCatalog templates)
     {
         var target = ResolveTarget(outputDirectory, baseNamespace, "Models", flat);
         var typeName = name;
 
         return new GeneratedFile(
             Path.Combine(target.Directory, $"{typeName}.cs"),
-            CodeTemplates.Model(target.Namespace, typeName));
+            Render(
+                GeneratorKind.Model,
+                templates,
+                target.Namespace,
+                typeName,
+                CodeTemplates.Model));
     }
 
     private static GeneratedFile CreateService(
         string name,
         string baseNamespace,
         string outputDirectory,
-        bool flat)
+        bool flat,
+        TemplateCatalog templates)
     {
         var target = ResolveTarget(outputDirectory, baseNamespace, "Services", flat);
         var typeName = NameNormalizer.EnsureSuffix(name, "Service");
 
         return new GeneratedFile(
-            System.IO.Path.Combine(target.Directory, $"{typeName}.cs"),
-            CodeTemplates.Service(target.Namespace, typeName));
+            Path.Combine(target.Directory, $"{typeName}.cs"),
+            Render(
+                GeneratorKind.Service,
+                templates,
+                target.Namespace,
+                typeName,
+                CodeTemplates.Service));
     }
 
     private static GeneratedFile CreateController(
         string name,
         string baseNamespace,
         string outputDirectory,
-        bool flat)
+        bool flat,
+        TemplateCatalog templates)
     {
         var target = ResolveTarget(outputDirectory, baseNamespace, "Controllers", flat);
         var typeName = NameNormalizer.EnsureSuffix(name, "Controller");
 
         return new GeneratedFile(
-            System.IO.Path.Combine(target.Directory, $"{typeName}.cs"),
-            CodeTemplates.Controller(target.Namespace, typeName));
+            Path.Combine(target.Directory, $"{typeName}.cs"),
+            Render(
+                GeneratorKind.Controller,
+                templates,
+                target.Namespace,
+                typeName,
+                CodeTemplates.Controller));
     }
 
     private static GeneratedFile CreateMiddleware(
         string name,
         string baseNamespace,
         string outputDirectory,
-        bool flat)
+        bool flat,
+        TemplateCatalog templates)
     {
         var target = ResolveTarget(outputDirectory, baseNamespace, "Middleware", flat);
         var typeName = NameNormalizer.EnsureSuffix(name, "Middleware");
 
         return new GeneratedFile(
             Path.Combine(target.Directory, $"{typeName}.cs"),
-            CodeTemplates.Middleware(target.Namespace, typeName));
+            Render(
+                GeneratorKind.Middleware,
+                templates,
+                target.Namespace,
+                typeName,
+                CodeTemplates.Middleware));
     }
 
     private static GeneratedFile CreateRepository(
         string name,
         string baseNamespace,
         string outputDirectory,
-        bool flat)
+        bool flat,
+        TemplateCatalog templates)
     {
         var target = ResolveTarget(outputDirectory, baseNamespace, "Repositories", flat);
         var typeName = NameNormalizer.EnsureSuffix(name, "Repository");
 
         return new GeneratedFile(
             Path.Combine(target.Directory, $"{typeName}.cs"),
-            CodeTemplates.Repository(target.Namespace, typeName));
+            Render(
+                GeneratorKind.Repository,
+                templates,
+                target.Namespace,
+                typeName,
+                CodeTemplates.Repository));
+    }
+
+    private static string Render(
+        GeneratorKind kind,
+        TemplateCatalog templates,
+        string @namespace,
+        string name,
+        Func<string, string, string> builtIn)
+    {
+        return templates.Find(kind) is { } template
+            ? CodeTemplates.Render(template, @namespace, name)
+            : builtIn(@namespace, name);
     }
 
     private static (string Directory, string Namespace) ResolveTarget(
@@ -109,6 +157,6 @@ internal static class GenerationPlanner
     {
         return flat
             ? (outputDirectory, baseNamespace)
-            : (System.IO.Path.Combine(outputDirectory, folder), $"{baseNamespace}.{folder}");
+            : (Path.Combine(outputDirectory, folder), $"{baseNamespace}.{folder}");
     }
 }

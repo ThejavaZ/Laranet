@@ -96,7 +96,14 @@ internal static class CodeTemplates
         return Render(RepositoryTemplate, @namespace, name);
     }
 
-    private static string Render(string template, string @namespace, string name)
+    /// <summary>
+    /// Replaces the well-known placeholders in a template.
+    /// </summary>
+    /// <param name="template">The template content.</param>
+    /// <param name="namespace">The namespace for the generated file.</param>
+    /// <param name="name">The normalized type name.</param>
+    /// <returns>The rendered content.</returns>
+    public static string Render(string template, string @namespace, string name)
     {
         return template
             .Replace("{{Namespace}}", @namespace, StringComparison.Ordinal)
