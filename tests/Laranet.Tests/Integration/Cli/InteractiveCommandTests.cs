@@ -11,7 +11,7 @@ public class InteractiveCommandTests
         using var directory = new TemporaryDirectory();
 
         var result = Run(
-            "my-api\nconsole\nn\nn\nn\n",
+            "my-api\nconsole\nproject\nn\nn\nn\n",
             "new",
             "--interactive",
             "--output",
@@ -40,6 +40,8 @@ public class InteractiveCommandTests
             "my-api",
             "--template",
             "console",
+            "--layout",
+            "project",
             "--interactive",
             "--output",
             directory.Root);
@@ -48,6 +50,24 @@ public class InteractiveCommandTests
         Assert.DoesNotContain("Project name:", result.Output);
         Assert.DoesNotContain("Template [webapi/console]", result.Output);
         Assert.True(File.Exists(directory.GetPath("my-api", "my-api.csproj")));
+    }
+
+    [Fact]
+    public void New_ShouldPromptForLayout()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "my-api\nconsole\nrepository\nn\nn\nn\n",
+            "new",
+            "--interactive",
+            "--output",
+            directory.Root);
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("Layout [project/repository]", result.Output);
+        Assert.True(File.Exists(directory.GetPath("my-api", "src", "my-api", "my-api.csproj")));
+        Assert.True(File.Exists(directory.GetPath("my-api", "my-api.slnx")));
     }
 
     [Fact]
@@ -61,6 +81,8 @@ public class InteractiveCommandTests
             "my-api",
             "--template",
             "console",
+            "--layout",
+            "project",
             "--with-data",
             "--interactive",
             "--output",
@@ -90,6 +112,8 @@ public class InteractiveCommandTests
             "my-api",
             "--template",
             "console",
+            "--layout",
+            "project",
             "--interactive",
             "--output",
             directory.Root);
@@ -112,6 +136,8 @@ public class InteractiveCommandTests
             "my-api",
             "--template",
             "console",
+            "--layout",
+            "project",
             "--interactive",
             "--output",
             directory.Root);
@@ -131,6 +157,8 @@ public class InteractiveCommandTests
             "new",
             "--template",
             "console",
+            "--layout",
+            "project",
             "--with-data",
             "--interactive",
             "--output",
