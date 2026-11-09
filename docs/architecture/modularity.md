@@ -125,6 +125,7 @@ The CLI provides command-line tooling for creating and extending Laranet applica
 Its initial scope includes:
 
 - Project creation from built-in templates.
+- Configurable project layouts and optional solution generation.
 - Optional package references during project creation.
 - Code generation for models, services, controllers, middleware, resources, and optional repository scaffolds.
 - Conventional output folders.

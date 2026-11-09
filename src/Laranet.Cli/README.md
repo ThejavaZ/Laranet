@@ -70,6 +70,8 @@ my-console/
 | `-o`, `--output <dir>` | Directory where the project folder is created. Defaults to the current directory. |
 | `-n`, `--namespace <ns>` | Root namespace. Derived from the project name by default. |
 | `-t`, `--template <name>` | `webapi` (default) or `console`. |
+| `-l`, `--layout <name>` | `project` (default) or `repository`. |
+| `--sln` | Creates a `<name>.slnx` solution in the `project` layout. |
 | `--with-data` | References the `Laranet.Data` package. |
 | `--with-efcore` | References the `Laranet.EntityFrameworkCore` package. |
 | `--with-aspnetcore` | References the `Laranet.AspNetCore` package. |
@@ -82,6 +84,41 @@ normalized to PascalCase: `laranet new my-api` creates the `my-api` folder with
 the `MyApi` namespace.
 
 Requested package references use the same version as the CLI.
+
+### Project layouts
+
+`--layout project` (default) keeps everything inside the project folder:
+
+```text
+my-api/
+├── .gitignore
+├── appsettings.Development.json
+├── appsettings.json
+├── my-api.csproj
+├── Program.cs
+├── Properties/launchSettings.json
+└── README.md
+```
+
+`--layout repository` prepares a repository with the project under `src/` and a
+solution at the root:
+
+```text
+my-api/
+├── .gitignore
+├── README.md
+├── my-api.slnx
+└── src/
+    └── my-api/
+        ├── appsettings.Development.json
+        ├── appsettings.json
+        ├── my-api.csproj
+        ├── Program.cs
+        └── Properties/launchSettings.json
+```
+
+The `repository` layout always creates the solution. Add `--sln` to the
+`project` layout when you want one too.
 
 ## Commands
 
@@ -264,6 +301,7 @@ missing values and overwrite confirmations:
 $ laranet new --interactive
 Project name: shop-api
 Template [webapi/console] (webapi): webapi
+Layout [project/repository] (project): repository
 Reference Laranet.Data? [y/N] n
 Reference Laranet.EntityFrameworkCore? [y/N] y
 Reference Laranet.AspNetCore? [y/N] n

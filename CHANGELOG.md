@@ -25,6 +25,7 @@ Changes that are planned or currently under development.
 - Namespace inference from the nearest project file and conventional output folders for generated code.
 - User-defined templates that override the built-in code generators through a `.laranet/templates` directory, using `{{Name}}` and `{{Namespace}}` placeholders.
 - Interactive mode (`--interactive`) for project creation and code generators, with prompts for missing names, templates, package references, namespaces, and overwrite confirmation.
+- Configurable project layouts (`project` and `repository`) and optional solution generation with `--sln`.
 
 ### Changed
 
