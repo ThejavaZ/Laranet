@@ -10,8 +10,8 @@ The roadmap is organized by release so completed and future work stay separated.
 
 | Version | Scope | Status |
 | --- | --- | --- |
-| [Version 1](v1.md) | Core, Data, EntityFrameworkCore, AspNetCore, and CLI; first public release | In progress |
-| [Version 2](v2.md) | Deferred generators, extensible conventions, and feedback-driven work | Planning |
+| [Version 1](v1.md) | Core, Data, EntityFrameworkCore, AspNetCore, and CLI; first public release | Released `0.1.0`; feedback pending |
+| [Version 2](v2.md) | Adoption, provider verification, feedback-gated depth, and 1.0 readiness | Planning |
 
 ## Project vision
 
@@ -45,11 +45,11 @@ Laranet is a **toolkit, not an opinionated application framework**.
 
 | Package                       | Responsibility                                   | Status                     |
 | ----------------------------- | ------------------------------------------------ | -------------------------- |
-| `Laranet`                     | Core abstractions and shared functionality       | Initial project            |
-| `Laranet.Data`                | Query extensions, pagination, searching, sorting | Implemented and stabilized |
-| `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Implemented                |
-| `Laranet.AspNetCore`          | ASP.NET Core integration                         | Implemented                |
-| `Laranet.Cli`                 | Project and code generation commands             | Implemented                |
+| `Laranet`                     | Core abstractions and shared functionality       | Published `0.1.0`; intentionally empty |
+| `Laranet.Data`                | Query extensions, pagination, searching, sorting | Published `0.1.0`         |
+| `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Published `0.1.0`         |
+| `Laranet.AspNetCore`          | ASP.NET Core integration                         | Published `0.1.0`         |
+| `Laranet.Cli`                 | Project and code generation commands             | Published `0.1.0`         |
 | `Laranet.Application`         | Application-level utilities, only if justified   | Under evaluation           |
 
 Packages should remain independently consumable. Shared package versions will initially follow the same Laranet release.
@@ -105,19 +105,17 @@ Before marking it complete, verify:
 
 ## Current project state
 
-**Current milestone:** [Version 1, Sprint 8 — Release preparation](v1.md).
+**Current milestone:** [Version 2, Sprint 9 — Post-release adoption](v2.md).
 
-`Laranet.Data` is stabilized, `Laranet.EntityFrameworkCore` provides optional
+All five packages (`Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`,
+`Laranet.AspNetCore`, and `Laranet.Cli`) are published on NuGet.org as `0.1.0`.
+`Laranet.Data` provides provider-neutral search, sorting, conditional filtering, and
+pagination, including multi-column search. `Laranet.EntityFrameworkCore` adds
 asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
-HTTP headers and Minimal API results, and `Laranet.Cli` creates projects with
-`project` or `repository` layouts and generates models, services, controllers,
-middleware, and resources. Sprint 7 added runnable samples, installation and package
-guides, migration guidance, ADR-0004, and a tag-driven NuGet release workflow.
-Sprint 8 reviewed the public APIs, verified package metadata and dependencies, ran
-the full test suite, and built the `0.1.0` packages. Publishing the first public
-release is pending the active NuGet Trusted Publishing policy, the workflow change
-pushed to `main`, and an explicit release decision.
-Gathering community feedback and planning the next iteration remain open. Additional
-generators and extensible conventions are deferred to [Version 2](v2.md).
+HTTP headers and Minimal API results, and `Laranet.Cli` creates projects and generates
+code. Version 2 focuses on adoption and stability: release `0.1.1`, collect real
+feedback, verify SQL Server and PostgreSQL in CI, and add depth only when a concrete
+use case justifies it. The `Laranet` core package remains intentionally empty until a
+shared abstraction is required by at least two modules.
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.
