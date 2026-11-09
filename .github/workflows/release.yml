@@ -1,0 +1,141 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish, without the leading v (for example 0.1.0)."
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Pack and publish to NuGet
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            version="${{ inputs.version }}"
+          else
+            version="${GITHUB_REF_NAME#v}"
+          fi
+
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Invalid release version '$version'."
+            exit 1
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: $version"
+
+      - name: Verify package versions
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          for project in \
+            src/Laranet/Laranet.csproj \
+            src/Laranet.Data/Laranet.Data.csproj \
+            src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj \
+            src/Laranet.AspNetCore/Laranet.AspNetCore.csproj \
+            src/Laranet.Cli/Laranet.Cli.csproj; do
+            project_version="$(grep -oP '(?<=<Version>)[^<]+' "$project" | head -n 1)"
+
+            if [ "$project_version" != "$VERSION" ]; then
+              echo "::error::$project declares version '$project_version', expected '$VERSION'. Update the project version before tagging."
+              exit 1
+            fi
+          done
+
+          echo "All production projects declare version $VERSION."
+
+      - name: Restore dependencies
+        run: dotnet restore Laranet.slnx
+
+      - name: Build solution
+        run: dotnet build Laranet.slnx --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test Laranet.slnx --configuration Release --no-build
+
+      - name: Pack packages
+        run: |
+          mkdir -p artifacts/packages
+          dotnet pack src/Laranet/Laranet.csproj --configuration Release --no-build --output artifacts/packages
+          dotnet pack src/Laranet.Data/Laranet.Data.csproj --configuration Release --no-build --output artifacts/packages
+          dotnet pack src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj --configuration Release --no-build --output artifacts/packages
+          dotnet pack src/Laranet.AspNetCore/Laranet.AspNetCore.csproj --configuration Release --no-build --output artifacts/packages
+          dotnet pack src/Laranet.Cli/Laranet.Cli.csproj --configuration Release --no-build --output artifacts/packages
+
+      - name: Verify artifacts
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          mapfile -t packages < <(find artifacts/packages -maxdepth 1 -name '*.nupkg' | sort)
+
+          if [ "${#packages[@]}" -ne 5 ]; then
+            echo "::error::Expected exactly five packages, found ${#packages[@]}."
+            exit 1
+          fi
+
+          expected=(
+            "Laranet.$VERSION.nupkg"
+            "Laranet.Data.$VERSION.nupkg"
+            "Laranet.EntityFrameworkCore.$VERSION.nupkg"
+            "Laranet.AspNetCore.$VERSION.nupkg"
+            "Laranet.Cli.$VERSION.nupkg"
+          )
+
+          for name in "${expected[@]}"; do
+            if [ ! -f "artifacts/packages/$name" ]; then
+              echo "::error::Missing package artifacts/packages/$name."
+              exit 1
+            fi
+          done
+
+          echo "Verified five packages with version $VERSION."
+
+      - name: Publish to NuGet.org
+        shell: bash
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${NUGET_API_KEY:-}" ]; then
+            echo "::error::The NUGET_API_KEY secret is not configured."
+            exit 1
+          fi
+
+          for package in artifacts/packages/*.nupkg; do
+            dotnet nuget push "$package" \
+              --api-key "$NUGET_API_KEY" \
+              --source https://api.nuget.org/v3/index.json \
+              --skip-duplicate
+          done
