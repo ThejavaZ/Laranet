@@ -26,6 +26,14 @@ Changes that are planned or currently under development.
 - User-defined templates that override the built-in code generators through a `.laranet/templates` directory, using `{{Name}}` and `{{Namespace}}` placeholders.
 - Interactive mode (`--interactive`) for project creation and code generators, with prompts for missing names, templates, package references, namespaces, and overwrite confirmation.
 - Configurable project layouts (`project` and `repository`) and optional solution generation with `--sln`.
+- Runnable console and Web API samples under `samples/`, covering `Laranet.Data`, `Laranet.EntityFrameworkCore`, and `Laranet.AspNetCore`.
+- Getting-started guides for installation, quick start, and a complete first application.
+- Package overview and practical guides for data access, pagination, and the CLI.
+- Migration and upgrade guidance for the initial `0.x` release period.
+- ADR-0004 documenting the decision to generate ordinary, editable C#.
+- Tag-driven release workflow that validates, packs, and publishes the five production packages to NuGet.org.
+- `SECURITY.md` with the private vulnerability reporting process.
+- Package README for the `Laranet` core package and CI validation of its NuGet metadata.
 
 ### Changed
 
@@ -35,6 +43,8 @@ Changes that are planned or currently under development.
 - CI now packs and validates five production packages, including `.nuspec` dependencies, metadata, version consistency, module-specific framework restrictions (EF Core only in `Laranet.EntityFrameworkCore`, ASP.NET Core only in `Laranet.AspNetCore`), and .NET tool packaging for `Laranet.Cli`.
 - Expanded the `Laranet.Data` README with sorting, allowlist, conditional filtering, composition, and provider guidance.
 - Centralized the SQLite integration test infrastructure in shared test support types.
+- Completed the contribution guide with development, testing, commit, pull request, documentation, and security workflows.
+- Expanded the documentation index to link only to pages that exist.
 
 ### Deprecated
 

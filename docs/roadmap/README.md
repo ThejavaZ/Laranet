@@ -111,8 +111,9 @@ Before marking it complete, verify:
 asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
 HTTP headers and Minimal API results, and `Laranet.Cli` creates projects with
 `project` or `repository` layouts and generates models, services, controllers,
-middleware, and resources. The next objective is documentation, samples, and
-developer adoption. Additional generators and extensible conventions are deferred
-to [Version 2](v2.md).
+middleware, and resources. Sprint 7 adds runnable samples, installation and package
+guides, migration guidance, ADR-0004, and a tag-driven NuGet release workflow. The
+remaining Sprint 7 item is gathering feedback from .NET developers. Additional
+generators and extensible conventions are deferred to [Version 2](v2.md).
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.
