@@ -22,5 +22,9 @@
     <!-- Code analysis -->
     <AnalysisLevel>latest</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!-- Shared NuGet metadata -->
+    <PackageProjectUrl>https://github.com/TheJavaZ/Laranet</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/TheJavaZ/Laranet/blob/main/CHANGELOG.md</PackageReleaseNotes>
   </PropertyGroup>
 </Project>
