@@ -129,6 +129,7 @@ Its initial scope includes:
 - Code generation for models, services, controllers, middleware, resources, and optional repository scaffolds.
 - Conventional output folders.
 - Namespace inference from the nearest project.
+- User-defined templates discovered in a `.laranet/templates` directory.
 
 The CLI generates normal, editable C# and must not introduce runtime dependencies or mandatory metadata into generated applications.
 

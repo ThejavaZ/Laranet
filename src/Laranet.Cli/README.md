@@ -208,6 +208,51 @@ With `--flat`, files use the base namespace directly.
 
 If no project file can be found, pass `--namespace` explicitly.
 
+## Customizing templates
+
+The built-in templates can be overridden per repository. Create a
+`.laranet/templates` directory in your project or repository root:
+
+```text
+.laranet/
+└── templates/
+    ├── model.tpl
+    ├── service.tpl
+    ├── controller.tpl
+    ├── middleware.tpl
+    └── repository.tpl
+```
+
+Templates are discovered by walking up from the output directory, so a single
+directory at the repository root applies to every project inside it. When several
+`.laranet/templates` directories exist, the nearest one wins.
+
+Only the matching file is replaced. Folder, file name, and namespace remain
+convention-based.
+
+Templates support two placeholders:
+
+| Placeholder | Replaced with |
+| --- | --- |
+| `{{Name}}` | The normalized type name, including its suffix |
+| `{{Namespace}}` | The resolved namespace for the generated file |
+
+Other `{{...}}` placeholders are left untouched.
+
+For example, `.laranet/templates/model.tpl`:
+
+```csharp
+namespace {{Namespace}};
+
+public sealed record {{Name}}(int Id, DateTime CreatedAt);
+```
+
+`laranet make:model Product` then generates `Models/Product.cs` with that
+content. Empty template files are rejected with an error.
+
+Project templates created by `laranet new` are built in and are not customized
+through this mechanism yet.
+
 ## Overwrite protection
 
 Existing files are never overwritten unless `--force` is specified. When a

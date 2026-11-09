@@ -180,8 +180,8 @@ The CLI should be inspired by the productivity of Laravel Artisan and NestJS CLI
 **Resource generation**
 
 - [x] Generate related files together.
-- [ ] Allow customization of generated files.
-- [ ] Support user-defined templates.
+- [x] Allow customization of generated files.
+- [x] Support user-defined templates.
 - [x] Avoid mandatory runtime metadata.
 
 **Developer experience**
@@ -275,7 +275,7 @@ Before marking it complete, verify:
 asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
 HTTP headers and Minimal API results, and `Laranet.Cli` creates projects and
 generates models, services, controllers, middleware, and resources. The next
-objective is additional generators and template customization, without
-introducing mandatory runtime metadata.
+objective is interactive commands and extensible conventions, without introducing
+mandatory runtime metadata.
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.
