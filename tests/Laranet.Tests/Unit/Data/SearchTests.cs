@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Laranet.Data.Extensions;
 
 namespace Laranet.Tests.Unit.Data;
@@ -6,6 +7,8 @@ public class SearchTests
 {
     private sealed record Product(string? Name);
 
+    private sealed record Article(string? Title, string? Body);
+
     private static IQueryable<Product> Products =>
         new[]
         {
@@ -13,6 +16,15 @@ public class SearchTests
             new Product("Gaming Mouse"),
             new Product("Wireless Keyboard"),
             new Product(null)
+        }.AsQueryable();
+
+    private static IQueryable<Article> Articles =>
+        new[]
+        {
+            new Article("Mechanical Keyboard", "Wired"),
+            new Article("Gaming Mouse", "Mechanical Keyboard switches"),
+            new Article("Monitor", null),
+            new Article(null, null)
         }.AsQueryable();
 
     [Fact]
@@ -82,7 +94,9 @@ public class SearchTests
     public void Search_ShouldThrow_WhenSelectorIsNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            Products.Search<Product>(null!, "Keyboard")
+            Products.Search<Product>(
+                (Expression<Func<Product, string?>>)null!,
+                "Keyboard")
         );
     }
 
@@ -94,5 +108,67 @@ public class SearchTests
             .Search(product => product.Name, "Keyboard");
 
         Assert.Equal(2, result.Count());
+    }
+
+    [Fact]
+    public void Search_ShouldMatchAnyOfSeveralSelectors()
+    {
+        var result = Articles.Search(
+            [article => article.Title, article => article.Body],
+            "Keyboard");
+
+        Assert.Equal(2, result.Count());
+    }
+
+    [Fact]
+    public void Search_ShouldReturnOriginalQuery_WhenTermIsEmptyWithSeveralSelectors()
+    {
+        var query = Articles;
+
+        var result = query.Search(
+            [article => article.Title, article => article.Body],
+            "   ");
+
+        Assert.Same(query, result);
+    }
+
+    [Fact]
+    public void Search_ShouldIgnoreNullColumns()
+    {
+        var result = Articles.Search(
+            [article => article.Title, article => article.Body],
+            "Keyboard");
+
+        Assert.DoesNotContain(result, article => article.Title is null && article.Body is null);
+    }
+
+    [Fact]
+    public void Search_ShouldThrow_WhenSelectorsIsNull()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            Articles.Search(
+                (IEnumerable<Expression<Func<Article, string?>>>)null!,
+                "Keyboard")
+        );
+    }
+
+    [Fact]
+    public void Search_ShouldThrow_WhenSelectorsIsEmpty()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            Articles.Search(
+                Array.Empty<Expression<Func<Article, string?>>>(),
+                "Keyboard")
+        );
+    }
+
+    [Fact]
+    public void Search_ShouldThrow_WhenAnySelectorIsNull()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            Articles.Search(
+                [article => article.Title, null!],
+                "Keyboard")
+        );
     }
 }

@@ -47,6 +47,57 @@ public class SearchIntegrationTests
     }
 
     [Fact]
+    public async Task Search_ShouldTranslateSeveralColumnsWithOr()
+    {
+        // Arrange
+        await using var database = await SqliteTestContextFactory.CreateAsync(
+            seed: context => context.Products.AddRange(
+                new DataTestProduct
+                {
+                    Name = "Mechanical Keyboard",
+                    Description = "Wired",
+                },
+                new DataTestProduct
+                {
+                    Name = "Gaming Mouse",
+                    Description = "Mechanical Keyboard switches",
+                },
+                new DataTestProduct
+                {
+                    Name = "Monitor",
+                    Description = null,
+                }));
+
+        // Act
+        var query = database.Context.Products.Search(
+            [product => product.Name, product => product.Description],
+            "Keyboard"
+        );
+
+        // Assert: both columns are translated into a single OR expression.
+        var sql = query.ToQueryString();
+
+        Assert.Contains("OR", sql, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            "Name",
+            sql,
+            StringComparison.OrdinalIgnoreCase
+        );
+        Assert.Contains(
+            "Description",
+            sql,
+            StringComparison.OrdinalIgnoreCase
+        );
+
+        // Assert: a match in any column includes the item.
+        var results = await query
+            .OrderBy(product => product.Id)
+            .ToListAsync();
+
+        Assert.Equal(2, results.Count);
+    }
+
+    [Fact]
     public async Task Search_ShouldParameterizeTerm_WhenExecutedBySqlite()
     {
         // Arrange
