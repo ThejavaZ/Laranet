@@ -90,36 +90,11 @@ jobs:
           dotnet pack src/Laranet.AspNetCore/Laranet.AspNetCore.csproj --configuration Release --no-build --output artifacts/packages
           dotnet pack src/Laranet.Cli/Laranet.Cli.csproj --configuration Release --no-build --output artifacts/packages
 
-      - name: Verify artifacts
+      - name: Verify production packages
         shell: bash
         env:
           VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          set -euo pipefail
-
-          mapfile -t packages < <(find artifacts/packages -maxdepth 1 -name '*.nupkg' | sort)
-
-          if [ "${#packages[@]}" -ne 5 ]; then
-            echo "::error::Expected exactly five packages, found ${#packages[@]}."
-            exit 1
-          fi
-
-          expected=(
-            "Laranet.$VERSION.nupkg"
-            "Laranet.Data.$VERSION.nupkg"
-            "Laranet.EntityFrameworkCore.$VERSION.nupkg"
-            "Laranet.AspNetCore.$VERSION.nupkg"
-            "Laranet.Cli.$VERSION.nupkg"
-          )
-
-          for name in "${expected[@]}"; do
-            if [ ! -f "artifacts/packages/$name" ]; then
-              echo "::error::Missing package artifacts/packages/$name."
-              exit 1
-            fi
-          done
-
-          echo "Verified five packages with version $VERSION."
+        run: bash .github/scripts/verify-packages.sh artifacts/packages "$VERSION"
 
       - name: Publish to NuGet.org
         shell: bash
