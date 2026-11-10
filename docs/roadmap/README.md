@@ -10,7 +10,7 @@ The roadmap is organized by release so completed and future work stay separated.
 
 | Version | Scope | Status |
 | --- | --- | --- |
-| [Version 1](v1.md) | Core, Data, EntityFrameworkCore, AspNetCore, and CLI; first public release | Released `0.1.0`; feedback pending |
+| [Version 1](v1.md) | Core, Data, EntityFrameworkCore, AspNetCore, and CLI; first public release | Released `0.1.0`; `0.1.1` prepared |
 | [Version 2](v2.md) | Adoption, provider verification, feedback-gated depth, and 1.0 readiness | Planning |
 | [Version 3](v3.md) | Application experience: standards, templates, CRUD generation, EF conventions, validation, and doctor | Planning |
 | [Version 4](v4.md) | Application surface: optional admin panel, web/Blazor templates, and optional adapters | Candidate |
@@ -49,11 +49,11 @@ Laranet is a **toolkit, not an opinionated application framework**.
 
 | Package                       | Responsibility                                   | Status                     |
 | ----------------------------- | ------------------------------------------------ | -------------------------- |
-| `Laranet`                     | Core abstractions and shared functionality       | Published `0.1.0`; intentionally empty |
-| `Laranet.Data`                | Query extensions, pagination, searching, sorting | Published `0.1.0`         |
-| `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Published `0.1.0`         |
-| `Laranet.AspNetCore`          | ASP.NET Core integration                         | Published `0.1.0`         |
-| `Laranet.Cli`                 | Project and code generation commands             | Published `0.1.0`         |
+| `Laranet`                     | Core abstractions and shared functionality       | Published `0.1.0`; `0.1.1` prepared; intentionally empty |
+| `Laranet.Data`                | Query extensions, pagination, searching, sorting | Published `0.1.0`; `0.1.1` prepared |
+| `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Published `0.1.0`; `0.1.1` prepared |
+| `Laranet.AspNetCore`          | ASP.NET Core integration                         | Published `0.1.0`; `0.1.1` prepared |
+| `Laranet.Cli`                 | Project and code generation commands             | Published `0.1.0`; `0.1.1` prepared |
 | `Laranet.AspNetCore.Validation` | Optional request validation integration        | Planned for Version 3     |
 | `Laranet.Analyzers`           | Optional Roslyn diagnostics                      | Planned for Version 5     |
 | `Laranet.Admin`               | Admin resource abstractions                      | Candidate for Version 4   |
@@ -121,9 +121,10 @@ Before marking it complete, verify:
 **Current milestone:** [Version 2, Sprint 9 — Post-release adoption](v2.md).
 
 All five packages (`Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`,
-`Laranet.AspNetCore`, and `Laranet.Cli`) are published on NuGet.org as `0.1.0`.
-`Laranet.Data` provides provider-neutral search, sorting, conditional filtering, and
-pagination, including multi-column search. `Laranet.EntityFrameworkCore` adds
+`Laranet.AspNetCore`, and `Laranet.Cli`) are published on NuGet.org as `0.1.0`. The
+repository prepares `0.1.1`, which adds the multi-column `Search` overload, the shared
+package icon, and documentation updates. `Laranet.Data` provides provider-neutral
+search, sorting, conditional filtering, and pagination, including multi-column search. `Laranet.EntityFrameworkCore` adds
 asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
 HTTP headers and Minimal API results, and `Laranet.Cli` creates projects and generates
 code. Version 2 focuses on adoption and stability: release `0.1.1`, collect real

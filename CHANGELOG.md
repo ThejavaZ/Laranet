@@ -6,14 +6,39 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 
 ## [Unreleased]
 
-Changes that are planned or currently under development.
+No unreleased changes yet. Planned work is tracked in the
+[roadmap](docs/roadmap/README.md).
+
+## [0.1.1] - 2026-11-09
+
+### Added
+
+- Multi-column `Search` overload that matches a term in any of several string properties using a single translated `OR` expression.
+- ADR-0005 documenting the decision to keep the `Laranet` core package intentionally empty.
+- Ecosystem architecture document defining package boundaries, dependency rules, architectural profiles, and the `0.1.0` → `1.0.0` roadmap.
+- ADR-0006 positioning Laranet as a modular toolkit with framework-like tooling.
+- ADR-0007 establishing the `simple` generation profile as the default.
+- Version 3 roadmap covering standards, project templates, `make:crud`, EF Core conventions, validation, and `laranet doctor`.
+- Version 4 roadmap covering the optional admin panel, web and Blazor templates, relationship and adapter research, and ecosystem hardening.
+- ADR-0008 defining the runtime and tooling version train, the criteria for `1.0.0`, and the exception process for independent tooling lanes.
+- Version 5 roadmap defining `1.0.0` as a stability contract: release integrity, Data Experience improvements, a bounded diagnostics catalog, an enterprise template, and migration documentation.
+- Version 6 roadmap documenting post-`1.0` application capabilities as a direction: modules, API resources, events, jobs, permissions, and deferred multi-tenancy.
+- Branding assets under `assets/branding` and a shared NuGet package icon for all production packages.
+- Documentation for core concepts, dependency injection, extensibility, the public API reference, relationships, validation, error handling, contribution, development workflow, testing guidelines, and branding.
+- CI validation that every production package includes the shared icon.
+
+### Changed
+
+- Added `PackageIcon` to the shared NuGet metadata so every production package displays the Laranet icon.
+- The README and documentation index now use the Laranet logo and link to the new concepts, API reference, guides, development, and branding sections.
+
+## [0.1.0] - 2026-11-08
 
 ### Added
 
 - Initial repository structure and project documentation.
 - Repository development conventions and configuration.
 - `Laranet.Data` package with `IQueryable` search, sorting, conditional filtering, and pagination utilities.
-- Multi-column `Search` overload that matches a term in any of several string properties using a single translated `OR` expression.
 - Package README for `Laranet.Data`.
 - Typed `ThenBy` overload for `IOrderedQueryable<T>` that accepts a `SortDirection`.
 - Dynamic `OrderBy` and `ThenBy` overloads that validate property names against an `IReadOnlyCollection<string>` allowlist.
@@ -32,21 +57,9 @@ Changes that are planned or currently under development.
 - Package overview and practical guides for data access, pagination, and the CLI.
 - Migration and upgrade guidance for the initial `0.x` release period.
 - ADR-0004 documenting the decision to generate ordinary, editable C#.
-- ADR-0005 documenting the decision to keep the `Laranet` core package intentionally empty.
-- Ecosystem architecture document defining package boundaries, dependency rules, architectural profiles, and the `0.1.0` → `1.0.0` roadmap.
-- ADR-0006 positioning Laranet as a modular toolkit with framework-like tooling.
-- ADR-0007 establishing the `simple` generation profile as the default.
-- Version 3 roadmap covering standards, project templates, `make:crud`, EF Core conventions, validation, and `laranet doctor`.
-- Version 4 roadmap covering the optional admin panel, web and Blazor templates, relationship and adapter research, and ecosystem hardening.
-- ADR-0008 defining the runtime and tooling version train, the criteria for `1.0.0`, and the exception process for independent tooling lanes.
-- Version 5 roadmap defining `1.0.0` as a stability contract: release integrity, Data Experience improvements, a bounded diagnostics catalog, an enterprise template, and migration documentation.
-- Version 6 roadmap documenting post-`1.0` application capabilities as a direction: modules, API resources, events, jobs, permissions, and deferred multi-tenancy.
 - Tag-driven release workflow that validates, packs, and publishes the five production packages to NuGet.org.
 - `SECURITY.md` with the private vulnerability reporting process.
 - Package README for the `Laranet` core package and CI validation of its NuGet metadata.
-- Branding assets under `assets/branding` and a shared NuGet package icon for all production packages.
-- Documentation for core concepts, dependency injection, extensibility, the public API reference, relationships, validation, error handling, contribution, development workflow, testing guidelines, and branding.
-- CI validation that every production package includes the shared icon.
 
 ### Changed
 
@@ -61,12 +74,6 @@ Changes that are planned or currently under development.
 - Added `PackageProjectUrl` and `PackageReleaseNotes` to all production packages and CI validation for both.
 - Extracted shared NuGet package validation into `.github/scripts/verify-packages.sh`, used by both CI and the release workflow.
 - The release workflow now publishes through NuGet Trusted Publishing (`NuGet/login@v1` with GitHub OIDC and a short-lived key) instead of a stored `NUGET_API_KEY` secret.
-- Added `PackageIcon` to the shared NuGet metadata so every production package displays the Laranet icon.
-- The README and documentation index now use the Laranet logo and link to the new concepts, API reference, guides, development, and branding sections.
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 
@@ -75,8 +82,6 @@ Changes that are planned or currently under development.
 - The pagination integration test now exercises `Paginate` and verifies its count and paged queries.
 - Corrected the documented meaning of `PagedResult<T>.PageSize` to reflect the effective page size.
 - `Paginate` now executes only the count query when the collection is empty or the requested page is out of range, while preserving pagination metadata.
-
-### Security
 
 ---
 
@@ -94,4 +99,5 @@ During initial development, the project may use `0.x` versions. Public APIs shou
 
 ## Release History
 
-No stable releases have been published yet.
+- `0.1.0` (2026-11-08): first public release of the five production packages.
+- `0.1.1` (2026-11-09): multi-column `Search`, shared package icon, and documentation updates.

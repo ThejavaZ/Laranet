@@ -70,13 +70,11 @@ Breaking changes must be explicitly documented and reflected in the version numb
 
 ## 4. Initial Release
 
-The initial public release is planned as:
+The initial public release was `0.1.0`. The current `0.1.x` line contains the first
+published implementation of Laranet's functionality.
 
-`0.1.0`
-
-This release will represent the first published implementation of Laranet's initial functionality.
-
-Its scope will be defined by the features included in the release and documented in the changelog.
+Each release's scope is defined by the features included in it and documented in the
+changelog.
 
 The first stable release is planned as `1.0.0` in [Version 5](../roadmap/v5.md). It is a
 compatibility promise over the frozen runtime surface, not a statement that every
@@ -90,11 +88,11 @@ For example:
 
 | Package                     | Version |
 | --------------------------- | ------- |
-| Laranet                     | 0.1.0   |
-| Laranet.Data                | 0.1.0   |
-| Laranet.EntityFrameworkCore | 0.1.0   |
-| Laranet.AspNetCore          | 0.1.0   |
-| Laranet.Cli                 | 0.1.0   |
+| Laranet                     | 0.1.1   |
+| Laranet.Data                | 0.1.1   |
+| Laranet.EntityFrameworkCore | 0.1.1   |
+| Laranet.AspNetCore          | 0.1.1   |
+| Laranet.Cli                 | 0.1.1   |
 
 Packages that are not part of a particular release do not need to be published.
 
@@ -106,7 +104,7 @@ Laranet versions do not correspond directly to .NET versions.
 
 For example:
 
-- Laranet `0.1.0` may target .NET 10.
+- Laranet `0.1.x` may target .NET 10.
 - Laranet `0.2.0` may continue targeting .NET 10.
 - A future Laranet release may support multiple .NET target frameworks.
 

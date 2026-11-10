@@ -88,8 +88,8 @@ tool configuration, and the shared package icon. It is the same script CI uses.
 ## Inspect a package
 
 ```bash
-unzip -l artifacts/packages/Laranet.Data.0.1.0.nupkg
-unzip -p artifacts/packages/Laranet.Data.0.1.0.nupkg '*.nuspec'
+unzip -l artifacts/packages/Laranet.Data.0.1.1.nupkg
+unzip -p artifacts/packages/Laranet.Data.0.1.1.nupkg '*.nuspec'
 ```
 
 Confirm that the icon, README, and expected dependencies are present.

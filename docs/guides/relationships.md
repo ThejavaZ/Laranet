@@ -1,6 +1,6 @@
 # Relationships
 
-> **Status:** Laranet 0.1.0 does not ship relationship abstractions. This guide shows
+> **Status:** Laranet 0.1.x does not ship relationship abstractions. This guide shows
 > the native Entity Framework Core approach that works with the current packages. The
 > roadmap evaluates optional declarative conventions in Version 3. See
 > [ADR-0006](../architecture/decisions/0006-toolkit-with-framework-tooling.md) and the

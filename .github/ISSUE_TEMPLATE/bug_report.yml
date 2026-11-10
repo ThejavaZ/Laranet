@@ -52,7 +52,7 @@ body:
     attributes:
       label: Laranet Version
       description: Which version are you using?
-      placeholder: "0.1.0 or commit hash"
+      placeholder: "0.1.1 or commit hash"
     validations:
       required: true
 

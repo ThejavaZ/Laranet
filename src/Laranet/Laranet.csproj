@@ -7,7 +7,7 @@
 
     <!-- Package metadata -->
     <PackageId>Laranet</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Description>
       A Laravel-inspired toolkit for .NET, bringing expressive APIs,
       developer-friendly abstractions, and elegant patterns to the C# ecosystem.

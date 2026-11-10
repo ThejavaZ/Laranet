@@ -11,9 +11,9 @@ documented in the [changelog](../../CHANGELOG.md) and in this guide.
 
 ## Current release status
 
-The repository prepares the `0.1.0` packages described in the
-[installation guide](../getting-started/installation.md). No stable release has been
-published yet, so there are no historical version-to-version migrations.
+The published packages are `0.1.0`. The repository prepares `0.1.1`, which adds the
+multi-column `Search` overload, the shared package icon, and documentation updates.
+There are no breaking changes between `0.1.0` and `0.1.1`.
 
 This page is the place where each published migration will be recorded.
 
@@ -42,6 +42,17 @@ dotnet tool update --global Laranet.Cli --version <version>
 Package versions belonging to the same release are kept synchronized. Mixing
 versions from different releases is not supported.
 
+## Published migrations
+
+### 0.1.1
+
+- **Affected packages:** all five production packages.
+- **What changed:** added the multi-column `Search` overload, the shared package icon,
+  and documentation updates.
+- **Impact:** none. Existing calls keep their behavior and no public API was removed or
+  renamed.
+- **Migration:** update every Laranet package to `0.1.1`.
+
 ## From source to packages
 
 If the application currently references the projects in `src/`, replace the
@@ -50,9 +61,9 @@ packages:
 
 ```xml
 <ItemGroup>
-  <PackageReference Include="Laranet.Data" Version="0.1.0" />
-  <PackageReference Include="Laranet.EntityFrameworkCore" Version="0.1.0" />
-  <PackageReference Include="Laranet.AspNetCore" Version="0.1.0" />
+  <PackageReference Include="Laranet.Data" Version="0.1.1" />
+  <PackageReference Include="Laranet.EntityFrameworkCore" Version="0.1.1" />
+  <PackageReference Include="Laranet.AspNetCore" Version="0.1.1" />
 </ItemGroup>
 ```
 

@@ -48,8 +48,7 @@ dotnet tool run laranet --version
 
 ## Build from source
 
-While the first public release is being prepared, install the packages from a local
-build:
+To install the packages from a local build instead of NuGet.org:
 
 ```bash
 git clone https://github.com/TheJavaZ/Laranet.git
@@ -76,13 +75,13 @@ dotnet nuget add source "$(pwd)/artifacts/packages" --name laranet-local
 Then install packages with the version produced by the build:
 
 ```bash
-dotnet add package Laranet.Data --version 0.1.0
+dotnet add package Laranet.Data --version 0.1.1
 ```
 
 Install the locally built CLI:
 
 ```bash
-dotnet tool install --global Laranet.Cli --version 0.1.0 --add-source artifacts/packages
+dotnet tool install --global Laranet.Cli --version 0.1.1 --add-source artifacts/packages
 ```
 
 Alternatively, add project references directly to `src/` while working inside the
@@ -91,8 +90,8 @@ repository. The projects in [`samples/`](../../samples) use this approach.
 ## Documentation status
 
 Laranet is in initial development. The package identifiers and installation commands
-above describe the prepared `0.1.0` release. If a package is not available from
-NuGet yet, use the from-source workflow.
+above describe the `0.1.1` release. If a package is not available from NuGet yet, use
+the from-source workflow.
 
 ## Next steps
 

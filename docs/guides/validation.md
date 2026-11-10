@@ -1,6 +1,6 @@
 # Validation
 
-> **Status:** Laranet 0.1.0 does not ship a validation package. This guide documents
+> **Status:** Laranet 0.1.x does not ship a validation package. This guide documents
 > the native ASP.NET Core options that work with the current packages. An optional
 > integration is planned for Version 3; see the [roadmap](../roadmap/v3.md).
 

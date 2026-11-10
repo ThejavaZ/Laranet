@@ -61,6 +61,18 @@ Laranet aims to maintain the following guarantees:
 
 Compatibility guarantees apply to officially supported package versions and documented target frameworks.
 
+### Published versions
+
+The current release line is `0.1.x`:
+
+| Version | Packages | Status |
+| --- | --- | --- |
+| `0.1.0` | All five production packages | Published |
+| `0.1.1` | All five production packages | Prepared |
+
+Within a version line, patch releases are backward compatible and keep package
+versions synchronized.
+
 ## 6. .NET Release Evaluation
 
 When a new .NET version becomes available, Laranet will evaluate whether to support it.
