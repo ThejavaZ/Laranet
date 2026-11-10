@@ -119,7 +119,7 @@ Before marking it complete, verify:
 ## Current project state
 
 **Current milestone:** [Version 2, Sprint 9 — Post-release adoption](v2.md).
-Sprint 10 — Provider confidence is implemented.
+Sprint 10 — Provider confidence is completed and verified in CI.
 
 All five packages (`Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`,
 `Laranet.AspNetCore`, and `Laranet.Cli`) are published on NuGet.org as `0.1.0`. The

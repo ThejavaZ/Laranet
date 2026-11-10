@@ -53,7 +53,8 @@ The provider compatibility suite runs against the provider selected by
 - Parameterization of the search term.
 
 SQLite runs in the default test job. SQL Server and PostgreSQL run against CI service
-containers. The suite also passed locally against SQL Server 2022 and PostgreSQL 17.
+containers on every push and pull request to `main`. The suite passed in CI and also
+locally against SQL Server 2022 and PostgreSQL 17.
 
 ## Verified Translation Differences
 
