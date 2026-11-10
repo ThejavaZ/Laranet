@@ -19,6 +19,29 @@ jobs:
     name: Build and test
     runs-on: ubuntu-latest
 
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: "Laranet!Tests1"
+          MSSQL_PID: "Developer"
+        ports:
+          - 1433:1433
+
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: laranet
+          POSTGRES_DB: laranet_tests
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d laranet_tests"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,8 +60,40 @@ jobs:
       - name: Build solution
         run: dotnet build Laranet.slnx --configuration Release --no-restore
 
-      - name: Run tests
+      - name: Run tests (SQLite)
+        env:
+          LARANET_TEST_PROVIDER: sqlite
         run: dotnet test Laranet.slnx --configuration Release --no-build --logger "console;verbosity=normal"
+
+      - name: Wait for SQL Server
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for attempt in {1..30}; do
+            if docker exec "${{ job.services.sqlserver.id }}" bash -c \
+              "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Laranet!Tests1' -C -Q 'SELECT 1' >/dev/null 2>&1 || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Laranet!Tests1' -Q 'SELECT 1' >/dev/null 2>&1"; then
+              echo "SQL Server is ready."
+              exit 0
+            fi
+
+            sleep 2
+          done
+
+          echo "SQL Server did not become ready in time." >&2
+          exit 1
+
+      - name: Run provider tests (SQL Server)
+        env:
+          LARANET_TEST_PROVIDER: sqlserver
+          LARANET_SQLSERVER_CONNECTION: "Server=localhost,1433;Database=laranet_tests;User Id=sa;Password=Laranet!Tests1;TrustServerCertificate=True;Encrypt=True;Pooling=False"
+        run: dotnet test Laranet.slnx --configuration Release --no-build --filter "FullyQualifiedName~ProviderCompatibilityTests" --logger "console;verbosity=normal"
+
+      - name: Run provider tests (PostgreSQL)
+        env:
+          LARANET_TEST_PROVIDER: postgresql
+          LARANET_POSTGRES_CONNECTION: "Host=localhost;Port=5432;Database=laranet_tests;Username=postgres;Password=laranet;Pooling=false"
+        run: dotnet test Laranet.slnx --configuration Release --no-build --filter "FullyQualifiedName~ProviderCompatibilityTests" --logger "console;verbosity=normal"
 
       - name: Pack production packages
         run: |
