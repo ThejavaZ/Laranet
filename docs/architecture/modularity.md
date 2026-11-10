@@ -27,12 +27,16 @@ Laranet
 │
 ├── Cli
 │
-└── Application
+└── Future modules (see ecosystem.md)
 ```
 
 This is an architectural direction, not a requirement to implement every module immediately.
 
 Each module must justify its existence through a clear responsibility or dependency boundary.
+
+`Laranet.Application` appeared in earlier drafts but is not scheduled. The current
+package map and admission gates live in the
+[ecosystem architecture](ecosystem.md).
 
 ## 3. Core Module
 
@@ -103,20 +107,15 @@ Potential responsibilities include:
 
 Additional integrations may be introduced when practical requirements justify them.
 
-## 6. Application Module
+## 6. Application Module (not scheduled)
 
-Application may contain higher-level application development utilities.
+`Laranet.Application` is not scheduled. Earlier drafts reserved it for higher-level
+application utilities. No concrete use case currently justifies the module, so it
+remains outside the package map.
 
-Potential responsibilities include:
-
-- Validation abstractions.
-- Application-level patterns.
-- Reusable application services.
-- Error handling utilities.
-
-This module is not mandatory for the initial release.
-
-Its implementation will depend on actual use cases and the need for a separate responsibility boundary.
+If a future requirement needs application-level utilities, it will be evaluated against
+the [module admission gates](ecosystem.md#9-module-admission-gates) before a package is
+created.
 
 ## 7. CLI Module
 
@@ -145,7 +144,7 @@ The following rules define the intended module boundaries:
 2. Data must not require Entity Framework Core.
 3. EntityFrameworkCore may depend on Data and Core when necessary.
 4. AspNetCore may depend on Core and other modules when integration requires it.
-5. Application must not introduce framework dependencies into Core.
+5. Any future application module must not introduce framework dependencies into Core.
 6. Optional integrations must remain independently installable whenever technically feasible.
 7. Runtime modules must not depend on the CLI.
 
@@ -184,7 +183,7 @@ The initial package names are expected to follow this convention:
 | Entity Framework Core | Laranet.EntityFrameworkCore |
 | ASP.NET Core          | Laranet.AspNetCore          |
 | Command line          | Laranet.Cli                 |
-| Application           | Laranet.Application         |
+| Application (not scheduled) | — |
 
 Package names may change before the first stable release.
 

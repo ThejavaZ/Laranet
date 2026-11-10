@@ -40,6 +40,9 @@ Changes that are planned or currently under development.
 - Tag-driven release workflow that validates, packs, and publishes the five production packages to NuGet.org.
 - `SECURITY.md` with the private vulnerability reporting process.
 - Package README for the `Laranet` core package and CI validation of its NuGet metadata.
+- Branding assets under `assets/branding` and a shared NuGet package icon for all production packages.
+- Documentation for core concepts, dependency injection, extensibility, the public API reference, relationships, validation, error handling, contribution, development workflow, testing guidelines, and branding.
+- CI validation that every production package includes the shared icon.
 
 ### Changed
 
@@ -54,6 +57,8 @@ Changes that are planned or currently under development.
 - Added `PackageProjectUrl` and `PackageReleaseNotes` to all production packages and CI validation for both.
 - Extracted shared NuGet package validation into `.github/scripts/verify-packages.sh`, used by both CI and the release workflow.
 - The release workflow now publishes through NuGet Trusted Publishing (`NuGet/login@v1` with GitHub OIDC and a short-lived key) instead of a stored `NUGET_API_KEY` secret.
+- Added `PackageIcon` to the shared NuGet metadata so every production package displays the Laranet icon.
+- The README and documentation index now use the Laranet logo and link to the new concepts, API reference, guides, development, and branding sections.
 
 ### Deprecated
 

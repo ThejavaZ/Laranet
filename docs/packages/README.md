@@ -45,6 +45,12 @@ Laranet.AspNetCore ──► Laranet.Data ◄── Laranet.EntityFrameworkCore
 - [Quick start](../getting-started/quick-start.md)
 - [First application](../getting-started/first-application.md)
 
+## API reference
+
+- [Core (`Laranet`)](../api/core.md)
+- [Data (`Laranet.Data`)](../api/data.md)
+- [Integrations](../api/integrations.md)
+
 ## Installation details
 
 See [Installation](../getting-started/installation.md) for prerequisites, local

@@ -7,11 +7,15 @@ architecture. The guiding principle is:
 
 > Don't make .NET look like Laravel. Make .NET feel better to work with.
 
-## A toolkit, not a framework
+## A toolkit with framework-like tooling
 
-Laranet does not own the application lifecycle, prescribe a folder structure, or
-require a base class. Applications keep using the native .NET building blocks they
-already know:
+Laranet is a modular toolkit, not an opinionated application framework with its own
+host and lifecycle. It does not prescribe a folder structure or require a base class.
+Its tooling — conventions, templates, and code generation — can feel framework-like
+while the runtime stays optional. See
+[ADR-0006](../architecture/decisions/0006-toolkit-with-framework-tooling.md).
+
+Applications keep using the native .NET building blocks they already know:
 
 - `Microsoft.Extensions.DependencyInjection`
 - LINQ and `IQueryable`

@@ -78,5 +78,6 @@ verifies it.
 
 ## Related
 
+- [Testing guidelines](testing-guidelines.md)
 - [Contributing](../../CONTRIBUTING.md)
 - [Release process](release.md)
