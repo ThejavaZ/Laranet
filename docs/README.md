@@ -94,6 +94,7 @@ Track current and future work.
 - [Version 1](roadmap/v1.md)
 - [Version 2](roadmap/v2.md)
 - [Version 3](roadmap/v3.md)
+- [Version 4](roadmap/v4.md)
 
 ## Development
 

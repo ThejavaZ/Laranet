@@ -175,7 +175,7 @@ without a technical justification and an ADR.
 
 An administrative panel that builds list, search, filter, create, edit, and delete
 screens from resource metadata is a valuable differentiator. It is a **candidate for
-V4**, not part of V3.
+[Version 4](../roadmap/v4.md)**, not part of V3.
 
 Proposed boundaries:
 
@@ -218,7 +218,8 @@ A new module enters the ecosystem only when it satisfies all of these:
 | `0.2.0` | Version 2, Sprints 10–13 | Provider verification and feedback-gated depth | Planned |
 | `0.3.0` | Version 3, Sprints 14–16 | Standards, project templates, `make:crud` | Planned |
 | `0.4.0` | Version 3, Sprints 17–19 | EF Core conventions, validation, `laranet doctor` | Planned |
-| `0.5.0` | Version 4 | Admin foundations (candidate) | Candidate |
+| `0.5.0` | Version 4, Sprints 22–25 | Admin ADR, core, Razor UI, and pilot | Candidate |
+| `0.6.0` | Version 4, Sprints 26–28 | Web/Blazor templates, optional adapters, ecosystem hardening | Candidate |
 | `1.0.0` | Stabilization | API freeze, compatibility guarantees, documentation | Future |
 
 The exact version assigned to each milestone will be confirmed when the milestone
@@ -242,3 +243,4 @@ starts. Versions remain synchronized across all packages in a release.
 - [Architecture Decision Records](decisions/README.md)
 - [Version 2 Roadmap](../roadmap/v2.md)
 - [Version 3 Roadmap](../roadmap/v3.md)
+- [Version 4 Roadmap](../roadmap/v4.md)

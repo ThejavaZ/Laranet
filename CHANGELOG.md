@@ -37,6 +37,7 @@ Changes that are planned or currently under development.
 - ADR-0006 positioning Laranet as a modular toolkit with framework-like tooling.
 - ADR-0007 establishing the `simple` generation profile as the default.
 - Version 3 roadmap covering standards, project templates, `make:crud`, EF Core conventions, validation, and `laranet doctor`.
+- Version 4 roadmap covering the optional admin panel, web and Blazor templates, relationship and adapter research, and ecosystem hardening.
 - Tag-driven release workflow that validates, packs, and publishes the five production packages to NuGet.org.
 - `SECURITY.md` with the private vulnerability reporting process.
 - Package README for the `Laranet` core package and CI validation of its NuGet metadata.

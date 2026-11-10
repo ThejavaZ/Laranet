@@ -13,6 +13,7 @@ The roadmap is organized by release so completed and future work stay separated.
 | [Version 1](v1.md) | Core, Data, EntityFrameworkCore, AspNetCore, and CLI; first public release | Released `0.1.0`; feedback pending |
 | [Version 2](v2.md) | Adoption, provider verification, feedback-gated depth, and 1.0 readiness | Planning |
 | [Version 3](v3.md) | Application experience: standards, templates, CRUD generation, EF conventions, validation, and doctor | Planning |
+| [Version 4](v4.md) | Application surface: optional admin panel, web/Blazor templates, and optional adapters | Candidate |
 
 ## Project vision
 
@@ -54,6 +55,7 @@ Laranet is a **toolkit, not an opinionated application framework**.
 | `Laranet.AspNetCore.Validation` | Optional request validation integration        | Planned for Version 3     |
 | `Laranet.Analyzers`           | Optional Roslyn diagnostics                      | Candidate                 |
 | `Laranet.Admin`               | Admin resource abstractions                      | Candidate for Version 4   |
+| `Laranet.Admin.AspNetCore`    | Razor-based admin UI                             | Candidate for Version 4   |
 | `Laranet.Application`         | Application-level utilities, only if justified   | Not scheduled             |
 
 Packages should remain independently consumable. Shared package versions will initially follow the same Laranet release.
@@ -125,6 +127,8 @@ use case justifies it. The `Laranet` core package remains intentionally empty un
 shared abstraction is required by at least two modules. [Version 3](v3.md) is planned
 as the application-experience milestone: standards, project templates, `make:crud`,
 EF Core conventions, validation, and `laranet doctor`. Its admin-panel proposal is a
-candidate that requires an ADR and a validated use case.
+candidate that requires an ADR and a validated use case. [Version 4](v4.md) is a
+candidate for the application surface: an optional admin panel, web and Blazor
+templates, and optional data adapters, all gated by the Version 3 exit criteria.
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.
