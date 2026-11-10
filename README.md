@@ -1,10 +1,14 @@
 # Laranet
 
+![Laranet](assets/branding/laranet_horizontal_logo.png)
+
 **A Laravel-inspired toolkit for .NET.**
 
 Laranet brings expressive APIs, developer-friendly abstractions, and elegant patterns to the C# ecosystem.
 
 Our goal is simple: make .NET development more productive, expressive, and enjoyable without compromising the principles and strengths of the platform.
+
+> Don't make .NET look like Laravel. Make .NET feel better to work with.
 
 ## Philosophy
 
@@ -15,33 +19,38 @@ Laranet is built around a few core principles:
 - **Simplicity:** Prefer straightforward solutions over unnecessary complexity.
 - **Extensibility:** Build abstractions that developers can customize and extend.
 - **Native integration:** Embrace the .NET ecosystem rather than reinventing it.
+- **Modularity:** Install only the packages an application needs.
 
-## Goals
+Laranet is a **modular toolkit with framework-like tooling**. It does not replace
+ASP.NET Core, EF Core, dependency injection, or the native .NET lifecycle. It adds
+conventions, query utilities, integrations, and code generation on top of them.
 
-Laranet aims to provide a collection of tools and abstractions that improve the everyday .NET development experience.
+## Packages
 
-Potential areas of development include:
+| Package | Purpose |
+| --- | --- |
+| `Laranet.Data` | Provider-neutral `IQueryable` search, sorting, filtering, and pagination. |
+| `Laranet.EntityFrameworkCore` | Asynchronous EF Core pagination. |
+| `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results. |
+| `Laranet.Cli` | Project creation and code generation. |
+| `Laranet` | Core package, intentionally empty until a shared abstraction is justified. |
 
-- Expressive data access and relationship abstractions.
-- Developer-friendly query extensions.
-- Reusable application patterns.
-- Simplified configuration and dependency registration.
-- Consistent pagination, filtering, and search utilities.
-
-These are project goals, not necessarily implemented features.
-
-## Status
-
-Laranet is currently in early development.
-
-APIs, architecture, and package boundaries are subject to change.
+```bash
+dotnet add package Laranet.Data
+dotnet add package Laranet.EntityFrameworkCore
+dotnet add package Laranet.AspNetCore
+dotnet tool install --global Laranet.Cli
+```
 
 ## Documentation
 
-- [Documentation](docs/README.md)
+- [Documentation index](docs/README.md)
 - [Installation](docs/getting-started/installation.md)
 - [Quick start](docs/getting-started/quick-start.md)
+- [Core concepts](docs/concepts/core-concepts.md)
+- [API reference](docs/api/README.md)
 - [Package overview](docs/packages/README.md)
+- [Branding](docs/branding.md)
 
 ## Samples
 
@@ -51,6 +60,8 @@ APIs, architecture, and package boundaries are subject to change.
 ## Contributing
 
 - [Contributing guidelines](CONTRIBUTING.md)
+- [Development workflow](docs/development/development-workflow.md)
+- [Testing guidelines](docs/development/testing-guidelines.md)
 - [Security policy](SECURITY.md)
 
 ## Roadmap
@@ -58,6 +69,7 @@ APIs, architecture, and package boundaries are subject to change.
 - [Project roadmap](docs/roadmap/README.md)
 - [Version 1](docs/roadmap/v1.md)
 - [Version 2](docs/roadmap/v2.md)
+- [Version 3](docs/roadmap/v3.md)
 
 ## License
 

@@ -60,11 +60,13 @@ Packages should remain independently consumable. Shared package versions will in
 
 ## Branding and identity
 
-- [ ] Incorporate the Laranet logo into the README.
-- [ ] Establish a consistent visual identity.
-- [ ] Add package and documentation branding.
-- [ ] Prepare logo assets in appropriate formats.
-- [ ] Document logo usage and asset locations.
+- [x] Incorporate the Laranet logo into the README.
+- [x] Establish a consistent visual identity.
+- [x] Add package and documentation branding.
+- [x] Prepare logo assets in appropriate formats.
+- [x] Document logo usage and asset locations.
+
+See [Branding](../branding.md) for the asset inventory and usage guidelines.
 
 ## AI-assisted development workflow
 

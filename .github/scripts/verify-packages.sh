@@ -117,6 +117,14 @@ for nuspec in "$core_nuspec" "$data_nuspec" "$ef_nuspec" "$aspnet_nuspec" "$cli_
   grep -q '<repository ' <<< "$nuspec"
   grep -q '<projectUrl>https://github.com/TheJavaZ/Laranet</projectUrl>' <<< "$nuspec"
   grep -q '<releaseNotes>https://github.com/TheJavaZ/Laranet/blob/main/CHANGELOG.md</releaseNotes>' <<< "$nuspec"
+  grep -q '<icon>laranet_icon_out_wallpaper.png</icon>' <<< "$nuspec"
+done
+
+for package in "$core_package" "$data_package" "$ef_package" "$aspnet_package" "$cli_package"; do
+  if ! unzip -l "$package" | grep -q 'laranet_icon_out_wallpaper.png'; then
+    echo "::error::$package does not contain the Laranet package icon."
+    exit 1
+  fi
 done
 
 echo "Production packages passed validation (version $core_version)."

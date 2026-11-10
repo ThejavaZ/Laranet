@@ -26,5 +26,14 @@
     <!-- Shared NuGet metadata -->
     <PackageProjectUrl>https://github.com/TheJavaZ/Laranet</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/TheJavaZ/Laranet/blob/main/CHANGELOG.md</PackageReleaseNotes>
+    <PackageIcon>laranet_icon_out_wallpaper.png</PackageIcon>
   </PropertyGroup>
+
+  <!-- Shared package branding -->
+  <ItemGroup Condition="'$(PackageId)' != ''">
+    <None Include="$(MSBuildThisFileDirectory)assets/branding/laranet_icon_out_wallpaper.png"
+          Pack="true"
+          PackagePath="\"
+          Visible="false" />
+  </ItemGroup>
 </Project>

@@ -40,6 +40,7 @@ CI validates the generated `.nuspec` files for every release package:
 - Package ID, synchronized version, description, and tags.
 - MIT license expression, author, and repository URL.
 - `README.md`, project URL, and release-notes URL.
+- The shared package icon (`laranet_icon_out_wallpaper.png`).
 - `Laranet.Data` has no framework dependencies.
 - `Laranet.EntityFrameworkCore` depends on `Laranet.Data` and EF Core only.
 - `Laranet.AspNetCore` references the ASP.NET Core shared framework and
