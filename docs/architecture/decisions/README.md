@@ -17,6 +17,7 @@ Their purpose is to preserve architectural knowledge and provide transparency in
 | [0005](0005-intentionally-empty-core.md) | Keep the Core Package Intentionally Empty | Accepted |
 | [0006](0006-toolkit-with-framework-tooling.md) | Position Laranet as a Modular Toolkit with Framework-like Tooling | Accepted |
 | [0007](0007-simple-generation-profile.md) | Default to the Simplest Generation Profile | Accepted |
+| [0008](0008-runtime-and-tooling-versioning.md) | Keep Runtime and Tooling Packages on One Version Train by Default | Accepted |
 
 ## ADR Status
 

@@ -38,6 +38,9 @@ Changes that are planned or currently under development.
 - ADR-0007 establishing the `simple` generation profile as the default.
 - Version 3 roadmap covering standards, project templates, `make:crud`, EF Core conventions, validation, and `laranet doctor`.
 - Version 4 roadmap covering the optional admin panel, web and Blazor templates, relationship and adapter research, and ecosystem hardening.
+- ADR-0008 defining the runtime and tooling version train, the criteria for `1.0.0`, and the exception process for independent tooling lanes.
+- Version 5 roadmap defining `1.0.0` as a stability contract: release integrity, Data Experience improvements, a bounded diagnostics catalog, an enterprise template, and migration documentation.
+- Version 6 roadmap documenting post-`1.0` application capabilities as a direction: modules, API resources, events, jobs, permissions, and deferred multi-tenancy.
 - Tag-driven release workflow that validates, packs, and publishes the five production packages to NuGet.org.
 - `SECURITY.md` with the private vulnerability reporting process.
 - Package README for the `Laranet` core package and CI validation of its NuGet metadata.

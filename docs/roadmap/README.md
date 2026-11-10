@@ -14,6 +14,8 @@ The roadmap is organized by release so completed and future work stay separated.
 | [Version 2](v2.md) | Adoption, provider verification, feedback-gated depth, and 1.0 readiness | Planning |
 | [Version 3](v3.md) | Application experience: standards, templates, CRUD generation, EF conventions, validation, and doctor | Planning |
 | [Version 4](v4.md) | Application surface: optional admin panel, web/Blazor templates, and optional adapters | Candidate |
+| [Version 5](v5.md) | First stable release: `1.0.0`, release integrity, data experience, diagnostics, and enterprise template | Planned (gated by Version 4) |
+| [Version 6](v6.md) | Post-`1.0` application capabilities in `1.x`: modules, resources, events, jobs, and permissions | Direction (not scheduled) |
 
 ## Project vision
 
@@ -53,12 +55,15 @@ Laranet is a **toolkit, not an opinionated application framework**.
 | `Laranet.AspNetCore`          | ASP.NET Core integration                         | Published `0.1.0`         |
 | `Laranet.Cli`                 | Project and code generation commands             | Published `0.1.0`         |
 | `Laranet.AspNetCore.Validation` | Optional request validation integration        | Planned for Version 3     |
-| `Laranet.Analyzers`           | Optional Roslyn diagnostics                      | Candidate                 |
+| `Laranet.Analyzers`           | Optional Roslyn diagnostics                      | Planned for Version 5     |
 | `Laranet.Admin`               | Admin resource abstractions                      | Candidate for Version 4   |
 | `Laranet.Admin.AspNetCore`    | Razor-based admin UI                             | Candidate for Version 4   |
+| `Laranet.Modules`             | Modular monolith composition                     | Version 6 candidate; not scheduled |
 | `Laranet.Application`         | Application-level utilities, only if justified   | Not scheduled             |
 
-Packages should remain independently consumable. Shared package versions will initially follow the same Laranet release.
+Packages should remain independently consumable. Shared package versions follow
+[ADR-0008](../architecture/decisions/0008-runtime-and-tooling-versioning.md): one
+release train by default, with a documented exception process.
 
 ## Branding and identity
 
@@ -130,5 +135,10 @@ EF Core conventions, validation, and `laranet doctor`. Its admin-panel proposal 
 candidate that requires an ADR and a validated use case. [Version 4](v4.md) is a
 candidate for the application surface: an optional admin panel, web and Blazor
 templates, and optional data adapters, all gated by the Version 3 exit criteria.
+[Version 5](v5.md) is the first stable release, planned as `1.0.0`: a small, frozen
+runtime surface with release integrity, the Data Experience improvements, a bounded
+diagnostics catalog, and an enterprise template. [Version 6](v6.md) is a direction,
+not a commitment: modules, API resources, domain events, background jobs, and
+permissions, added in `1.x` only when a real application justifies them.
 
 **Long-term objective:** build a modular, extensible, developer-friendly toolkit that makes working with .NET more productive without sacrificing what makes .NET good.

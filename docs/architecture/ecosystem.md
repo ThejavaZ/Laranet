@@ -220,10 +220,13 @@ A new module enters the ecosystem only when it satisfies all of these:
 | `0.4.0` | Version 3, Sprints 17–19 | EF Core conventions, validation, `laranet doctor` | Planned |
 | `0.5.0` | Version 4, Sprints 22–25 | Admin ADR, core, Razor UI, and pilot | Candidate |
 | `0.6.0` | Version 4, Sprints 26–28 | Web/Blazor templates, optional adapters, ecosystem hardening | Candidate |
-| `1.0.0` | Stabilization | API freeze, compatibility guarantees, documentation | Future |
+| `1.0.0` | Version 5 | API freeze, release integrity, data experience, diagnostics, enterprise template | Planned (gated by Version 4) |
+| `1.x` | Version 6 | Modules, API resources, events, jobs, permissions | Direction (not scheduled) |
 
 The exact version assigned to each milestone will be confirmed when the milestone
-starts. Versions remain synchronized across all packages in a release.
+starts. Versions follow
+[ADR-0008](decisions/0008-runtime-and-tooling-versioning.md): one release train by
+default, with a documented exception process for tooling.
 
 ## 11. Explicit Non-goals
 
@@ -244,3 +247,5 @@ starts. Versions remain synchronized across all packages in a release.
 - [Version 2 Roadmap](../roadmap/v2.md)
 - [Version 3 Roadmap](../roadmap/v3.md)
 - [Version 4 Roadmap](../roadmap/v4.md)
+- [Version 5 Roadmap](../roadmap/v5.md)
+- [Version 6 Roadmap](../roadmap/v6.md)

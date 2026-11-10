@@ -78,6 +78,10 @@ This release will represent the first published implementation of Laranet's init
 
 Its scope will be defined by the features included in the release and documented in the changelog.
 
+The first stable release is planned as `1.0.0` in [Version 5](../roadmap/v5.md). It is a
+compatibility promise over the frozen runtime surface, not a statement that every
+roadmap capability is complete.
+
 ## 5. Package Version Consistency
 
 Packages belonging to the same Laranet release should use consistent version numbers.
@@ -94,7 +98,7 @@ For example:
 
 Packages that are not part of a particular release do not need to be published.
 
-Independent package versioning may be considered in the future if it provides a meaningful benefit and can be managed without creating unnecessary compatibility complexity.
+Independent package versioning may be considered in the future if it provides a meaningful benefit and can be managed without creating unnecessary compatibility complexity. The exception process, including the triggers that justify independent runtime and tooling lanes, is defined in [ADR-0008](../architecture/decisions/0008-runtime-and-tooling-versioning.md).
 
 ## 6. .NET Version Independence
 

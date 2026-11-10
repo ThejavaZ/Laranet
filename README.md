@@ -71,6 +71,8 @@ dotnet tool install --global Laranet.Cli
 - [Version 2](docs/roadmap/v2.md)
 - [Version 3](docs/roadmap/v3.md)
 - [Version 4](docs/roadmap/v4.md)
+- [Version 5 — `1.0.0`](docs/roadmap/v5.md)
+- [Version 6](docs/roadmap/v6.md)
 
 ## License
 
