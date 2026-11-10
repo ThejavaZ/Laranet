@@ -8,9 +8,19 @@ The test suite currently uses:
 
 - xUnit.
 - Microsoft.NET.Test.Sdk.
-- Entity Framework Core SQLite for integration testing.
+- Entity Framework Core SQLite for the default integration tests.
+- Entity Framework Core SQL Server and Npgsql for provider compatibility tests.
 
-The use of EF Core SQLite in the test project does not authorize adding EF Core dependencies to provider-neutral production modules.
+The use of EF Core providers in the test project does not authorize adding EF Core dependencies to provider-neutral production modules.
+
+Provider compatibility tests are selected with environment variables:
+
+- `LARANET_TEST_PROVIDER`: `sqlite` (default), `sqlserver`, or `postgresql`.
+- `LARANET_SQLSERVER_CONNECTION`: optional SQL Server connection string.
+- `LARANET_POSTGRES_CONNECTION`: optional PostgreSQL connection string.
+
+SQL Server and PostgreSQL tests create and drop a unique database per test. CI runs
+them against service containers.
 
 ## Test Organization
 
