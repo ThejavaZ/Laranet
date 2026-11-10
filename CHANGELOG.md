@@ -6,8 +6,20 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 
 ## [Unreleased]
 
-No unreleased changes yet. Planned work is tracked in the
-[roadmap](docs/roadmap/README.md).
+### Added
+
+- SQL Server and PostgreSQL provider compatibility tests, selected with `LARANET_TEST_PROVIDER` and backed by unique test databases.
+- CI service containers for SQL Server 2022 and PostgreSQL 17, plus provider-specific test steps.
+- Verified provider translation differences for `Search` across SQLite, SQL Server, and PostgreSQL.
+
+### Changed
+
+- CI now runs the full SQLite suite and the provider compatibility suite for SQL Server and PostgreSQL.
+- Testing documentation explains how to run provider compatibility tests locally.
+
+### Security
+
+- Pinned `System.Security.Cryptography.Pkcs` to 9.0.22 in the test project to replace the vulnerable 9.0.11 pulled by `Microsoft.Data.SqlClient` 6.1.7.
 
 ## [0.1.1] - 2026-11-09
 

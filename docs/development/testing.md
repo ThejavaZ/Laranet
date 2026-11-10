@@ -38,10 +38,12 @@ Test categories live under `tests/Laranet.Tests`:
 - `TestSupport/` contains shared helpers such as temporary directories and the SQLite
   database fixture.
 
-## SQLite integration tests
+## Provider integration tests
 
-Provider behavior is verified with SQLite through EF Core. The SQLite dependency is
-kept in the test project only; production packages must not reference it.
+Provider behavior is verified through EF Core. SQLite is the default provider; SQL
+Server and PostgreSQL run through the provider compatibility suite. Provider
+dependencies are kept in the test project only; production packages must not reference
+them.
 
 Integration tests should:
 
@@ -49,6 +51,36 @@ Integration tests should:
 - Verify observable results and generated commands.
 - Avoid asserting implementation details that a provider may change.
 - Clean up temporary databases and directories.
+
+## Provider compatibility tests
+
+`ProviderCompatibilityTests` runs against the provider selected by
+`LARANET_TEST_PROVIDER`:
+
+| Value | Provider |
+| --- | --- |
+| `sqlite` or unset | SQLite |
+| `sqlserver` | SQL Server |
+| `postgresql` | PostgreSQL |
+
+Examples:
+
+```bash
+LARANET_TEST_PROVIDER=sqlite dotnet test Laranet.slnx --configuration Release
+
+LARANET_TEST_PROVIDER=sqlserver \
+  LARANET_SQLSERVER_CONNECTION="Server=localhost,1433;Database=laranet_tests;User Id=sa;Password=Laranet!Tests1;TrustServerCertificate=True;Encrypt=True;Pooling=False" \
+  dotnet test Laranet.slnx --configuration Release \
+  --filter "FullyQualifiedName~ProviderCompatibilityTests"
+
+LARANET_TEST_PROVIDER=postgresql \
+  LARANET_POSTGRES_CONNECTION="Host=localhost;Port=5432;Database=laranet_tests;Username=postgres;Password=laranet;Pooling=false" \
+  dotnet test Laranet.slnx --configuration Release \
+  --filter "FullyQualifiedName~ProviderCompatibilityTests"
+```
+
+SQL Server and PostgreSQL tests create and drop a unique database per test. CI runs
+them against service containers.
 
 ## What to test
 

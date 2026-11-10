@@ -14,9 +14,9 @@ Translation and execution are always delegated to the underlying provider.
 
 | Provider                                   | Status               | Verified by                     |
 | ------------------------------------------ | -------------------- | ------------------------------- |
-| SQLite via Entity Framework Core           | Verified             | Integration test suite          |
-| SQL Server via Entity Framework Core       | Expected, not verified | No automated coverage         |
-| PostgreSQL via Entity Framework Core       | Expected, not verified | No automated coverage         |
+| SQLite via Entity Framework Core           | Verified             | Integration and provider compatibility test suites |
+| SQL Server via Entity Framework Core       | Verified             | Provider compatibility tests and CI service container |
+| PostgreSQL via Entity Framework Core       | Verified             | Provider compatibility tests and CI service container |
 | Other EF Core relational providers         | Expected, not verified | No automated coverage         |
 | `EnumerableQuery<T>` (LINQ to Objects)     | Works for query semantics | Unit test suite            |
 | Other non-EF `IQueryable` providers        | Not verified         | No automated coverage           |
@@ -42,15 +42,57 @@ verifies:
 - Asynchronous pagination through `Laranet.EntityFrameworkCore`, including command
   execution, metadata, cancellation, and composition.
 
+The provider compatibility suite runs against the provider selected by
+`LARANET_TEST_PROVIDER` and covers:
+
+- Single-column and multi-column `Search`.
+- Typed and dynamic sorting, including allowlists.
+- `WhereIf`.
+- Synchronous and asynchronous pagination.
+- Composition between search, filtering, sorting, and pagination.
+- Parameterization of the search term.
+
+SQLite runs in the default test job. SQL Server and PostgreSQL run against CI service
+containers. The suite also passed locally against SQL Server 2022 and PostgreSQL 17.
+
+## Verified Translation Differences
+
+The same `Search` call is translated differently by each verified provider:
+
+| Provider | Translation of `string.Contains` |
+| --- | --- |
+| SQLite | `instr(column, @term)` |
+| SQL Server | `LIKE @Value_contains ESCAPE N'\'` with a `%term%` parameter |
+| PostgreSQL | `LIKE @Value_contains` with a `%term%` parameter |
+
+These are provider implementation details. `Laranet.Data` composes the expression and
+does not embed provider-specific SQL. The compatibility tests assert results and
+parameterization rather than exact SQL text.
+
 ## Entity Framework Core Integration
 
 `Laranet.EntityFrameworkCore` adds asynchronous execution on top of `Laranet.Data`.
-It is verified with SQLite through Entity Framework Core. Other EF Core providers
-inherit the same status as their provider row above: they are expected to work, but
-they are not verified in the current CI matrix.
+It is verified with SQLite, SQL Server, and PostgreSQL through Entity Framework Core.
+Other EF Core providers inherit the same status as their provider row above: they are
+expected to work, but they are not verified by the current test matrix.
 
 The package depends on `Microsoft.EntityFrameworkCore` 10.x. The synchronous behavior
 of `Laranet.Data` remains provider-neutral and does not reference EF Core.
+
+## Running provider compatibility tests
+
+The provider is selected with an environment variable:
+
+```bash
+LARANET_TEST_PROVIDER=sqlite dotnet test Laranet.slnx --configuration Release
+LARANET_TEST_PROVIDER=sqlserver dotnet test Laranet.slnx --configuration Release \
+  --filter "FullyQualifiedName~ProviderCompatibilityTests"
+LARANET_TEST_PROVIDER=postgresql dotnet test Laranet.slnx --configuration Release \
+  --filter "FullyQualifiedName~ProviderCompatibilityTests"
+```
+
+`LARANET_SQLSERVER_CONNECTION` and `LARANET_POSTGRES_CONNECTION` override the default
+local connection strings. CI provides the service containers and connection strings.
 
 ## Provider Requirements
 

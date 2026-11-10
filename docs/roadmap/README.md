@@ -119,6 +119,7 @@ Before marking it complete, verify:
 ## Current project state
 
 **Current milestone:** [Version 2, Sprint 9 — Post-release adoption](v2.md).
+Sprint 10 — Provider confidence is implemented.
 
 All five packages (`Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`,
 `Laranet.AspNetCore`, and `Laranet.Cli`) are published on NuGet.org as `0.1.0`. The
@@ -128,8 +129,9 @@ search, sorting, conditional filtering, and pagination, including multi-column s
 asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
 HTTP headers and Minimal API results, and `Laranet.Cli` creates projects and generates
 code. Version 2 focuses on adoption and stability: release `0.1.1`, collect real
-feedback, verify SQL Server and PostgreSQL in CI, and add depth only when a concrete
-use case justifies it. The `Laranet` core package remains intentionally empty until a
+feedback, and add depth only when a concrete use case justifies it. SQL Server and
+PostgreSQL are verified by the provider compatibility suite, which runs in CI with
+service containers. The `Laranet` core package remains intentionally empty until a
 shared abstraction is required by at least two modules. [Version 3](v3.md) is planned
 as the application-experience milestone: standards, project templates, `make:crud`,
 EF Core conventions, validation, and `laranet doctor`. Its admin-panel proposal is a
