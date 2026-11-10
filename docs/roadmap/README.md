@@ -15,7 +15,7 @@ The roadmap is organized by release so completed and future work stay separated.
 | [Version 3](v3.md) | Application experience: standards, templates, CRUD generation, EF conventions, validation, and doctor | Planning |
 | [Version 4](v4.md) | Application surface: optional admin panel, web/Blazor templates, and optional adapters | Candidate |
 | [Version 5](v5.md) | First stable release: `1.0.0`, release integrity, data experience, diagnostics, and enterprise template | Planned (gated by Version 4) |
-| [Version 6](v6.md) | Post-`1.0` application capabilities in `1.x`: modules, resources, events, jobs, and permissions | Direction (not scheduled) |
+| [Version 6](v6.md) | Post-`1.0` application capabilities in `1.x`: modules, resources, events, jobs, authentication, and permissions | Direction (not scheduled) |
 
 ## Project vision
 

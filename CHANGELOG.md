@@ -11,6 +11,7 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 - SQL Server and PostgreSQL provider compatibility tests, selected with `LARANET_TEST_PROVIDER` and backed by unique test databases.
 - CI service containers for SQL Server 2022 and PostgreSQL 17, plus provider-specific test steps.
 - Verified provider translation differences for `Search` across SQLite, SQL Server, and PostgreSQL.
+- Version 6 candidate for an authentication and security baseline: ASP.NET Core Identity, JWT bearer, and optional BCrypt through `IPasswordHasher<TUser>`.
 
 ### Changed
 
