@@ -17,6 +17,7 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 
 - CI now runs the full SQLite suite and the provider compatibility suite for SQL Server and PostgreSQL.
 - Testing documentation explains how to run provider compatibility tests locally.
+- Feedback intake now uses a Question issue template instead of a GitHub Discussions link that was unavailable.
 
 ### Security
 

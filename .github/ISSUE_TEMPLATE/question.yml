@@ -1,0 +1,49 @@
+name: Question
+description: Ask a usage question or start a discussion about Laranet.
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for using Laranet.
+
+        Use this template for usage questions, design discussions, and ideas that are
+        not yet concrete bug reports or feature requests.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What would you like to know or discuss?
+      placeholder: How should I compose Search, sorting, and pagination in a Minimal API?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Describe what you are building and what you have tried.
+      placeholder: |
+        I am using Laranet.Data 0.1.x on .NET 10 with SQLite.
+        I tried...
+    validations:
+      required: true
+
+  - type: input
+    id: packages
+    attributes:
+      label: Laranet packages and versions
+      description: List the Laranet packages involved.
+      placeholder: Laranet.Data 0.1.1, Laranet.EntityFrameworkCore 0.1.1
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues for a similar question.
+          required: true

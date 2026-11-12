@@ -215,9 +215,10 @@ Do not report security vulnerabilities through public issues. See
 
 ## Feedback
 
-Questions, ideas, and general discussion belong in
-[GitHub Discussions](https://github.com/TheJavaZ/Laranet/discussions). Feedback from
-real applications directly shapes the [roadmap](docs/roadmap/README.md).
+Questions, ideas, and general discussion belong in the
+[Question issue template](https://github.com/TheJavaZ/Laranet/issues/new?template=question.yml).
+Feedback from real applications directly shapes the
+[roadmap](docs/roadmap/README.md).
 
 ## License
 
