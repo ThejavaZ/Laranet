@@ -65,6 +65,9 @@ jobs:
           LARANET_TEST_PROVIDER: sqlite
         run: dotnet test Laranet.slnx --configuration Release --no-build --logger "console;verbosity=normal"
 
+      - name: Verify project templates
+        run: bash .github/scripts/verify-templates.sh
+
       - name: Wait for SQL Server
         shell: bash
         run: |
