@@ -111,8 +111,7 @@ internal static class NewProjectRunner
 
             var exitCode = new GenerationWriter(output, error, outputRoot, interaction).Write(
                 plan,
-                force,
-                dryRun);
+                new GenerationOptions(force, dryRun));
 
             if (exitCode == 0 && !dryRun)
             {

@@ -32,18 +32,20 @@ internal static class GeneratorRunner
                 interaction,
                 outputDirectory);
 
-            var plan = GenerationPlanner.Create(
-                kind,
+            var context = new GenerationContext(
                 name,
                 baseNamespace,
                 outputDirectory,
                 parseResult.GetValue(arguments.Flat),
                 TemplateCatalog.Discover(outputDirectory));
 
+            var plan = GeneratorRegistry.Create(kind, context);
+
             return new GenerationWriter(output, error, outputDirectory, interaction).Write(
                 plan,
-                parseResult.GetValue(arguments.Force),
-                parseResult.GetValue(arguments.DryRun));
+                new GenerationOptions(
+                    parseResult.GetValue(arguments.Force),
+                    parseResult.GetValue(arguments.DryRun)));
         }
         catch (CliException exception)
         {

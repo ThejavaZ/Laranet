@@ -14,8 +14,16 @@ internal sealed class GenerationWriter(
     private static readonly Encoding Utf8WithoutBom = new UTF8Encoding(
         encoderShouldEmitUTF8Identifier: false);
 
-    public int Write(GenerationPlan plan, bool force, bool dryRun)
+    /// <summary>
+    /// Writes a generation plan to disk, or reports its intended actions.
+    /// </summary>
+    /// <param name="plan">The files to write.</param>
+    /// <param name="options">The overwrite and dry-run behavior.</param>
+    /// <returns><c>0</c> when the plan was written or previewed; otherwise, an error code.</returns>
+    public int Write(GenerationPlan plan, GenerationOptions options)
     {
+        var force = options.Force;
+
         var conflicts = plan.Files
             .Where(file => File.Exists(file.Path))
             .ToArray();
@@ -54,7 +62,7 @@ internal sealed class GenerationWriter(
         {
             var exists = File.Exists(file.Path);
 
-            if (dryRun)
+            if (options.DryRun)
             {
                 output.WriteLine(
                     $"{(exists ? "would overwrite" : "would create")} {DisplayPath(file.Path)}");
