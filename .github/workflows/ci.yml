@@ -68,6 +68,9 @@ jobs:
       - name: Verify project templates
         run: bash .github/scripts/verify-templates.sh
 
+      - name: Verify CRUD profiles
+        run: bash .github/scripts/verify-crud-profiles.sh
+
       - name: Wait for SQL Server
         shell: bash
         run: |
