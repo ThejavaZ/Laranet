@@ -53,6 +53,8 @@ internal static class MakeCommands
             error,
             input);
 
+        yield return CrudCommand.Create(output, error, input);
+
         yield return Create(
             "make:repository",
             "Generates an optional repository scaffold. Use it only when the abstraction is justified.",

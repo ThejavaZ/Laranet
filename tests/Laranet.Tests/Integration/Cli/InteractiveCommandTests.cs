@@ -292,6 +292,75 @@ public class InteractiveCommandTests
     }
 
     [Fact]
+    public void MakeCrud_ShouldPromptForMissingProfile()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "product\nstandard\n",
+            "make:crud",
+            "--context",
+            "Test.App.AppDbContext",
+            "--namespace",
+            "Test.App",
+            "--interactive",
+            "--output",
+            directory.Root);
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("Name:", result.Output);
+        Assert.Contains("Profile [simple/standard/clean/modular]", result.Output);
+        Assert.True(File.Exists(directory.GetPath("Services", "ProductService.cs")));
+    }
+
+    [Fact]
+    public void MakeCrud_ShouldPromptForContext_WhenItCannotBeDiscovered()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "product\nsimple\nTest.App.AppDbContext\n",
+            "make:crud",
+            "--namespace",
+            "Test.App",
+            "--interactive",
+            "--output",
+            directory.Root);
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("DbContext:", result.Output);
+
+        var controller = File.ReadAllText(
+            directory.GetPath("Controllers", "ProductController.cs"));
+
+        Assert.Contains("global::Test.App.AppDbContext", controller);
+    }
+
+    [Fact]
+    public void MakeCrud_ShouldReprompt_WhenProfileIsInvalid()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "product\nmicroservices\nclean\n",
+            "make:crud",
+            "--context",
+            "Test.App.AppDbContext",
+            "--namespace",
+            "Test.App",
+            "--interactive",
+            "--output",
+            directory.Root);
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("not a known profile", result.Output);
+        Assert.True(File.Exists(directory.GetPath(
+            "Application",
+            "Products",
+            "ProductService.cs")));
+    }
+
+    [Fact]
     public void Interactive_ShouldFail_WhenInputEndsUnexpectedly()
     {
         using var directory = new TemporaryDirectory();

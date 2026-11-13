@@ -62,6 +62,18 @@ internal sealed class ConsoleInteraction(TextReader input, TextWriter output)
     }
 
     /// <summary>
+    /// Prompts for a CRUD profile, using <c>simple</c> when the user accepts the default.
+    /// </summary>
+    /// <returns>The selected profile.</returns>
+    public CrudProfile AskCrudProfile()
+    {
+        return AskUntil(
+            $"Profile [{string.Join('/', CrudProfileParser.Names)}] (simple): ",
+            value => CrudProfileParser.Parse(
+                string.IsNullOrWhiteSpace(value) ? "simple" : value));
+    }
+
+    /// <summary>
     /// Asks a yes/no question. Only <c>y</c> and <c>yes</c> are accepted.
     /// </summary>
     /// <param name="prompt">The prompt text.</param>

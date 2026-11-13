@@ -6,18 +6,20 @@ namespace Laranet.Cli.Generation;
 internal static class GeneratorSupport
 {
     /// <summary>
-    /// Resolves the target directory and namespace for a convention folder.
+    /// Resolves the target directory and namespace for convention folders.
     /// </summary>
     /// <param name="context">The generation inputs.</param>
-    /// <param name="folder">The convention folder, such as <c>Models</c>.</param>
+    /// <param name="folders">The convention folders, such as <c>Models</c>.</param>
     /// <returns>The directory and namespace for the generated file.</returns>
     public static (string Directory, string Namespace) ResolveTarget(
         GenerationContext context,
-        string folder)
+        params string[] folders)
     {
-        return context.Flat
+        return context.Flat || folders.Length == 0
             ? (context.OutputDirectory, context.BaseNamespace)
-            : (Path.Combine(context.OutputDirectory, folder), $"{context.BaseNamespace}.{folder}");
+            : (
+                Path.Combine([context.OutputDirectory, .. folders]),
+                $"{context.BaseNamespace}.{string.Join('.', folders)}");
     }
 
     /// <summary>
