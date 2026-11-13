@@ -68,7 +68,7 @@ The current release line is `0.1.x`:
 | Version | Packages | Status |
 | --- | --- | --- |
 | `0.1.0` | All five production packages | Published |
-| `0.1.1` | All five production packages | Prepared |
+| `0.1.1` | All five production packages | Published |
 
 Within a version line, patch releases are backward compatible and keep package
 versions synchronized.

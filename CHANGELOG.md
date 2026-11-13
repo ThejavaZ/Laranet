@@ -23,7 +23,7 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 
 - Pinned `System.Security.Cryptography.Pkcs` to 9.0.22 in the test project to replace the vulnerable 9.0.11 pulled by `Microsoft.Data.SqlClient` 6.1.7.
 
-## [0.1.1] - 2026-11-09
+## [0.1.1] - 2026-11-12
 
 ### Added
 

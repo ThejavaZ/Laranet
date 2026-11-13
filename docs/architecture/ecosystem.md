@@ -214,7 +214,7 @@ A new module enters the ecosystem only when it satisfies all of these:
 | Version | Milestone | Scope | Status |
 | --- | --- | --- | --- |
 | `0.1.0` | Version 1 | Data, EF Core, ASP.NET Core, and CLI | Published |
-| `0.1.1` | Version 2, Sprint 9 | Multi-column search, release bookkeeping | Prepared |
+| `0.1.1` | Version 2, Sprint 9 | Multi-column search, release bookkeeping | Published |
 | `0.2.0` | Version 2, Sprints 10–13 | Provider verification and feedback-gated depth | Planned |
 | `0.3.0` | Version 3, Sprints 14–16 | Standards, project templates, `make:crud` | Planned |
 | `0.4.0` | Version 3, Sprints 17–19 | EF Core conventions, validation, `laranet doctor` | Planned |

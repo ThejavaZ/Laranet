@@ -11,9 +11,9 @@ documented in the [changelog](../../CHANGELOG.md) and in this guide.
 
 ## Current release status
 
-The published packages are `0.1.0`. The repository prepares `0.1.1`, which adds the
-multi-column `Search` overload, the shared package icon, and documentation updates.
-There are no breaking changes between `0.1.0` and `0.1.1`.
+The published packages are `0.1.1`. This release adds the multi-column `Search`
+overload, the shared package icon, and documentation updates. There are no breaking
+changes between `0.1.0` and `0.1.1`.
 
 This page is the place where each published migration will be recorded.
 
