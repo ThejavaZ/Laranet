@@ -118,8 +118,9 @@ Before marking it complete, verify:
 
 ## Current project state
 
-**Current milestone:** [Version 3, Sprint 14 — Development Standards and generator contract](v3.md).
-Sprint 14 is completed. Version 2 remains open pending real external feedback.
+**Current milestone:** [Version 3, Sprint 15 — Project templates](v3.md).
+Sprint 15 is completed; Sprint 16 — `make:crud` is next. Version 2 remains open
+pending real external feedback.
 
 All five packages (`Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`,
 `Laranet.AspNetCore`, and `Laranet.Cli`) are published on NuGet.org as `0.1.1`. The

@@ -27,9 +27,20 @@ laranet new my-api
 Choose a template and a layout:
 
 ```bash
-laranet new my-api --template webapi --layout repository
+laranet new my-api --layout repository
+laranet new my-web --template mvc
+laranet new my-service --template layered
 laranet new my-tool --template console --layout project
 ```
+
+| Template | Structure |
+| --- | --- |
+| `minimal-api` (default) | One Web SDK project with endpoints in `Program.cs`. |
+| `mvc` | One Web SDK project with controllers and Razor views. |
+| `layered` | Domain, application, infrastructure, and web projects. |
+| `hexagonal` | The same projects, with ports and adapters. |
+| `modular` | One Web SDK project with feature folders. |
+| `console` | One executable project without ASP.NET Core. |
 
 | Layout | Structure |
 | --- | --- |
@@ -37,7 +48,8 @@ laranet new my-tool --template console --layout project
 | `repository` | Project under `<name>/src/<name>/` plus solution, README, and `.gitignore` at the root. |
 
 Add `--sln` to the `project` layout to create a solution. The `repository` layout
-always creates one.
+always creates one. `layered` and `hexagonal` always use the repository shape
+because they need a solution to build their projects together.
 
 Reference optional packages during creation:
 

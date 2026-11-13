@@ -14,6 +14,9 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 - Version 6 candidate for an authentication and security baseline: ASP.NET Core Identity, JWT bearer, and optional BCrypt through `IPasswordHasher<TUser>`.
 - Development standards guide covering naming, project structure, async and cancellation, validation, DTOs, dependency direction, abstractions, and generated code.
 - CLI generator contract (`IGenerator`, `GenerationContext`, `GenerationOptions`) that plans files independently from the command-line layer.
+- Project templates: `minimal-api` (default), `mvc`, `layered`, `hexagonal`, `modular`, and `console`, with `webapi`/`web-api` retained as `minimal-api` aliases.
+- `layered` and `hexagonal` templates that generate separate domain, application, infrastructure, and web projects with real project references and a solution.
+- Template verification script that generates and builds every template, wired into CI.
 
 ### Changed
 
@@ -21,6 +24,8 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 - Testing documentation explains how to run provider compatibility tests locally.
 - Feedback intake now uses a Question issue template instead of a GitHub Discussions link that was unavailable.
 - CLI generators now compose through a registry and share conflict, `--force`, and `--dry-run` handling in one writer.
+- `laranet new` now defaults to the `minimal-api` template; the interactive prompt lists every template.
+- Multi-project templates always create a solution and place projects under `src/`; `--with-*` package flags apply to the web host.
 
 ### Security
 
