@@ -66,6 +66,7 @@ laranet make:service Product
 laranet make:controller Product
 laranet make:middleware RequestLogging
 laranet make:resource Product
+laranet make:crud Product --fields "Name:string,Price:decimal"
 ```
 
 | Command | Output |
@@ -75,9 +76,57 @@ laranet make:resource Product
 | `make:controller <name>` | `Controllers/<Name>Controller.cs` |
 | `make:middleware <name>` | `Middleware/<Name>Middleware.cs` |
 | `make:resource <name>` | Model, service, and controller |
+| `make:crud <entity>` | Entity, DTOs, and CRUD endpoints |
 | `make:repository <name>` | Optional `Repositories/<Name>Repository.cs` scaffold |
 
 Names are normalized to PascalCase and suffixes are applied only when missing.
+
+## Generate CRUD
+
+`make:crud` creates an entity and a controller-based CRUD surface. The target
+project must reference Entity Framework Core and contain a `DbContext`. The CLI
+discovers the only context in the nearest project, or accepts one with
+`--context`:
+
+```bash
+laranet make:crud Product --context Shop.Data.ShopDbContext
+```
+
+Fields are `Name:type` pairs. The `?` suffix makes a field nullable, and the
+default is `Name:string`:
+
+```bash
+laranet make:crud Product \
+  --fields "Name:string,Price:decimal,Description:string?,ReleasedOn:DateTime?"
+```
+
+Supported types: `string`, `int`, `long`, `decimal`, `double`, `float`, `bool`,
+`DateTime`, `DateTimeOffset`, `DateOnly`, `TimeOnly`, and `Guid`. `Id` is generated
+automatically.
+
+Choose a profile with `--profile`:
+
+| Profile | Structure |
+| --- | --- |
+| `simple` (default) | Entity, DTOs, and a controller that uses `DbContext` directly. |
+| `standard` | Adds a service and a registration extension. |
+| `clean` | Adds domain, application, and infrastructure folders with a repository interface and implementation. |
+| `modular` | Places the feature under `Features/<PluralEntity>/` with the `standard` structure. |
+
+The `clean` profile creates folders inside the current project; it does not create
+separate projects. The `standard`, `clean`, and `modular` profiles generate an
+`Add<Entity>Crud()` extension that you call from the host.
+
+`make:crud` does not modify the `DbContext`. Map the entity yourself:
+
+```csharp
+public DbSet<Product> Products => Set<Product>();
+```
+
+All profiles generate controllers, so register them with `AddControllers()` and
+`MapControllers()`. See the
+[CLI package README](../../src/Laranet.Cli/README.md#generate-crud) for the full
+file list of each profile.
 
 ## Namespaces
 
@@ -130,6 +179,8 @@ public sealed record {{Name}}(int Id, DateTimeOffset CreatedAt);
 
 - It does not add runtime metadata or special attributes.
 - It does not require a repository layer.
+- `make:crud` does not modify your `DbContext` or `Program.cs`; map the entity and
+  register controllers yourself.
 - It does not modify existing application code.
 - It does not replace `dotnet new` for general project scaffolding.
 

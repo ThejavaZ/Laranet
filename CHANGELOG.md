@@ -17,6 +17,10 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 - Project templates: `minimal-api` (default), `mvc`, `layered`, `hexagonal`, `modular`, and `console`, with `webapi`/`web-api` retained as `minimal-api` aliases.
 - `layered` and `hexagonal` templates that generate separate domain, application, infrastructure, and web projects with real project references and a solution.
 - Template verification script that generates and builds every template, wired into CI.
+- `laranet make:crud <Entity>` with `simple` (default), `standard`, `clean`, and `modular` profiles.
+- CRUD field definitions through `--fields "Name:string,Price:decimal"`, including nullable `?` types and DataAnnotations validation in request DTOs.
+- `DbContext` discovery from the nearest project, with `--context` for explicit selection.
+- CRUD profile verification script that builds every profile and a flat layout in scratch EF Core web projects with warnings treated as errors, wired into CI.
 
 ### Changed
 
@@ -26,6 +30,8 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 - CLI generators now compose through a registry and share conflict, `--force`, and `--dry-run` handling in one writer.
 - `laranet new` now defaults to the `minimal-api` template; the interactive prompt lists every template.
 - Multi-project templates always create a solution and place projects under `src/`; `--with-*` package flags apply to the web host.
+- `make:crud` uses controllers for every profile so one host configuration (`AddControllers`/`MapControllers`) works across all profiles.
+- Generated `DbContext` references use `global::` so they remain valid from namespaces that share a prefix with the context namespace.
 
 ### Security
 

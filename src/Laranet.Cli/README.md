@@ -178,6 +178,7 @@ together.
 | `laranet make:controller <name>` | An ASP.NET Core controller in `Controllers/` |
 | `laranet make:middleware <name>` | An ASP.NET Core middleware in `Middleware/` |
 | `laranet make:resource <name>` | A model, a service, and a controller together |
+| `laranet make:crud <entity>` | An entity, DTOs, and CRUD endpoints |
 | `laranet make:repository <name>` | An optional repository scaffold in `Repositories/` |
 
 Names are normalized to PascalCase. For example, `product-category`,
@@ -261,6 +262,105 @@ This creates an empty `Repositories/ProductRepository.cs` scaffold. Complete it
 only when the abstraction solves a real problem in your application. It is never
 included in `make:resource`.
 
+## Generate CRUD
+
+`make:crud` generates an entity and a complete controller-based CRUD surface for it:
+
+```bash
+laranet make:crud Product --fields "Name:string,Price:decimal,Stock:int"
+```
+
+The generated code uses Entity Framework Core. The target project must reference
+EF Core and contain a `DbContext`. The command discovers the only `DbContext` in
+the nearest project, or accepts one explicitly:
+
+```bash
+laranet make:crud Product --context Shop.Data.ShopDbContext
+```
+
+`make:crud` does not modify your `DbContext`. Map the entity before using the
+endpoints:
+
+```csharp
+public DbSet<Product> Products => Set<Product>();
+```
+
+All profiles generate controllers, so the host must register and map them:
+
+```csharp
+builder.Services.AddControllers();
+// ...
+app.MapControllers();
+```
+
+### Fields
+
+Fields use `Name:type` pairs separated by commas. Types are case-insensitive, and
+a `?` suffix makes a field nullable:
+
+```bash
+laranet make:crud Product \
+  --fields "Name:string,Price:decimal,Description:string?,ReleasedOn:DateTime?"
+```
+
+Supported types: `string`, `int`, `long`, `decimal`, `double`, `float`, `bool`,
+`DateTime`, `DateTimeOffset`, `DateOnly`, `TimeOnly`, and `Guid`. The default is
+`Name:string`. `Id` is always generated as `int` and cannot be declared as a field.
+
+### Profiles
+
+Choose the amount of structure with `--profile`:
+
+| Profile | Structure |
+| --- | --- |
+| `simple` (default) | Entity, request/response DTOs, and a controller that uses `DbContext` directly. |
+| `standard` | Adds a service class and a dependency-injection registration extension. |
+| `clean` | Adds domain, application, and infrastructure folders with a repository interface and implementation. |
+| `modular` | Places the whole feature under `Features/<PluralEntity>/` with the `standard` structure. |
+
+```bash
+laranet make:crud Product --profile standard
+laranet make:crud Product --profile clean
+laranet make:crud Product --profile modular
+```
+
+The `clean` profile creates folders inside the current project. It does not create
+separate projects. Move the folders into separate projects when your application
+needs that boundary.
+
+### Generated files
+
+With the default `Product` entity:
+
+| Profile | Files |
+| --- | --- |
+| `simple` | `Models/Product.cs`, `Contracts/ProductRequest.cs`, `Contracts/ProductResponse.cs`, `Controllers/ProductController.cs` |
+| `standard` | The `simple` files plus `Services/ProductService.cs` and `Extensions/ProductServiceCollectionExtensions.cs` |
+| `clean` | `Domain/Entities/Product.cs`, `Application/Products/ProductRequest.cs`, `Application/Products/ProductResponse.cs`, `Application/Abstractions/IProductRepository.cs`, `Infrastructure/Persistence/ProductRepository.cs`, `Application/Products/ProductService.cs`, `Controllers/ProductController.cs`, `Extensions/ProductServiceCollectionExtensions.cs` |
+| `modular` | `Features/Products/Product.cs`, `Features/Products/ProductRequest.cs`, `Features/Products/ProductResponse.cs`, `Features/Products/ProductService.cs`, `Features/Products/ProductController.cs`, `Features/Products/ProductServiceCollectionExtensions.cs` |
+
+The `standard`, `clean`, and `modular` profiles generate a registration extension.
+Call it from the host:
+
+```csharp
+builder.Services.AddProductCrud();
+```
+
+The `simple` profile has no registration extension because the controller receives
+the `DbContext` directly.
+
+### CRUD options
+
+| Option | Description |
+| --- | --- |
+| `-p`, `--profile <name>` | `simple` (default), `standard`, `clean`, or `modular`. |
+| `-c`, `--context <type>` | Fully qualified `DbContext` type. Discovered by default. |
+| `--fields <list>` | Comma-separated `Name:type` pairs. Defaults to `Name:string`. |
+
+`make:crud` also supports `--output`, `--namespace`, `--force`, `--dry-run`,
+`--flat`, and `--interactive`. With `--flat`, every file goes directly into the
+output directory and uses the base namespace.
+
 ## Generation options
 
 | Option | Description |
@@ -289,6 +389,7 @@ Convention folders are appended to the base namespace:
 | `make:service Product` | `<base>.Services` |
 | `make:controller Product` | `<base>.Controllers` |
 | `make:middleware Product` | `<base>.Middleware` |
+| `make:crud Product` | Profile-specific folders such as `<base>.Models` and `<base>.Contracts` |
 | `make:repository Product` | `<base>.Repositories` |
 
 With `--flat`, files use the base namespace directly.
@@ -368,7 +469,10 @@ Behavior:
   requested packages.
 - In `make` commands, the namespace is only requested when it cannot be inferred
   from a project file.
-- Invalid names and namespaces are reported and re-prompted.
+- `make:crud` prompts for the profile when `--profile` is omitted. It prompts for
+  the `DbContext` only when it cannot be discovered.
+- Invalid names, namespaces, profiles, fields, and context types are reported and
+  re-prompted.
 - Existing files prompt once for confirmation before anything is written.
 - Without `--interactive`, commands never read from standard input.
 
