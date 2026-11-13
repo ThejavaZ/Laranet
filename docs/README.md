@@ -103,6 +103,7 @@ Track current and future work.
 Resources for developers contributing to Laranet.
 
 - [Contribution Guide](development/contribution-guide.md)
+- [Development Standards](development/standards.md)
 - [Development Workflow](development/development-workflow.md)
 - [Testing](development/testing.md)
 - [Testing Guidelines](development/testing-guidelines.md)

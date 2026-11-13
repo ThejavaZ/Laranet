@@ -172,6 +172,7 @@ README or icon.
 ## Related
 
 - [Contribution guide](contribution-guide.md)
+- [Development standards](standards.md)
 - [Testing guidelines](testing-guidelines.md)
 - [Release process](release.md)
 - [`CONTRIBUTING.md`](../../CONTRIBUTING.md)

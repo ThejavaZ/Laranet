@@ -12,12 +12,15 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 - CI service containers for SQL Server 2022 and PostgreSQL 17, plus provider-specific test steps.
 - Verified provider translation differences for `Search` across SQLite, SQL Server, and PostgreSQL.
 - Version 6 candidate for an authentication and security baseline: ASP.NET Core Identity, JWT bearer, and optional BCrypt through `IPasswordHasher<TUser>`.
+- Development standards guide covering naming, project structure, async and cancellation, validation, DTOs, dependency direction, abstractions, and generated code.
+- CLI generator contract (`IGenerator`, `GenerationContext`, `GenerationOptions`) that plans files independently from the command-line layer.
 
 ### Changed
 
 - CI now runs the full SQLite suite and the provider compatibility suite for SQL Server and PostgreSQL.
 - Testing documentation explains how to run provider compatibility tests locally.
 - Feedback intake now uses a Question issue template instead of a GitHub Discussions link that was unavailable.
+- CLI generators now compose through a registry and share conflict, `--force`, and `--dry-run` handling in one writer.
 
 ### Security
 

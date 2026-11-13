@@ -12,7 +12,7 @@ The roadmap is organized by release so completed and future work stay separated.
 | --- | --- | --- |
 | [Version 1](v1.md) | Core, Data, EntityFrameworkCore, AspNetCore, and CLI; first public release | Released `0.1.1` |
 | [Version 2](v2.md) | Adoption, provider verification, feedback-gated depth, and 1.0 readiness | In progress |
-| [Version 3](v3.md) | Application experience: standards, templates, CRUD generation, EF conventions, validation, and doctor | Planning |
+| [Version 3](v3.md) | Application experience: standards, templates, CRUD generation, EF conventions, validation, and doctor | In progress |
 | [Version 4](v4.md) | Application surface: optional admin panel, web/Blazor templates, and optional adapters | Candidate |
 | [Version 5](v5.md) | First stable release: `1.0.0`, release integrity, data experience, diagnostics, and enterprise template | Planned (gated by Version 4) |
 | [Version 6](v6.md) | Post-`1.0` application capabilities in `1.x`: modules, resources, events, jobs, authentication, and permissions | Direction (not scheduled) |
@@ -118,8 +118,8 @@ Before marking it complete, verify:
 
 ## Current project state
 
-**Current milestone:** [Version 2, Sprint 9 — Post-release adoption](v2.md).
-Sprint 10 — Provider confidence is completed and verified in CI.
+**Current milestone:** [Version 3, Sprint 14 — Development Standards and generator contract](v3.md).
+Sprint 14 is completed. Version 2 remains open pending real external feedback.
 
 All five packages (`Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`,
 `Laranet.AspNetCore`, and `Laranet.Cli`) are published on NuGet.org as `0.1.1`. The
@@ -132,10 +132,11 @@ code. Version 2 focuses on adoption and stability: collect real feedback and add
 only when a concrete use case justifies it. SQL Server and
 PostgreSQL are verified by the provider compatibility suite, which runs in CI with
 service containers. The `Laranet` core package remains intentionally empty until a
-shared abstraction is required by at least two modules. [Version 3](v3.md) is planned
-as the application-experience milestone: standards, project templates, `make:crud`,
-EF Core conventions, validation, and `laranet doctor`. Its admin-panel proposal is a
-candidate that requires an ADR and a validated use case. [Version 4](v4.md) is a
+shared abstraction is required by at least two modules. [Version 3](v3.md) is in
+progress as the application-experience milestone: standards, project templates,
+`make:crud`, EF Core conventions, validation, and `laranet doctor`. Its admin-panel
+proposal is a candidate that requires an ADR and a validated use case.
+[Version 4](v4.md) is a
 candidate for the application surface: an optional admin panel, web and Blazor
 templates, and optional data adapters, all gated by the Version 3 exit criteria.
 [Version 5](v5.md) is the first stable release, planned as `1.0.0`: a small, frozen

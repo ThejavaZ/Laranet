@@ -104,6 +104,7 @@ A good review verifies:
 ## Related
 
 - [Development workflow](development-workflow.md)
+- [Development standards](standards.md)
 - [Testing guidelines](testing-guidelines.md)
 - [Release process](release.md)
 - [`CONTRIBUTING.md`](../../CONTRIBUTING.md)
