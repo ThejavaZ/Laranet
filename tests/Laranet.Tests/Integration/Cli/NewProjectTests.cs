@@ -6,7 +6,7 @@ namespace Laranet.Tests.Integration.Cli;
 public class NewProjectTests
 {
     [Fact]
-    public void New_ShouldCreateWebApiProjectByDefault()
+    public void New_ShouldCreateMinimalApiProjectByDefault()
     {
         using var directory = new TemporaryDirectory();
 

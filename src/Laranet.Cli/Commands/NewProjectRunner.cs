@@ -119,7 +119,15 @@ internal static class NewProjectRunner
                 output.WriteLine("Next steps:");
                 output.WriteLine($"  cd \"{projectDirectory}\"");
 
-                if (layout == ProjectLayout.Repository)
+                var hostProjectPath = ProjectTemplates.HostProjectPath(
+                    template,
+                    projectName);
+
+                if (hostProjectPath is not null)
+                {
+                    output.WriteLine($"  dotnet run --project {hostProjectPath}");
+                }
+                else if (layout == ProjectLayout.Repository)
                 {
                     output.WriteLine(
                         $"  dotnet run --project src/{projectName}/{projectName}.csproj");

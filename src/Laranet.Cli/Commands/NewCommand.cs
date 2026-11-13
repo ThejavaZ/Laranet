@@ -29,7 +29,7 @@ internal static class NewCommand
             },
             new Option<string?>("--template", "-t")
             {
-                Description = "The project template: webapi (default) or console.",
+                Description = "The project template: minimal-api (default), mvc, layered, hexagonal, modular, or console.",
             },
             new Option<string?>("--layout", "-l")
             {

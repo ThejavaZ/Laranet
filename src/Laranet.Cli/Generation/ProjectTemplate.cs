@@ -5,6 +5,10 @@ namespace Laranet.Cli.Generation;
 /// </summary>
 internal enum ProjectTemplate
 {
-    WebApi,
+    MinimalApi,
+    Mvc,
+    Layered,
+    Hexagonal,
+    Modular,
     Console,
 }

@@ -19,7 +19,7 @@ public class InteractiveCommandTests
 
         Assert.Equal(0, result.ExitCode);
         Assert.Contains("Project name:", result.Output);
-        Assert.Contains("Template [webapi/console]", result.Output);
+        Assert.Contains("Template [minimal-api/mvc/layered/hexagonal/modular/console]", result.Output);
 
         var projectDirectory = directory.GetPath("my-api");
         var project = File.ReadAllText(Path.Combine(projectDirectory, "my-api.csproj"));
@@ -48,7 +48,7 @@ public class InteractiveCommandTests
 
         Assert.Equal(0, result.ExitCode);
         Assert.DoesNotContain("Project name:", result.Output);
-        Assert.DoesNotContain("Template [webapi/console]", result.Output);
+        Assert.DoesNotContain("Template [minimal-api/mvc/layered/hexagonal/modular/console]", result.Output);
         Assert.True(File.Exists(directory.GetPath("my-api", "my-api.csproj")));
     }
 

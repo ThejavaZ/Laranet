@@ -38,15 +38,15 @@ internal sealed class ConsoleInteraction(TextReader input, TextWriter output)
     }
 
     /// <summary>
-    /// Prompts for a template, using <c>webapi</c> when the user accepts the default.
+    /// Prompts for a template, using <c>minimal-api</c> when the user accepts the default.
     /// </summary>
     /// <returns>The selected template.</returns>
     public ProjectTemplate AskTemplate()
     {
         return AskUntil(
-            "Template [webapi/console] (webapi): ",
+            $"Template [{string.Join('/', ProjectTemplates.Names)}] (minimal-api): ",
             value => ProjectTemplates.Parse(
-                string.IsNullOrWhiteSpace(value) ? "webapi" : value));
+                string.IsNullOrWhiteSpace(value) ? "minimal-api" : value));
     }
 
     /// <summary>
