@@ -24,6 +24,10 @@ namespace Laranet.Http;
 /// Other failures are returned as an <see cref="HttpResult"/> unless
 /// <see cref="RequestOptions.ThrowOnError"/> is enabled.
 /// </para>
+/// <para>
+/// Transient failures are retried according to <see cref="RetryOptions"/>. Every
+/// attempt builds a new <see cref="HttpRequestMessage"/> and content.
+/// </para>
 /// </remarks>
 public sealed class LaranetHttp
 {
@@ -32,6 +36,7 @@ public sealed class LaranetHttp
     private readonly HttpClient _httpClient;
     private readonly ILogger<LaranetHttp> _logger;
     private readonly JsonSerializerOptions _jsonOptions;
+    private readonly RetryOptions _retryOptions;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LaranetHttp"/> class.
@@ -56,7 +61,10 @@ public sealed class LaranetHttp
 
         _httpClient = httpClient;
         _logger = logger;
-        _jsonOptions = (options?.Value ?? new LaranetHttpOptions()).JsonOptions;
+
+        var clientOptions = options?.Value ?? new LaranetHttpOptions();
+        _jsonOptions = clientOptions.JsonOptions;
+        _retryOptions = clientOptions.Retry;
     }
 
     /// <summary>
@@ -538,21 +546,10 @@ public sealed class LaranetHttp
         cancellationToken.ThrowIfCancellationRequested();
 
         var jsonOptions = options.JsonOptions ?? _jsonOptions;
-        using var request = new HttpRequestMessage(method, url);
-
-        if (hasBody)
-        {
-            var content = JsonContent.Create(
-                body,
-                body!.GetType(),
-                options: jsonOptions);
-            ApplyHeaders(content.Headers, options.ContentHeaders);
-            request.Content = content;
-        }
-
-        ApplyHeaders(request.Headers, options.Headers);
-
-        var stopwatch = Stopwatch.StartNew();
+        var retry = options.Retry ?? _retryOptions;
+        var canRetryMethod = IsRetryableMethod(
+            method,
+            retry.RetryNonIdempotentRequests);
 
         using var timeoutSource = options.Timeout is { } timeout
             ? new CancellationTokenSource(timeout)
@@ -563,8 +560,109 @@ public sealed class LaranetHttp
                 cancellationToken,
                 timeoutSource.Token);
         var requestToken = linkedSource?.Token ?? cancellationToken;
+        var attempt = 1;
+
+        while (true)
+        {
+            var canRetry = canRetryMethod && attempt <= retry.MaxRetries;
+
+            var result = await SendAttemptAsync<T>(
+                method,
+                url,
+                body,
+                hasBody,
+                expectBody,
+                options,
+                jsonOptions,
+                attempt,
+                canRetry,
+                requestToken,
+                cancellationToken).ConfigureAwait(false);
+
+            if (!result.IsTransient || !canRetry)
+            {
+                return result.Response;
+            }
+
+            var delay = GetRetryDelay(retry, attempt, result.RetryAfter);
+            var statusCode = result.Response.StatusCode is { } status
+                ? (int?)status
+                : null;
+
+            if (statusCode is not null)
+            {
+                _logger.LogWarning(
+                    "HTTP {Method} {Url} attempt {Attempt} returned {StatusCode}; retrying in {RetryDelayMilliseconds} ms.",
+                    method.Method,
+                    url,
+                    attempt,
+                    statusCode,
+                    delay.TotalMilliseconds);
+            }
+            else
+            {
+                _logger.LogWarning(
+                    "HTTP {Method} {Url} attempt {Attempt} failed with a network error; retrying in {RetryDelayMilliseconds} ms.",
+                    method.Method,
+                    url,
+                    attempt,
+                    delay.TotalMilliseconds);
+            }
+
+            if (delay <= TimeSpan.Zero)
+            {
+                attempt++;
+                continue;
+            }
+
+            try
+            {
+                await Task.Delay(delay, requestToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+                when (!cancellationToken.IsCancellationRequested)
+            {
+                _logger.LogWarning(
+                    "HTTP {Method} {Url} timed out while waiting to retry after attempt {Attempt}.",
+                    method.Method,
+                    url,
+                    attempt);
+
+                return RawResponse<T>.Failure(
+                    result.Response.StatusCode,
+                    HttpErrorKind.Timeout,
+                    "The request timed out.",
+                    result.Response.Headers);
+            }
+
+            attempt++;
+        }
+    }
+
+    private async Task<AttemptResult<T>> SendAttemptAsync<T>(
+        HttpMethod method,
+        string url,
+        object? body,
+        bool hasBody,
+        bool expectBody,
+        RequestOptions options,
+        JsonSerializerOptions jsonOptions,
+        int attempt,
+        bool canRetry,
+        CancellationToken requestToken,
+        CancellationToken cancellationToken)
+    {
+        var stopwatch = Stopwatch.StartNew();
         HttpStatusCode? statusCode = null;
         IReadOnlyDictionary<string, IReadOnlyList<string>>? headers = null;
+
+        using var request = CreateRequest(
+            method,
+            url,
+            body,
+            hasBody,
+            options,
+            jsonOptions);
 
         try
         {
@@ -579,39 +677,55 @@ public sealed class LaranetHttp
 
             if (!response.IsSuccessStatusCode)
             {
+                var isTransient = IsTransientStatusCode(response.StatusCode);
+                var retryAfter = isTransient ? GetRetryAfter(response) : null;
                 var errorBody = await ReadErrorBodyAsync(response, requestToken)
                     .ConfigureAwait(false);
                 var error = string.IsNullOrWhiteSpace(errorBody)
                     ? $"The server returned HTTP {(int)statusCode} ({statusCode})."
                     : errorBody;
 
-                _logger.LogWarning(
-                    "HTTP {Method} {Url} returned {StatusCode} in {ElapsedMilliseconds} ms.",
-                    method.Method,
-                    url,
-                    (int)statusCode,
-                    stopwatch.Elapsed.TotalMilliseconds);
+                stopwatch.Stop();
 
-                return RawResponse<T>.Failure(
+                if (!isTransient || !canRetry)
+                {
+                    _logger.LogWarning(
+                        "HTTP {Method} {Url} returned {StatusCode} in {ElapsedMilliseconds} ms on attempt {Attempt}.",
+                        method.Method,
+                        url,
+                        (int)statusCode,
+                        stopwatch.Elapsed.TotalMilliseconds,
+                        attempt);
+                }
+
+                var failure = RawResponse<T>.Failure(
                     statusCode,
                     HttpErrorKind.Http,
                     error,
                     responseHeaders);
+
+                return isTransient
+                    ? AttemptResult<T>.Transient(failure, retryAfter)
+                    : AttemptResult<T>.Final(failure);
             }
 
             if (!expectBody)
             {
+                stopwatch.Stop();
+
                 _logger.LogInformation(
-                    "HTTP {Method} {Url} returned {StatusCode} in {ElapsedMilliseconds} ms.",
+                    "HTTP {Method} {Url} returned {StatusCode} in {ElapsedMilliseconds} ms on attempt {Attempt}.",
                     method.Method,
                     url,
                     (int)statusCode,
-                    stopwatch.Elapsed.TotalMilliseconds);
+                    stopwatch.Elapsed.TotalMilliseconds,
+                    attempt);
 
-                return RawResponse<T>.Success(
-                    value: default,
-                    statusCode.Value,
-                    responseHeaders);
+                return AttemptResult<T>.Final(
+                    RawResponse<T>.Success(
+                        value: default,
+                        statusCode.Value,
+                        responseHeaders));
             }
 
             var bodyResult = await ReadBodyAsync<T>(
@@ -624,48 +738,54 @@ public sealed class LaranetHttp
             if (bodyResult.IsSuccess)
             {
                 _logger.LogInformation(
-                    "HTTP {Method} {Url} returned {StatusCode} in {ElapsedMilliseconds} ms.",
+                    "HTTP {Method} {Url} returned {StatusCode} in {ElapsedMilliseconds} ms on attempt {Attempt}.",
                     method.Method,
                     url,
                     (int)statusCode,
-                    stopwatch.Elapsed.TotalMilliseconds);
+                    stopwatch.Elapsed.TotalMilliseconds,
+                    attempt);
 
-                return RawResponse<T>.Success(
-                    bodyResult.Value,
-                    statusCode.Value,
-                    responseHeaders);
+                return AttemptResult<T>.Final(
+                    RawResponse<T>.Success(
+                        bodyResult.Value,
+                        statusCode.Value,
+                        responseHeaders));
             }
 
             _logger.LogWarning(
                 bodyResult.Exception,
-                "HTTP {Method} {Url} returned {StatusCode} with an unreadable body in {ElapsedMilliseconds} ms.",
+                "HTTP {Method} {Url} returned {StatusCode} with an unreadable body in {ElapsedMilliseconds} ms on attempt {Attempt}.",
                 method.Method,
                 url,
                 (int)statusCode,
-                stopwatch.Elapsed.TotalMilliseconds);
+                stopwatch.Elapsed.TotalMilliseconds,
+                attempt);
 
-            return RawResponse<T>.Failure(
-                statusCode,
-                bodyResult.ErrorKind,
-                bodyResult.Error!,
-                responseHeaders,
-                bodyResult.Exception);
+            return AttemptResult<T>.Final(
+                RawResponse<T>.Failure(
+                    statusCode,
+                    bodyResult.ErrorKind,
+                    bodyResult.Error!,
+                    responseHeaders,
+                    bodyResult.Exception));
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
             stopwatch.Stop();
 
             _logger.LogWarning(
-                "HTTP {Method} {Url} timed out after {ElapsedMilliseconds} ms.",
+                "HTTP {Method} {Url} timed out after {ElapsedMilliseconds} ms on attempt {Attempt}.",
                 method.Method,
                 url,
-                stopwatch.Elapsed.TotalMilliseconds);
+                stopwatch.Elapsed.TotalMilliseconds,
+                attempt);
 
-            return RawResponse<T>.Failure(
-                statusCode,
-                HttpErrorKind.Timeout,
-                "The request timed out.",
-                headers);
+            return AttemptResult<T>.Final(
+                RawResponse<T>.Failure(
+                    statusCode,
+                    HttpErrorKind.Timeout,
+                    "The request timed out.",
+                    headers));
         }
         catch (OperationCanceledException)
         {
@@ -675,20 +795,126 @@ public sealed class LaranetHttp
         {
             stopwatch.Stop();
 
-            _logger.LogWarning(
-                exception,
-                "HTTP {Method} {Url} failed after {ElapsedMilliseconds} ms.",
-                method.Method,
-                url,
-                stopwatch.Elapsed.TotalMilliseconds);
+            if (!canRetry)
+            {
+                _logger.LogWarning(
+                    exception,
+                    "HTTP {Method} {Url} failed after {ElapsedMilliseconds} ms on attempt {Attempt}.",
+                    method.Method,
+                    url,
+                    stopwatch.Elapsed.TotalMilliseconds,
+                    attempt);
+            }
 
-            return RawResponse<T>.Failure(
-                statusCode,
-                HttpErrorKind.Network,
-                exception.Message,
-                headers,
-                exception);
+            return AttemptResult<T>.Transient(
+                RawResponse<T>.Failure(
+                    statusCode,
+                    HttpErrorKind.Network,
+                    exception.Message,
+                    headers,
+                    exception),
+                retryAfter: null);
         }
+    }
+
+    private static HttpRequestMessage CreateRequest(
+        HttpMethod method,
+        string url,
+        object? body,
+        bool hasBody,
+        RequestOptions options,
+        JsonSerializerOptions jsonOptions)
+    {
+        var request = new HttpRequestMessage(method, url);
+
+        try
+        {
+            if (hasBody)
+            {
+                var content = JsonContent.Create(
+                    body,
+                    body!.GetType(),
+                    options: jsonOptions);
+                ApplyHeaders(content.Headers, options.ContentHeaders);
+                request.Content = content;
+            }
+
+            ApplyHeaders(request.Headers, options.Headers);
+
+            return request;
+        }
+        catch
+        {
+            request.Dispose();
+            throw;
+        }
+    }
+
+    private static bool IsRetryableMethod(
+        HttpMethod method,
+        bool retryNonIdempotentRequests)
+    {
+        if (method == HttpMethod.Get
+            || method == HttpMethod.Put
+            || method == HttpMethod.Delete)
+        {
+            return true;
+        }
+
+        return retryNonIdempotentRequests
+            && (method == HttpMethod.Post || method == HttpMethod.Patch);
+    }
+
+    private static bool IsTransientStatusCode(HttpStatusCode statusCode)
+    {
+        return statusCode is HttpStatusCode.RequestTimeout
+            or HttpStatusCode.TooManyRequests
+            or HttpStatusCode.InternalServerError
+            or HttpStatusCode.BadGateway
+            or HttpStatusCode.ServiceUnavailable
+            or HttpStatusCode.GatewayTimeout;
+    }
+
+    private static TimeSpan GetRetryDelay(
+        RetryOptions retry,
+        int attempt,
+        TimeSpan? retryAfter)
+    {
+        if (retryAfter is { } serverDelay)
+        {
+            return serverDelay < retry.MaxDelay ? serverDelay : retry.MaxDelay;
+        }
+
+        var exponential = retry.BaseDelay.TotalMilliseconds
+            * Math.Pow(2, attempt - 1);
+        var capped = Math.Min(exponential, retry.MaxDelay.TotalMilliseconds);
+        var jitter = 0.8 + (Random.Shared.NextDouble() * 0.4);
+
+        return TimeSpan.FromMilliseconds(
+            Math.Min(capped * jitter, retry.MaxDelay.TotalMilliseconds));
+    }
+
+    private static TimeSpan? GetRetryAfter(HttpResponseMessage response)
+    {
+        var retryAfter = response.Headers.RetryAfter;
+
+        if (retryAfter is null)
+        {
+            return null;
+        }
+
+        if (retryAfter.Delta is { } delta)
+        {
+            return delta > TimeSpan.Zero ? delta : TimeSpan.Zero;
+        }
+
+        if (retryAfter.Date is { } date)
+        {
+            var delay = date - DateTimeOffset.UtcNow;
+            return delay > TimeSpan.Zero ? delay : TimeSpan.Zero;
+        }
+
+        return null;
     }
 
     private static async Task<BodyReadResult<T>> ReadBodyAsync<T>(
@@ -824,6 +1050,24 @@ public sealed class LaranetHttp
                 exception,
                 result.StatusCode),
         };
+    }
+
+    private readonly record struct AttemptResult<T>(
+        RawResponse<T> Response,
+        bool IsTransient,
+        TimeSpan? RetryAfter)
+    {
+        public static AttemptResult<T> Final(RawResponse<T> response)
+        {
+            return new AttemptResult<T>(response, false, null);
+        }
+
+        public static AttemptResult<T> Transient(
+            RawResponse<T> response,
+            TimeSpan? retryAfter)
+        {
+            return new AttemptResult<T>(response, true, retryAfter);
+        }
     }
 
     private readonly record struct RawResponse<T>(

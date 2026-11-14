@@ -474,14 +474,15 @@ public class LaranetHttpTests
                 BaseAddress = new Uri("https://api.test/"),
             };
 
-            Client = options is null
-                ? new LaranetHttp(
-                    HttpClient,
-                    NullLogger<LaranetHttp>.Instance)
-                : new LaranetHttp(
-                    HttpClient,
-                    NullLogger<LaranetHttp>.Instance,
-                    Options.Create(options));
+            var clientOptions = options ?? new LaranetHttpOptions
+            {
+                Retry = new RetryOptions { MaxRetries = 0 },
+            };
+
+            Client = new LaranetHttp(
+                HttpClient,
+                NullLogger<LaranetHttp>.Instance,
+                Options.Create(clientOptions));
         }
 
         public RecordingHttpMessageHandler Handler { get; } = new();

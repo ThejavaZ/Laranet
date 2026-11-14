@@ -14,8 +14,10 @@ public sealed class LaranetHttpOptions
     public Uri? BaseAddress { get; set; }
 
     /// <summary>
-    /// Gets or sets the default timeout for requests. When <see langword="null"/>, the
-    /// <see cref="HttpClient.Timeout"/> default applies.
+    /// Gets or sets the timeout applied to each HTTP attempt. When
+    /// <see langword="null"/>, the <see cref="HttpClient.Timeout"/> default applies.
+    /// Use <see cref="RequestOptions.Timeout"/> for a whole-operation timeout that
+    /// includes retry delays.
     /// </summary>
     public TimeSpan? Timeout { get; set; }
 
@@ -25,4 +27,10 @@ public sealed class LaranetHttpOptions
     /// </summary>
     public JsonSerializerOptions JsonOptions { get; set; } =
         new(JsonSerializerDefaults.Web);
+
+    /// <summary>
+    /// Gets or sets the default retry policy. The default retries transient failures
+    /// for idempotent requests only.
+    /// </summary>
+    public RetryOptions Retry { get; set; } = new();
 }

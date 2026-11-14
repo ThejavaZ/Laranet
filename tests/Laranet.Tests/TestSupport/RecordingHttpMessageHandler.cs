@@ -16,6 +16,10 @@ internal sealed class RecordingHttpMessageHandler : HttpMessageHandler
 
     public List<RecordedRequest> Requests { get; } = [];
 
+    public List<HttpRequestMessage> MessageInstances { get; } = [];
+
+    public List<HttpContent?> ContentInstances { get; } = [];
+
     public void EnqueueResponse(HttpResponseMessage response)
     {
         EnqueueResponse(() => response);
@@ -59,6 +63,8 @@ internal sealed class RecordingHttpMessageHandler : HttpMessageHandler
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
+        MessageInstances.Add(request);
+        ContentInstances.Add(request.Content);
         Requests.Add(await RecordedRequest.CreateAsync(request, cancellationToken));
         cancellationToken.ThrowIfCancellationRequested();
 

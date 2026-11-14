@@ -19,8 +19,9 @@ public sealed record RequestOptions
     public IReadOnlyDictionary<string, string>? ContentHeaders { get; init; }
 
     /// <summary>
-    /// Gets the timeout for the whole operation, including reading the response. When
-    /// <see langword="null"/>, the <see cref="HttpClient.Timeout"/> applies.
+    /// Gets the timeout for the whole operation, including retry delays and reading
+    /// the response. When <see langword="null"/>, the <see cref="HttpClient.Timeout"/>
+    /// applies to each attempt.
     /// </summary>
     public TimeSpan? Timeout { get; init; }
 
@@ -30,6 +31,12 @@ public sealed record RequestOptions
     /// apply.
     /// </summary>
     public JsonSerializerOptions? JsonOptions { get; init; }
+
+    /// <summary>
+    /// Gets the retry policy for this request. When <see langword="null"/>, the
+    /// client default applies.
+    /// </summary>
+    public RetryOptions? Retry { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether a failed result should be thrown as a native

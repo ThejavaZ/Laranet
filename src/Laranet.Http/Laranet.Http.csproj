@@ -9,13 +9,13 @@
     <PackageId>Laranet.Http</PackageId>
     <Version>0.2.0</Version>
     <Description>
-      Optional convenience layer over HttpClient for typed, cancellation-aware API calls.
+      Optional convenience layer over HttpClient for typed, cancellation-aware API calls with safe retries.
     </Description>
     <Authors>TheJavaZ</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/TheJavaZ/Laranet</RepositoryUrl>
-    <PackageTags>dotnet;toolkit;http;httpclient;json;api;rest</PackageTags>
+    <PackageTags>dotnet;toolkit;http;httpclient;json;api;rest;retry;resilience</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
