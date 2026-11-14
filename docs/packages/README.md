@@ -9,6 +9,7 @@ application uses.
 | `Laranet.EntityFrameworkCore` | Asynchronous pagination and optional conventions through EF Core | `dotnet add package Laranet.EntityFrameworkCore` | [README](../../src/Laranet.EntityFrameworkCore/README.md) |
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results | `dotnet add package Laranet.AspNetCore` | [README](../../src/Laranet.AspNetCore/README.md) |
 | `Laranet.Cli` | Project creation and code generation | `dotnet tool install --global Laranet.Cli` | [README](../../src/Laranet.Cli/README.md) |
+| `Laranet.Http` | Typed, cancellation-aware convenience layer over `HttpClient` | Next release; not yet on NuGet.org | [README](../../src/Laranet.Http/README.md) |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` | [README](../../src/Laranet/README.md) |
 
 ## Dependency boundaries
@@ -24,6 +25,8 @@ Laranet.AspNetCore ──► Laranet.Data ◄── Laranet.EntityFrameworkCore
 - `Laranet.EntityFrameworkCore` references `Laranet.Data` and EF Core.
 - `Laranet.AspNetCore` references `Laranet.Data` and the ASP.NET Core shared
   framework.
+- `Laranet.Http` references `Microsoft.Extensions.Http` and does not depend on
+  `Laranet.Data`, ASP.NET Core, or a specific API client.
 - `Laranet.Cli` is a .NET tool with no runtime dependency on the other packages.
 - `Laranet` remains small and is not required by the other packages.
 
@@ -35,6 +38,7 @@ Laranet.AspNetCore ──► Laranet.Data ◄── Laranet.EntityFrameworkCore
 | Asynchronous EF Core pagination | `Laranet.EntityFrameworkCore` |
 | Auditing or soft delete with EF Core | `Laranet.EntityFrameworkCore` |
 | Paginated Minimal API or MVC response | `Laranet.AspNetCore` + `Laranet.EntityFrameworkCore` |
+| Call another API with typed requests and responses | `Laranet.Http` |
 | Scaffold a new project or generate code | `Laranet.Cli` |
 
 ## Examples
@@ -51,6 +55,7 @@ Laranet.AspNetCore ──► Laranet.Data ◄── Laranet.EntityFrameworkCore
 - [Core (`Laranet`)](../api/core.md)
 - [Data (`Laranet.Data`)](../api/data.md)
 - [Integrations](../api/integrations.md)
+- [HTTP (`Laranet.Http`)](../api/http.md)
 
 ## Installation details
 

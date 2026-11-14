@@ -8,6 +8,8 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 
 ### Added
 
+- `Laranet.Http`, an optional convenience layer over `HttpClient`: typed `GetAsync<T>`, `PostAsync`, `PutAsync`, `PatchAsync`, and `DeleteAsync`; `HttpResult` and `HttpResult<T>` with explicit error kinds; cancellation, per-request timeouts, request and content headers, configurable JSON options, opt-in `ThrowOnError`, and `AddLaranetHttp` registration as a typed client.
+- ADR-0010 documenting the HTTP convenience layer, its limits, and its native `HttpClient` escape hatch.
 - Opt-in EF Core conventions in `Laranet.EntityFrameworkCore`: `IAuditable` timestamps and `ISoftDeletable` soft delete, registered with `AddLaranetAuditing` and `AddLaranetSoftDelete`, plus `ApplySoftDeleteQueryFilters` for a native global query filter.
 - `TimeProvider` support for deterministic auditing and soft-delete timestamps.
 - ADR-0009 documenting why Laranet keeps EF Core conventions optional and close to the framework.

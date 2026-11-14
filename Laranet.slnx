@@ -4,6 +4,7 @@
     <Project Path="src/Laranet.Cli/Laranet.Cli.csproj" />
     <Project Path="src/Laranet.Data/Laranet.Data.csproj" />
     <Project Path="src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj" />
+    <Project Path="src/Laranet.Http/Laranet.Http.csproj" />
     <Project Path="src/Laranet/Laranet.csproj" />
   </Folder>
   <Folder Name="/samples/">

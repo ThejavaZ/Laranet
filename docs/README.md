@@ -53,12 +53,14 @@ them.
 
 ## API Reference
 
-Reference for the public API of every published package.
+Reference for the public API of every published package and the packages in
+development.
 
 - [API Reference](api/README.md)
 - [Core (`Laranet`)](api/core.md)
 - [Data (`Laranet.Data`)](api/data.md)
 - [Integrations](api/integrations.md)
+- [HTTP (`Laranet.Http`)](api/http.md)
 
 ## Packages
 
@@ -69,6 +71,7 @@ Understand what each package provides and when to use it.
 - [`Laranet.Data`](../src/Laranet.Data/README.md)
 - [`Laranet.EntityFrameworkCore`](../src/Laranet.EntityFrameworkCore/README.md)
 - [`Laranet.AspNetCore`](../src/Laranet.AspNetCore/README.md)
+- [`Laranet.Http`](../src/Laranet.Http/README.md)
 - [`Laranet.Cli`](../src/Laranet.Cli/README.md)
 
 ## Samples

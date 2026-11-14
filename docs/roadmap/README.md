@@ -54,7 +54,7 @@ Laranet is a **toolkit, not an opinionated application framework**.
 | `Laranet.EntityFrameworkCore` | EF Core integration, async query execution, and optional conventions | Published `0.1.1` |
 | `Laranet.AspNetCore`          | ASP.NET Core integration                         | Published `0.1.1` |
 | `Laranet.Cli`                 | Project and code generation commands             | Published `0.1.1` |
-| `Laranet.Http`                | Optional convenience layer over `HttpClient`     | Planned for Version 3 (Sprints 18.1–18.2); ADR-0010 pending |
+| `Laranet.Http`                | Optional convenience layer over `HttpClient`     | In development (Sprints 18.1–18.2); next release |
 | `Laranet.AspNetCore.Validation` | Optional request validation integration        | Planned for Version 3     |
 | `Laranet.Analyzers`           | Optional Roslyn diagnostics                      | Planned for Version 5     |
 | `Laranet.Admin`               | Admin resource abstractions                      | Candidate for Version 4   |
@@ -119,11 +119,10 @@ Before marking it complete, verify:
 
 ## Current project state
 
-**Current focus:** Version 3, [Sprint 18.1 — `Laranet.Http` foundation](v3.md).
-Sprint 17 — EF Core conventions is completed. Sprint 18.1 implements `Laranet.Http`,
-Sprint 18.2 hardens and packages it, and Sprint 18.3 covers Validation. ADR-0010 must
-be accepted before implementation. Version 2 remains open pending real external
-feedback.
+**Current focus:** Version 3, [Sprint 18.2 — `Laranet.Http` resilience and release](v3.md).
+Sprint 17 — EF Core conventions and Sprint 18.1 — `Laranet.Http` foundation are
+completed. Sprint 18.2 hardens and packages `Laranet.Http`, and Sprint 18.3 covers
+Validation. Version 2 remains open pending real external feedback.
 
 All five packages (`Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`,
 `Laranet.AspNetCore`, and `Laranet.Cli`) are published on NuGet.org as `0.1.1`. The

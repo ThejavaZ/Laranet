@@ -9,6 +9,7 @@ READMEs.
 | [Core](core.md) | `Laranet` | Published, intentionally empty |
 | [Data](data.md) | `Laranet.Data` | Published |
 | [Integrations](integrations.md) | `Laranet.EntityFrameworkCore`, `Laranet.AspNetCore` | Published |
+| [HTTP](http.md) | `Laranet.Http` | In development; next release |
 
 ## How to read this reference
 
@@ -32,7 +33,8 @@ Modules that are planned or under evaluation, such as validation and administrat
 resources, are not part of the published API. The [roadmap](../roadmap/README.md)
 tracks their status, and the
 [ecosystem architecture](../architecture/ecosystem.md) defines when a module is
-admitted.
+admitted. `Laranet.Http` is implemented in the repository and is documented here
+before its first package release.
 
 ## Related
 

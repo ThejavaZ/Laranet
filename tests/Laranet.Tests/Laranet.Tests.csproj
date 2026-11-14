@@ -35,6 +35,7 @@
     <ProjectReference Include="../../src/Laranet.Cli/Laranet.Cli.csproj" />
     <ProjectReference Include="../../src/Laranet.Data/Laranet.Data.csproj" />
     <ProjectReference Include="../../src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="../../src/Laranet.Http/Laranet.Http.csproj" />
   </ItemGroup>
 
 </Project>

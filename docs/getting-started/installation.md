@@ -20,9 +20,12 @@ your application uses.
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results | `dotnet add package Laranet.AspNetCore` |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` |
 | `Laranet.Cli` | Project creation and code generation tool | See below |
+| `Laranet.Http` | Typed, cancellation-aware convenience layer over `HttpClient` | Next release; source only for now |
 
 `Laranet.EntityFrameworkCore` and `Laranet.AspNetCore` reference `Laranet.Data`, so
 you do not need to install `Laranet.Data` separately when you use them.
+`Laranet.Http` is implemented in the repository and will be published with the next
+release.
 
 ## Install the CLI
 
@@ -63,6 +66,7 @@ mkdir -p artifacts/packages
 dotnet pack src/Laranet.Data/Laranet.Data.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.AspNetCore/Laranet.AspNetCore.csproj --configuration Release --no-build --output artifacts/packages
+dotnet pack src/Laranet.Http/Laranet.Http.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.Cli/Laranet.Cli.csproj --configuration Release --no-build --output artifacts/packages
 ```
 
