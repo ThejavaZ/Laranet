@@ -108,6 +108,7 @@ Its responsibilities include:
 - Supporting asynchronous query execution.
 - Preserving database-side query execution.
 - Providing EF Core-specific extensions.
+- Offering opt-in auditing and soft-delete conventions.
 
 The integration must not become a mandatory dependency of the Data module.
 

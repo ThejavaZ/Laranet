@@ -1,8 +1,9 @@
 # Relationships
 
-> **Status:** Laranet 0.1.x does not ship relationship abstractions. This guide shows
-> the native Entity Framework Core approach that works with the current packages. The
-> roadmap evaluates optional declarative conventions in Version 3. See
+> **Status:** Laranet does not ship relationship abstractions. This guide shows the
+> native Entity Framework Core approach that works with the current packages. Optional
+> auditing and soft-delete conventions are available separately; see
+> [EF Core conventions](ef-core-conventions.md). See also
 > [ADR-0006](../architecture/decisions/0006-toolkit-with-framework-tooling.md) and the
 > [Version 3 roadmap](../roadmap/v3.md).
 
@@ -186,14 +187,16 @@ Nothing beyond the native EF Core behavior:
 - `Search`, `WhereIf`, `SortBy`, `OrderBy`, and `Paginate` operate on any
   `IQueryable<T>`, including queries that use `Include`.
 - `PaginateAsync` executes the query asynchronously through EF Core.
+- Opt-in `CreatedAt` / `UpdatedAt` auditing and soft delete with a global query filter
+  are available in `Laranet.EntityFrameworkCore`.
 
-The Version 3 roadmap studies optional conventions such as auditing and soft delete.
 Active Record-style relationship wrappers are explicitly deferred until an ADR and a
 concrete use case exist.
 
 ## Related
 
 - [Data access](data-access.md)
+- [EF Core conventions](ef-core-conventions.md)
 - [Pagination](pagination.md)
 - [Version 3 roadmap](../roadmap/v3.md)
 - [EF Core relationships](https://learn.microsoft.com/ef/core/modeling/relationships)

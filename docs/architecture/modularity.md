@@ -93,6 +93,7 @@ Responsibilities include:
 - Expression compatibility.
 - Asynchronous query execution.
 - EF Core-specific extensions.
+- Opt-in auditing and soft-delete conventions.
 
 ### AspNetCore
 

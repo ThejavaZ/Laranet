@@ -23,7 +23,7 @@ corrections can go directly to a pull request.
 | --- | --- |
 | `src/Laranet` | Core package. Intentionally empty. |
 | `src/Laranet.Data` | Provider-neutral query extensions and `PagedResult<T>`. |
-| `src/Laranet.EntityFrameworkCore` | Asynchronous EF Core pagination. |
+| `src/Laranet.EntityFrameworkCore` | Asynchronous EF Core pagination and optional conventions. |
 | `src/Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results. |
 | `src/Laranet.Cli` | Project creation and code generation tool. |
 | `tests/Laranet.Tests` | Unit, integration, and CLI tests. |

@@ -1,10 +1,18 @@
 # Laranet.EntityFrameworkCore
 
-Entity Framework Core integration for `Laranet.Data` asynchronous query execution.
+Entity Framework Core integration for asynchronous query execution and optional
+conventions.
 
 This package adds Entity Framework Core-specific operations without coupling
 `Laranet.Data` to Entity Framework Core. It references `Laranet.Data` and the
 `Microsoft.EntityFrameworkCore` package.
+
+The package provides:
+
+- `PaginateAsync` for asynchronous pagination.
+- Opt-in `CreatedAt` / `UpdatedAt` auditing through `IAuditable`.
+- Opt-in soft delete through `ISoftDeletable`, a `SaveChanges` interceptor, and a
+  native global query filter.
 
 ## Installation
 
@@ -50,6 +58,74 @@ var page = await dbContext.Products
     .PaginateAsync(page, pageSize, cancellationToken: cancellationToken);
 ```
 
+## Conventions
+
+The conventions are opt-in. Nothing changes until an entity implements a marker
+interface and the corresponding helper is registered.
+
+### Auditing
+
+```csharp
+using Laranet.EntityFrameworkCore.Conventions;
+
+public sealed class Product : IAuditable
+{
+    public int Id { get; set; }
+    public required string Name { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset? UpdatedAt { get; set; }
+}
+```
+
+```csharp
+using Laranet.EntityFrameworkCore.Extensions;
+
+optionsBuilder
+    .UseSqlServer(connectionString)
+    .AddLaranetAuditing();
+```
+
+`CreatedAt` is set when the entity is added. `UpdatedAt` is set when it is modified and
+stays `null` until then. Both `SaveChanges` and `SaveChangesAsync` are covered.
+Timestamps use `TimeProvider.System`; pass a `TimeProvider` to
+`AddLaranetAuditing` to control the clock.
+
+### Soft delete
+
+```csharp
+public sealed class Product : ISoftDeletable
+{
+    public int Id { get; set; }
+    public required string Name { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTimeOffset? DeletedAt { get; set; }
+}
+```
+
+```csharp
+optionsBuilder
+    .UseSqlServer(connectionString)
+    .AddLaranetSoftDelete();
+```
+
+```csharp
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    base.OnModelCreating(modelBuilder);
+
+    modelBuilder.ApplySoftDeleteQueryFilters();
+}
+```
+
+`Remove` updates `IsDeleted` and `DeletedAt` instead of deleting the row. Queries
+exclude soft-deleted rows by default; use `IgnoreQueryFilters()` to include them. When
+the entity also implements `IAuditable`, `UpdatedAt` records the deletion. Call
+`ApplySoftDeleteQueryFilters()` after configuring your own filters; it adapts to
+anonymous or named EF Core query filters.
+
+See the [EF Core conventions guide](https://github.com/TheJavaZ/Laranet/blob/main/docs/guides/ef-core-conventions.md)
+for restoration, filter composition, limitations, and provider differences.
+
 ## Requirements
 
 - .NET 10
@@ -58,12 +134,15 @@ var page = await dbContext.Products
 ## Provider compatibility
 
 `Laranet.EntityFrameworkCore` relies on Entity Framework Core for translation and
-execution. The integration tests verify asynchronous pagination with SQLite. Other
-EF Core providers are expected to work when they support the same query operators,
-but they are not verified in the current CI matrix.
+execution. Pagination and conventions are verified with SQLite, SQL Server,
+PostgreSQL, MySQL, and MariaDB.
+
+`DateTimeOffset` storage depends on the provider. Laranet stores UTC timestamps, which
+work on every verified provider. PostgreSQL rejects a non-UTC offset, and MySQL
+normalizes timestamps to UTC.
 
 See [Provider Compatibility](https://github.com/TheJavaZ/Laranet/blob/main/docs/compatibility/providers.md)
-for the current support matrix.
+for the current support matrix and provider-specific behavior.
 
 ## License
 

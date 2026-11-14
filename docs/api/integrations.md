@@ -50,6 +50,80 @@ Behavior:
 Asynchronous execution lives in this package so that `Laranet.Data` remains
 independent of EF Core.
 
+### Conventions namespaces
+
+- `Laranet.EntityFrameworkCore.Conventions`
+- `Laranet.EntityFrameworkCore.Extensions`
+
+### `IAuditable`
+
+```csharp
+public interface IAuditable
+{
+    DateTimeOffset CreatedAt { get; set; }
+    DateTimeOffset? UpdatedAt { get; set; }
+}
+```
+
+### `ISoftDeletable`
+
+```csharp
+public interface ISoftDeletable
+{
+    bool IsDeleted { get; set; }
+    DateTimeOffset? DeletedAt { get; set; }
+}
+```
+
+### `AddLaranetAuditing`
+
+```csharp
+public static DbContextOptionsBuilder AddLaranetAuditing(
+    this DbContextOptionsBuilder optionsBuilder,
+    TimeProvider? timeProvider = null);
+
+public static DbContextOptionsBuilder<TContext> AddLaranetAuditing<TContext>(
+    this DbContextOptionsBuilder<TContext> optionsBuilder,
+    TimeProvider? timeProvider = null)
+    where TContext : DbContext;
+```
+
+Registers a `SaveChanges` interceptor that sets `CreatedAt` for added entities and
+`UpdatedAt` for modified entities that implement `IAuditable`. The default clock is
+`TimeProvider.System`.
+
+### `AddLaranetSoftDelete`
+
+```csharp
+public static DbContextOptionsBuilder AddLaranetSoftDelete(
+    this DbContextOptionsBuilder optionsBuilder,
+    TimeProvider? timeProvider = null);
+
+public static DbContextOptionsBuilder<TContext> AddLaranetSoftDelete<TContext>(
+    this DbContextOptionsBuilder<TContext> optionsBuilder,
+    TimeProvider? timeProvider = null)
+    where TContext : DbContext;
+```
+
+Registers a `SaveChanges` interceptor that converts deletions of `ISoftDeletable`
+entities into updates of `IsDeleted` and `DeletedAt`. When the entity also implements
+`IAuditable`, `UpdatedAt` is updated too.
+
+### `ApplySoftDeleteQueryFilters`
+
+```csharp
+public static ModelBuilder ApplySoftDeleteQueryFilters(
+    this ModelBuilder modelBuilder);
+```
+
+Installs a native EF Core query filter for root entity types that implement
+`ISoftDeletable`. The filter composes with an existing anonymous filter or with named
+filters. Call it after configuring your own filters and use `IgnoreQueryFilters()` to
+include soft-deleted rows in a query.
+
+See the [EF Core conventions guide](../guides/ef-core-conventions.md) for usage,
+limitations, and provider behavior.
+
 ## ASP.NET Core
 
 ### Namespace
@@ -152,5 +226,6 @@ Neither package adds EF Core or ASP.NET Core to `Laranet.Data`.
 
 - [Data API](data.md)
 - [Pagination guide](../guides/pagination.md)
+- [EF Core conventions guide](../guides/ef-core-conventions.md)
 - [`Laranet.EntityFrameworkCore` README](../../src/Laranet.EntityFrameworkCore/README.md)
 - [`Laranet.AspNetCore` README](../../src/Laranet.AspNetCore/README.md)

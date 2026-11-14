@@ -15,7 +15,7 @@ Functionality is distributed in independent, optional packages:
 | Package | Purpose |
 | --- | --- |
 | [`Laranet.Data`](https://www.nuget.org/packages/Laranet.Data) | Provider-neutral `IQueryable` search, sorting, filtering, and pagination |
-| [`Laranet.EntityFrameworkCore`](https://www.nuget.org/packages/Laranet.EntityFrameworkCore) | Asynchronous pagination through Entity Framework Core |
+| [`Laranet.EntityFrameworkCore`](https://www.nuget.org/packages/Laranet.EntityFrameworkCore) | Asynchronous pagination and optional conventions through Entity Framework Core |
 | [`Laranet.AspNetCore`](https://www.nuget.org/packages/Laranet.AspNetCore) | Pagination HTTP headers and Minimal API results |
 | [`Laranet.Cli`](https://www.nuget.org/packages/Laranet.Cli) | Project creation and code generation tool |
 

@@ -45,6 +45,7 @@ them.
 
 - [Data Access](guides/data-access.md)
 - [Pagination](guides/pagination.md)
+- [EF Core Conventions](guides/ef-core-conventions.md)
 - [Relationships](guides/relationships.md)
 - [Validation](guides/validation.md)
 - [Error Handling](guides/error-handling.md)

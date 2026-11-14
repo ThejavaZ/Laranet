@@ -6,7 +6,7 @@ application uses.
 | Package | Responsibility | Install | Reference |
 | --- | --- | --- | --- |
 | `Laranet.Data` | Provider-neutral query search, sorting, filtering, and pagination | `dotnet add package Laranet.Data` | [README](../../src/Laranet.Data/README.md) |
-| `Laranet.EntityFrameworkCore` | Asynchronous pagination through EF Core | `dotnet add package Laranet.EntityFrameworkCore` | [README](../../src/Laranet.EntityFrameworkCore/README.md) |
+| `Laranet.EntityFrameworkCore` | Asynchronous pagination and optional conventions through EF Core | `dotnet add package Laranet.EntityFrameworkCore` | [README](../../src/Laranet.EntityFrameworkCore/README.md) |
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results | `dotnet add package Laranet.AspNetCore` | [README](../../src/Laranet.AspNetCore/README.md) |
 | `Laranet.Cli` | Project creation and code generation | `dotnet tool install --global Laranet.Cli` | [README](../../src/Laranet.Cli/README.md) |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` | [README](../../src/Laranet/README.md) |
@@ -33,6 +33,7 @@ Laranet.AspNetCore ──► Laranet.Data ◄── Laranet.EntityFrameworkCore
 | --- | --- |
 | Query an existing `IQueryable<T>` | `Laranet.Data` |
 | Asynchronous EF Core pagination | `Laranet.EntityFrameworkCore` |
+| Auditing or soft delete with EF Core | `Laranet.EntityFrameworkCore` |
 | Paginated Minimal API or MVC response | `Laranet.AspNetCore` + `Laranet.EntityFrameworkCore` |
 | Scaffold a new project or generate code | `Laranet.Cli` |
 

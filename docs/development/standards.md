@@ -38,7 +38,7 @@ widely understood.
 | --- | --- |
 | `Laranet` | Shared abstractions. Intentionally empty until two modules need the same type. |
 | `Laranet.Data` | Provider-neutral query composition, pagination, search, and sorting. |
-| `Laranet.EntityFrameworkCore` | EF Core-specific asynchronous execution. |
+| `Laranet.EntityFrameworkCore` | EF Core-specific asynchronous execution and optional conventions. |
 | `Laranet.AspNetCore` | ASP.NET Core integration. |
 | `Laranet.Cli` | Project creation and code generation. |
 

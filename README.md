@@ -30,7 +30,7 @@ conventions, query utilities, integrations, and code generation on top of them.
 | Package | Purpose |
 | --- | --- |
 | `Laranet.Data` | Provider-neutral `IQueryable` search, sorting, filtering, and pagination. |
-| `Laranet.EntityFrameworkCore` | Asynchronous EF Core pagination. |
+| `Laranet.EntityFrameworkCore` | Asynchronous EF Core pagination and optional conventions. |
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results. |
 | `Laranet.Cli` | Project creation and code generation. |
 | `Laranet` | Core package, intentionally empty until a shared abstraction is justified. |

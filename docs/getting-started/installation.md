@@ -16,7 +16,7 @@ your application uses.
 | Package | Purpose | Install |
 | --- | --- | --- |
 | `Laranet.Data` | Provider-neutral `IQueryable` search, sorting, filtering, and pagination | `dotnet add package Laranet.Data` |
-| `Laranet.EntityFrameworkCore` | Asynchronous pagination through EF Core | `dotnet add package Laranet.EntityFrameworkCore` |
+| `Laranet.EntityFrameworkCore` | Asynchronous pagination and optional conventions through EF Core | `dotnet add package Laranet.EntityFrameworkCore` |
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results | `dotnet add package Laranet.AspNetCore` |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` |
 | `Laranet.Cli` | Project creation and code generation tool | See below |

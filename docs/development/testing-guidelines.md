@@ -99,10 +99,11 @@ Tests must be deterministic and independent:
 
 Use the shared helpers in `TestSupport` instead of duplicating setup code.
 
-## SQLite integration tests
+## Provider integration tests
 
-Provider behavior is verified with SQLite through EF Core. SQLite is a test-only
-dependency; production packages must not reference it.
+Provider behavior is verified with SQLite through EF Core by default, and with SQL
+Server, PostgreSQL, MySQL, and MariaDB through the provider compatibility suite.
+Provider dependencies are test-only; production packages must not reference them.
 
 A data integration test typically:
 
@@ -113,6 +114,10 @@ A data integration test typically:
 
 `CommandCaptureInterceptor` records the commands so a test can verify that a query was
 translated and executed as expected, without asserting the exact SQL text.
+
+Convention tests use a `TimeProvider` with a controlled value so auditing and
+soft-delete timestamps are deterministic. The provider compatibility suite repeats the
+convention checks against every verified relational provider.
 
 ## CLI tests
 

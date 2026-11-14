@@ -3,8 +3,8 @@
 ## Purpose
 
 This document describes the current provider compatibility of `Laranet.Data` and the
-expectations for `IQueryable` providers. The matrix applies to the `Laranet.Data`
-`0.1.x` release line.
+EF Core integration, and the expectations for `IQueryable` providers. The matrix
+applies to the current `0.1.x` release line.
 
 `Laranet.Data` is provider-neutral. It builds standard `Queryable` expression trees
 and does not reference Entity Framework Core, ASP.NET Core, or any database provider.
@@ -17,6 +17,8 @@ Translation and execution are always delegated to the underlying provider.
 | SQLite via Entity Framework Core           | Verified             | Integration and provider compatibility test suites |
 | SQL Server via Entity Framework Core       | Verified             | Provider compatibility tests and CI service container |
 | PostgreSQL via Entity Framework Core       | Verified             | Provider compatibility tests and CI service container |
+| MySQL 8.4 via Entity Framework Core        | Verified             | Provider compatibility tests and CI service container |
+| MariaDB 11.4 via Entity Framework Core     | Verified             | Provider compatibility tests and CI service container |
 | Other EF Core relational providers         | Expected, not verified | No automated coverage         |
 | `EnumerableQuery<T>` (LINQ to Objects)     | Works for query semantics | Unit test suite            |
 | Other non-EF `IQueryable` providers        | Not verified         | No automated coverage           |
@@ -41,6 +43,10 @@ verifies:
 - Composition between search, filtering, sorting, and pagination.
 - Asynchronous pagination through `Laranet.EntityFrameworkCore`, including command
   execution, metadata, cancellation, and composition.
+- Created and updated timestamp auditing through `IAuditable`.
+- Soft delete through `ISoftDeletable`, including `DeletedAt`, `IgnoreQueryFilters()`,
+  and `UpdatedAt` for auditable entities.
+- Composition between the soft-delete query filter and an existing query filter.
 
 The provider compatibility suite runs against the provider selected by
 `LARANET_TEST_PROVIDER` and covers:
@@ -51,14 +57,17 @@ The provider compatibility suite runs against the provider selected by
 - Synchronous and asynchronous pagination.
 - Composition between search, filtering, sorting, and pagination.
 - Parameterization of the search term.
+- Auditing and soft-delete conventions, including timestamp round trips.
 
-SQLite runs in the default test job. SQL Server and PostgreSQL run against CI service
-containers on every push and pull request to `main`. The suite passed in CI and also
-locally against SQL Server 2022 and PostgreSQL 17.
+SQLite runs in the default test job. SQL Server, PostgreSQL, MySQL, and MariaDB run
+against CI service containers on every push and pull request to `main`. The provider
+suite also passed locally against SQL Server 2022, PostgreSQL 17, MySQL 8.4, and
+MariaDB 11.4.
 
-## Verified Translation Differences
+## Verified Provider Differences
 
-The same `Search` call is translated differently by each verified provider:
+The same `Search` call is translated differently by the verified providers. For
+example:
 
 | Provider | Translation of `string.Contains` |
 | --- | --- |
@@ -70,15 +79,33 @@ These are provider implementation details. `Laranet.Data` composes the expressio
 does not embed provider-specific SQL. The compatibility tests assert results and
 parameterization rather than exact SQL text.
 
+The auditing and soft-delete conventions also expose a provider difference around
+`DateTimeOffset`:
+
+| Provider | Storage | Offset behavior |
+| --- | --- | --- |
+| SQLite | `TEXT` | Preserved. |
+| SQL Server | `datetimeoffset` | Preserved. |
+| PostgreSQL | `timestamp with time zone` | Only a zero (UTC) offset is accepted. |
+| MySQL 8.4 and MariaDB 11.4 through `MySql.EntityFrameworkCore` | `datetime(6)` | Normalized to UTC; the original offset is lost. |
+
+The interceptors use `TimeProvider.GetUtcNow()`, so the default convention produces
+UTC timestamps that every verified provider accepts. The instant is preserved in all
+cases; only the offset can change or be rejected. A custom `TimeProvider` must return
+UTC when the application targets PostgreSQL. The provider compatibility suite asserts
+UTC round trips and the offset rule for each verified provider.
+
 ## Entity Framework Core Integration
 
-`Laranet.EntityFrameworkCore` adds asynchronous execution on top of `Laranet.Data`.
-It is verified with SQLite, SQL Server, and PostgreSQL through Entity Framework Core.
-Other EF Core providers inherit the same status as their provider row above: they are
-expected to work, but they are not verified by the current test matrix.
+`Laranet.EntityFrameworkCore` adds asynchronous execution, auditing, and soft delete on
+top of `Laranet.Data`. It is verified with SQLite, SQL Server, PostgreSQL, MySQL, and
+MariaDB through Entity Framework Core. Other EF Core providers inherit the same status
+as their provider row above: they are expected to work, but they are not verified by
+the current test matrix.
 
 The package depends on `Microsoft.EntityFrameworkCore` 10.x. The synchronous behavior
-of `Laranet.Data` remains provider-neutral and does not reference EF Core.
+of `Laranet.Data` remains provider-neutral and does not reference EF Core. The
+conventions do not add a database provider dependency to the production package.
 
 ## Running provider compatibility tests
 
@@ -90,10 +117,16 @@ LARANET_TEST_PROVIDER=sqlserver dotnet test Laranet.slnx --configuration Release
   --filter "FullyQualifiedName~ProviderCompatibilityTests"
 LARANET_TEST_PROVIDER=postgresql dotnet test Laranet.slnx --configuration Release \
   --filter "FullyQualifiedName~ProviderCompatibilityTests"
+LARANET_TEST_PROVIDER=mysql dotnet test Laranet.slnx --configuration Release \
+  --filter "FullyQualifiedName~ProviderCompatibilityTests"
+LARANET_TEST_PROVIDER=mariadb dotnet test Laranet.slnx --configuration Release \
+  --filter "FullyQualifiedName~ProviderCompatibilityTests"
 ```
 
-`LARANET_SQLSERVER_CONNECTION` and `LARANET_POSTGRES_CONNECTION` override the default
-local connection strings. CI provides the service containers and connection strings.
+`LARANET_SQLSERVER_CONNECTION`, `LARANET_POSTGRES_CONNECTION`, and
+`LARANET_MYSQL_CONNECTION` override the default local connection strings. The
+`mysql` and `mariadb` values use the same `MySql.EntityFrameworkCore` provider. CI
+provides the service containers and connection strings.
 
 ## Provider Requirements
 
@@ -115,6 +148,7 @@ The following behaviors depend on the provider and database, not on `Laranet.Dat
 
 - String comparison, case sensitivity, and collation used by `Search`.
 - Null ordering and collation used by sorting.
+- `DateTimeOffset` storage and offset handling, as described above.
 - Translation of computed or unmapped properties.
 - Pagination stability when the query has no deterministic ordering.
 
@@ -131,7 +165,7 @@ integrations, which may add extension methods without changing the behavior of
 Provider support should be promoted from "expected" to "verified" only when:
 
 - Integration tests run against the provider.
-- The tests cover search, sorting, filtering, and pagination translation.
+- The tests cover search, sorting, filtering, pagination, and the opt-in conventions.
 - The tests run in a repeatable environment.
 
 Coverage claims in this document must match what the test suite actually executes.

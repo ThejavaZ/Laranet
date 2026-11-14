@@ -41,9 +41,9 @@ Test categories live under `tests/Laranet.Tests`:
 ## Provider integration tests
 
 Provider behavior is verified through EF Core. SQLite is the default provider; SQL
-Server and PostgreSQL run through the provider compatibility suite. Provider
-dependencies are kept in the test project only; production packages must not reference
-them.
+Server, PostgreSQL, MySQL, and MariaDB run through the provider compatibility suite.
+Provider dependencies are kept in the test project only; production packages must not
+reference them.
 
 Integration tests should:
 
@@ -62,6 +62,8 @@ Integration tests should:
 | `sqlite` or unset | SQLite |
 | `sqlserver` | SQL Server |
 | `postgresql` | PostgreSQL |
+| `mysql` | MySQL |
+| `mariadb` | MariaDB through the MySQL provider |
 
 Examples:
 
@@ -77,10 +79,16 @@ LARANET_TEST_PROVIDER=postgresql \
   LARANET_POSTGRES_CONNECTION="Host=localhost;Port=5432;Database=laranet_tests;Username=postgres;Password=laranet;Pooling=false" \
   dotnet test Laranet.slnx --configuration Release \
   --filter "FullyQualifiedName~ProviderCompatibilityTests"
+
+LARANET_TEST_PROVIDER=mysql \
+  LARANET_MYSQL_CONNECTION="Server=localhost;Port=3306;User Id=root;Password=laranet;SslMode=Disabled;AllowPublicKeyRetrieval=True;Pooling=False" \
+  dotnet test Laranet.slnx --configuration Release \
+  --filter "FullyQualifiedName~ProviderCompatibilityTests"
 ```
 
-SQL Server and PostgreSQL tests create and drop a unique database per test. CI runs
-them against service containers.
+SQL Server, PostgreSQL, MySQL, and MariaDB tests create and drop a unique database per
+test. CI runs them against service containers. The same provider compatibility suite
+covers the opt-in auditing and soft-delete conventions.
 
 ## What to test
 

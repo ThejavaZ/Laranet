@@ -8,9 +8,13 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 
 ### Added
 
-- SQL Server and PostgreSQL provider compatibility tests, selected with `LARANET_TEST_PROVIDER` and backed by unique test databases.
-- CI service containers for SQL Server 2022 and PostgreSQL 17, plus provider-specific test steps.
-- Verified provider translation differences for `Search` across SQLite, SQL Server, and PostgreSQL.
+- Opt-in EF Core conventions in `Laranet.EntityFrameworkCore`: `IAuditable` timestamps and `ISoftDeletable` soft delete, registered with `AddLaranetAuditing` and `AddLaranetSoftDelete`, plus `ApplySoftDeleteQueryFilters` for a native global query filter.
+- `TimeProvider` support for deterministic auditing and soft-delete timestamps.
+- ADR-0009 documenting why Laranet keeps EF Core conventions optional and close to the framework.
+- EF Core conventions guide covering auditing, soft delete, filter composition, limitations, and provider differences.
+- SQL Server, PostgreSQL, MySQL, and MariaDB provider compatibility tests, selected with `LARANET_TEST_PROVIDER` and backed by unique test databases.
+- CI service containers for SQL Server 2022, PostgreSQL 17, MySQL 8.4, and MariaDB 11.4, plus provider-specific test steps.
+- Verified provider translation differences for `Search` and verified `DateTimeOffset` storage differences across providers.
 - Version 6 candidate for an authentication and security baseline: ASP.NET Core Identity, JWT bearer, and optional BCrypt through `IPasswordHasher<TUser>`.
 - Development standards guide covering naming, project structure, async and cancellation, validation, DTOs, dependency direction, abstractions, and generated code.
 - CLI generator contract (`IGenerator`, `GenerationContext`, `GenerationOptions`) that plans files independently from the command-line layer.
@@ -24,8 +28,11 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 
 ### Changed
 
-- CI now runs the full SQLite suite and the provider compatibility suite for SQL Server and PostgreSQL.
-- Testing documentation explains how to run provider compatibility tests locally.
+- CI now runs the full SQLite suite and the provider compatibility suite for SQL Server, PostgreSQL, MySQL, and MariaDB.
+- The provider compatibility suite covers auditing and soft delete, including `IgnoreQueryFilters()` and query-filter composition.
+- Provider compatibility documentation now includes MySQL, MariaDB, and verified `DateTimeOffset` storage differences.
+- Testing documentation explains how to run provider compatibility tests locally, including MySQL and MariaDB.
+- `Laranet.EntityFrameworkCore` package metadata now describes the optional conventions and includes their tags.
 - Feedback intake now uses a Question issue template instead of a GitHub Discussions link that was unavailable.
 - CLI generators now compose through a registry and share conflict, `--force`, and `--dry-run` handling in one writer.
 - `laranet new` now defaults to the `minimal-api` template; the interactive prompt lists every template.

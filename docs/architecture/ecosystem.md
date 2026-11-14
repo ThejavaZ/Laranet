@@ -57,7 +57,7 @@ Status legend:
 | --- | --- | --- | --- |
 | `Laranet` | Core contracts and shared primitives | Published (intentionally empty) | — |
 | `Laranet.Data` | Provider-neutral query search, sorting, filtering, pagination | Published | — |
-| `Laranet.EntityFrameworkCore` | EF Core integration and query execution | Published | `Laranet.Data`, EF Core |
+| `Laranet.EntityFrameworkCore` | EF Core integration, query execution, and optional conventions | Published | `Laranet.Data`, EF Core |
 | `Laranet.AspNetCore` | ASP.NET Core pagination integration | Published | `Laranet.Data`, ASP.NET Core |
 | `Laranet.Cli` | Project creation and code generation | Published | — |
 | `Laranet.AspNetCore.Validation` | Optional request validation integration | Committed (V3; boundary pending) | `Laranet.AspNetCore` |
