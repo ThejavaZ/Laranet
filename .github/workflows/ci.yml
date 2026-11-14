@@ -145,6 +145,7 @@ jobs:
           dotnet pack src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj --configuration Release --no-build --output artifacts/packages
           dotnet pack src/Laranet.AspNetCore/Laranet.AspNetCore.csproj --configuration Release --no-build --output artifacts/packages
           dotnet pack src/Laranet.Cli/Laranet.Cli.csproj --configuration Release --no-build --output artifacts/packages
+          dotnet pack src/Laranet.Http/Laranet.Http.csproj --configuration Release --no-build --output artifacts/packages
 
       - name: Verify production packages
         shell: bash
