@@ -9,14 +9,14 @@
     <PackageId>Laranet.EntityFrameworkCore</PackageId>
     <Version>0.1.1</Version>
     <Description>
-      Entity Framework Core integration for Laranet.Data asynchronous query
-      execution.
+      Entity Framework Core integration for asynchronous pagination and optional
+      auditing and soft-delete conventions.
     </Description>
     <Authors>TheJavaZ</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/TheJavaZ/Laranet</RepositoryUrl>
-    <PackageTags>dotnet;toolkit;data;entity-framework-core;ef-core;pagination;async</PackageTags>
+    <PackageTags>dotnet;toolkit;data;entity-framework-core;ef-core;pagination;async;auditing;soft-delete</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 

@@ -1,3 +1,4 @@
+using Laranet.EntityFrameworkCore.Extensions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,14 +8,17 @@ internal static class SqliteTestContextFactory
 {
     public static async Task<TestDatabase> CreateAsync(
         CommandCaptureInterceptor? interceptor = null,
-        Action<DataTestDbContext>? seed = null)
+        Action<DataTestDbContext>? seed = null,
+        TimeProvider? timeProvider = null)
     {
         var connection = new SqliteConnection("Data Source=:memory:");
 
         await connection.OpenAsync();
 
         var optionsBuilder = new DbContextOptionsBuilder<DataTestDbContext>()
-            .UseSqlite(connection);
+            .UseSqlite(connection)
+            .AddLaranetAuditing(timeProvider)
+            .AddLaranetSoftDelete(timeProvider);
 
         if (interceptor is not null)
         {
