@@ -276,4 +276,188 @@ public class ProviderCompatibilityTests
         Assert.Equal("Product 11", result.Items[0].Name);
         Assert.Equal("Product 20", result.Items[^1].Name);
     }
+
+    private static readonly DateTimeOffset ConventionCreatedAt =
+        new(2026, 11, 12, 9, 0, 0, TimeSpan.Zero);
+
+    private static readonly DateTimeOffset ConventionUpdatedAt =
+        new(2026, 11, 12, 10, 0, 0, TimeSpan.Zero);
+
+    private static void SeedConventionRecords(DataTestDbContext context)
+    {
+        context.AuditedSoftDeleteRecords.AddRange(
+            new AuditedSoftDeleteTestRecord { Name = "Alpha" },
+            new AuditedSoftDeleteTestRecord { Name = "Beta" });
+    }
+
+    private static void SeedFilteredRecords(DataTestDbContext context)
+    {
+        context.FilteredSoftDeleteRecords.AddRange(
+            new FilteredSoftDeleteTestRecord { Name = "Visible" },
+            new FilteredSoftDeleteTestRecord { Name = "Deleted" },
+            new FilteredSoftDeleteTestRecord { Name = "Hidden" });
+    }
+
+    [Theory]
+    [MemberData(
+        nameof(ProviderTestData.Providers),
+        MemberType = typeof(ProviderTestData))]
+    public async Task Conventions_ShouldPersistAuditingTimestamps(
+        DataTestProvider provider)
+    {
+        var clock = new TestTimeProvider(ConventionCreatedAt);
+
+        await using var database = await ProviderTestContextFactory.CreateAsync(
+            provider,
+            seed: SeedConventionRecords,
+            timeProvider: clock);
+
+        var context = database.Context;
+
+        var records = await context.AuditedSoftDeleteRecords
+            .OrderBy(record => record.Id)
+            .ToListAsync();
+
+        Assert.All(records, record =>
+        {
+            Assert.Equal(ConventionCreatedAt, record.CreatedAt);
+            Assert.Null(record.UpdatedAt);
+        });
+
+        clock.UtcNow = ConventionUpdatedAt;
+        records[0].Name = "Alpha Updated";
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        var reloaded = await context.AuditedSoftDeleteRecords
+            .SingleAsync(record => record.Id == records[0].Id);
+
+        Assert.Equal(ConventionCreatedAt, reloaded.CreatedAt);
+        Assert.Equal(ConventionUpdatedAt, reloaded.UpdatedAt);
+    }
+
+    [Theory]
+    [MemberData(
+        nameof(ProviderTestData.Providers),
+        MemberType = typeof(ProviderTestData))]
+    public async Task Conventions_ShouldFollowProviderDateTimeOffsetRules(
+        DataTestProvider provider)
+    {
+        var offset = TimeSpan.FromHours(2);
+        var clock = new TestTimeProvider(
+            new DateTimeOffset(2026, 11, 12, 9, 0, 0, offset));
+
+        await using var database = await ProviderTestContextFactory.CreateAsync(
+            provider,
+            timeProvider: clock);
+
+        var context = database.Context;
+        var record = new AuditedSoftDeleteTestRecord { Name = "Offset" };
+
+        context.AuditedSoftDeleteRecords.Add(record);
+
+        if (provider == DataTestProvider.PostgreSql)
+        {
+            await Assert.ThrowsAsync<DbUpdateException>(
+                () => context.SaveChangesAsync());
+            return;
+        }
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var reloaded = await context.AuditedSoftDeleteRecords
+            .SingleAsync(entity => entity.Id == record.Id);
+
+        Assert.Equal(clock.UtcNow, reloaded.CreatedAt);
+
+        if (provider is DataTestProvider.Sqlite or DataTestProvider.SqlServer)
+        {
+            Assert.Equal(offset, reloaded.CreatedAt.Offset);
+        }
+        else
+        {
+            Assert.Equal(TimeSpan.Zero, reloaded.CreatedAt.Offset);
+        }
+    }
+
+    [Theory]
+    [MemberData(
+        nameof(ProviderTestData.Providers),
+        MemberType = typeof(ProviderTestData))]
+    public async Task Conventions_ShouldHideSoftDeletedRecords(
+        DataTestProvider provider)
+    {
+        var clock = new TestTimeProvider(ConventionCreatedAt);
+
+        await using var database = await ProviderTestContextFactory.CreateAsync(
+            provider,
+            seed: SeedConventionRecords,
+            timeProvider: clock);
+
+        var context = database.Context;
+
+        var record = await context.AuditedSoftDeleteRecords
+            .OrderBy(entity => entity.Id)
+            .FirstAsync();
+
+        clock.UtcNow = ConventionUpdatedAt;
+        context.AuditedSoftDeleteRecords.Remove(record);
+        await context.SaveChangesAsync();
+
+        Assert.True(record.IsDeleted);
+        Assert.Equal(ConventionUpdatedAt, record.DeletedAt);
+        Assert.Equal(ConventionUpdatedAt, record.UpdatedAt);
+        Assert.Equal(
+            1,
+            await context.AuditedSoftDeleteRecords.CountAsync());
+        Assert.Equal(
+            2,
+            await context.AuditedSoftDeleteRecords
+                .IgnoreQueryFilters()
+                .CountAsync());
+
+        context.ChangeTracker.Clear();
+
+        var reloaded = await context.AuditedSoftDeleteRecords
+            .IgnoreQueryFilters()
+            .SingleAsync(entity => entity.Id == record.Id);
+
+        Assert.True(reloaded.IsDeleted);
+        Assert.Equal(ConventionUpdatedAt, reloaded.DeletedAt);
+        Assert.Equal(ConventionUpdatedAt, reloaded.UpdatedAt);
+    }
+
+    [Theory]
+    [MemberData(
+        nameof(ProviderTestData.Providers),
+        MemberType = typeof(ProviderTestData))]
+    public async Task Conventions_ShouldComposeWithExistingQueryFilter(
+        DataTestProvider provider)
+    {
+        await using var database = await ProviderTestContextFactory.CreateAsync(
+            provider,
+            seed: SeedFilteredRecords);
+
+        var context = database.Context;
+
+        var deleted = await context.FilteredSoftDeleteRecords
+            .SingleAsync(record => record.Name == "Deleted");
+
+        context.FilteredSoftDeleteRecords.Remove(deleted);
+        await context.SaveChangesAsync();
+
+        var names = await context.FilteredSoftDeleteRecords
+            .Select(record => record.Name)
+            .ToListAsync();
+
+        Assert.Equal(["Visible"], names);
+
+        Assert.Equal(
+            3,
+            await context.FilteredSoftDeleteRecords
+                .IgnoreQueryFilters()
+                .CountAsync());
+    }
 }

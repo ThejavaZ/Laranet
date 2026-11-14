@@ -5,4 +5,5 @@ public enum DataTestProvider
     Sqlite,
     SqlServer,
     PostgreSql,
+    MySql,
 }

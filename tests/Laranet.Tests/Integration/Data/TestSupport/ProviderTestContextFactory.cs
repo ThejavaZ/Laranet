@@ -1,5 +1,7 @@
+using Laranet.EntityFrameworkCore.Extensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
 using Npgsql;
 
 namespace Laranet.Tests.Integration.Data.TestSupport;
@@ -12,16 +14,33 @@ internal static class ProviderTestContextFactory
     private const string DefaultPostgreSqlConnection =
         "Host=localhost;Port=5432;Database=laranet_tests;Username=postgres;Password=laranet;Pooling=false";
 
+    private const string DefaultMySqlConnection =
+        "Server=localhost;Port=3306;Database=laranet_tests;User Id=root;Password=laranet;SslMode=Disabled;AllowPublicKeyRetrieval=True;Pooling=False";
+
     public static async Task<ProviderTestDatabase> CreateAsync(
         DataTestProvider provider,
         CommandCaptureInterceptor? interceptor = null,
-        Action<DataTestDbContext>? seed = null)
+        Action<DataTestDbContext>? seed = null,
+        TimeProvider? timeProvider = null)
     {
         return provider switch
         {
-            DataTestProvider.Sqlite => await CreateSqliteAsync(interceptor, seed),
-            DataTestProvider.SqlServer => await CreateSqlServerAsync(interceptor, seed),
-            DataTestProvider.PostgreSql => await CreatePostgreSqlAsync(interceptor, seed),
+            DataTestProvider.Sqlite => await CreateSqliteAsync(
+                interceptor,
+                seed,
+                timeProvider),
+            DataTestProvider.SqlServer => await CreateSqlServerAsync(
+                interceptor,
+                seed,
+                timeProvider),
+            DataTestProvider.PostgreSql => await CreatePostgreSqlAsync(
+                interceptor,
+                seed,
+                timeProvider),
+            DataTestProvider.MySql => await CreateMySqlAsync(
+                interceptor,
+                seed,
+                timeProvider),
             _ => throw new ArgumentOutOfRangeException(
                 nameof(provider),
                 provider,
@@ -31,18 +50,21 @@ internal static class ProviderTestContextFactory
 
     private static async Task<ProviderTestDatabase> CreateSqliteAsync(
         CommandCaptureInterceptor? interceptor,
-        Action<DataTestDbContext>? seed)
+        Action<DataTestDbContext>? seed,
+        TimeProvider? timeProvider)
     {
         var database = await SqliteTestContextFactory.CreateAsync(
             interceptor,
-            seed);
+            seed,
+            timeProvider);
 
         return new ProviderTestDatabase(database.Context, database);
     }
 
     private static async Task<ProviderTestDatabase> CreateSqlServerAsync(
         CommandCaptureInterceptor? interceptor,
-        Action<DataTestDbContext>? seed)
+        Action<DataTestDbContext>? seed,
+        TimeProvider? timeProvider)
     {
         var connectionString = Environment.GetEnvironmentVariable(
             ProviderTestData.SqlServerConnectionVariable)
@@ -55,14 +77,17 @@ internal static class ProviderTestContextFactory
         };
 
         var optionsBuilder = new DbContextOptionsBuilder<DataTestDbContext>()
-            .UseSqlServer(builder.ConnectionString);
+            .UseSqlServer(builder.ConnectionString)
+            .AddLaranetAuditing(timeProvider)
+            .AddLaranetSoftDelete(timeProvider);
 
         return await CreateRelationalAsync(optionsBuilder, interceptor, seed);
     }
 
     private static async Task<ProviderTestDatabase> CreatePostgreSqlAsync(
         CommandCaptureInterceptor? interceptor,
-        Action<DataTestDbContext>? seed)
+        Action<DataTestDbContext>? seed,
+        TimeProvider? timeProvider)
     {
         var connectionString = Environment.GetEnvironmentVariable(
             ProviderTestData.PostgreSqlConnectionVariable)
@@ -75,7 +100,32 @@ internal static class ProviderTestContextFactory
         };
 
         var optionsBuilder = new DbContextOptionsBuilder<DataTestDbContext>()
-            .UseNpgsql(builder.ConnectionString);
+            .UseNpgsql(builder.ConnectionString)
+            .AddLaranetAuditing(timeProvider)
+            .AddLaranetSoftDelete(timeProvider);
+
+        return await CreateRelationalAsync(optionsBuilder, interceptor, seed);
+    }
+
+    private static async Task<ProviderTestDatabase> CreateMySqlAsync(
+        CommandCaptureInterceptor? interceptor,
+        Action<DataTestDbContext>? seed,
+        TimeProvider? timeProvider)
+    {
+        var connectionString = Environment.GetEnvironmentVariable(
+            ProviderTestData.MySqlConnectionVariable)
+            ?? DefaultMySqlConnection;
+
+        var builder = new MySqlConnectionStringBuilder(connectionString)
+        {
+            Database = $"laranet_tests_{Guid.NewGuid():N}",
+            Pooling = false,
+        };
+
+        var optionsBuilder = new DbContextOptionsBuilder<DataTestDbContext>()
+            .UseMySQL(builder.ConnectionString)
+            .AddLaranetAuditing(timeProvider)
+            .AddLaranetSoftDelete(timeProvider);
 
         return await CreateRelationalAsync(optionsBuilder, interceptor, seed);
     }

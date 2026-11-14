@@ -8,6 +8,7 @@ public static class ProviderTestData
     public const string ProviderVariable = "LARANET_TEST_PROVIDER";
     public const string SqlServerConnectionVariable = "LARANET_SQLSERVER_CONNECTION";
     public const string PostgreSqlConnectionVariable = "LARANET_POSTGRES_CONNECTION";
+    public const string MySqlConnectionVariable = "LARANET_MYSQL_CONNECTION";
 
     public static IEnumerable<object[]> Providers()
     {
@@ -23,9 +24,10 @@ public static class ProviderTestData
             null or "" or "sqlite" => DataTestProvider.Sqlite,
             "sqlserver" => DataTestProvider.SqlServer,
             "postgresql" or "postgres" => DataTestProvider.PostgreSql,
+            "mysql" or "mariadb" => DataTestProvider.MySql,
             _ => throw new InvalidOperationException(
                 $"Unsupported {ProviderVariable} value '{value}'. " +
-                "Use 'sqlite', 'sqlserver', or 'postgresql'."),
+                "Use 'sqlite', 'sqlserver', 'postgresql', or 'mysql'."),
         };
     }
 }

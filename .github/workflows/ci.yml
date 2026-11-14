@@ -42,6 +42,30 @@ jobs:
           --health-timeout 5s
           --health-retries 12
 
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: laranet
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -uroot -plaranet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: laranet
+        ports:
+          - 3308:3306
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -99,6 +123,18 @@ jobs:
         env:
           LARANET_TEST_PROVIDER: postgresql
           LARANET_POSTGRES_CONNECTION: "Host=localhost;Port=5432;Database=laranet_tests;Username=postgres;Password=laranet;Pooling=false"
+        run: dotnet test Laranet.slnx --configuration Release --no-build --filter "FullyQualifiedName~ProviderCompatibilityTests" --logger "console;verbosity=normal"
+
+      - name: Run provider tests (MySQL)
+        env:
+          LARANET_TEST_PROVIDER: mysql
+          LARANET_MYSQL_CONNECTION: "Server=localhost;Port=3306;User Id=root;Password=laranet;SslMode=Disabled;AllowPublicKeyRetrieval=True;Pooling=False"
+        run: dotnet test Laranet.slnx --configuration Release --no-build --filter "FullyQualifiedName~ProviderCompatibilityTests" --logger "console;verbosity=normal"
+
+      - name: Run provider tests (MariaDB)
+        env:
+          LARANET_TEST_PROVIDER: mariadb
+          LARANET_MYSQL_CONNECTION: "Server=localhost;Port=3308;User Id=root;Password=laranet;SslMode=Disabled;AllowPublicKeyRetrieval=True;Pooling=False"
         run: dotnet test Laranet.slnx --configuration Release --no-build --filter "FullyQualifiedName~ProviderCompatibilityTests" --logger "console;verbosity=normal"
 
       - name: Pack production packages
