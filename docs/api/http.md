@@ -86,9 +86,46 @@ converted into a failed result.
 | --- | --- |
 | `Headers` | Request headers. |
 | `ContentHeaders` | Content headers for the request body. Rejected on bodyless operations. |
-| `Timeout` | Timeout for the whole operation, including reading the response. |
+| `Timeout` | Timeout for the whole operation, including retry delays and reading the response. |
 | `JsonOptions` | JSON options for this request. Falls back to the client defaults. |
+| `Retry` | Retry policy for this request. Falls back to the client defaults. |
 | `ThrowOnError` | Throws native .NET exceptions instead of returning a failed result. |
+
+## `RetryOptions`
+
+| Property | Default | Meaning |
+| --- | --- | --- |
+| `MaxRetries` | `2` | Additional attempts after the first. `2` allows at most three attempts. |
+| `BaseDelay` | One second | Delay used by the first retry. Later retries grow exponentially. |
+| `MaxDelay` | 30 seconds | Maximum delay between attempts, including `Retry-After`. |
+| `RetryNonIdempotentRequests` | `false` | Allows retries for `POST` and `PATCH`. |
+
+Transient status codes are `408`, `429`, `500`, `502`, `503`, and `504`. Transient
+network failures are retried too. `GET`, `PUT`, and `DELETE` are retried by default.
+`POST` and `PATCH` require an explicit opt-in because repeating them can duplicate
+writes:
+
+```csharp
+var result = await http.PostAsync(
+    "/orders",
+    order,
+    new RequestOptions
+    {
+        Retry = new RetryOptions
+        {
+            MaxRetries = 2,
+            RetryNonIdempotentRequests = true,
+        },
+    },
+    cancellationToken);
+```
+
+Delays use exponential backoff with jitter. `Retry-After` from the server is honored
+and capped by `MaxDelay`. Every attempt builds a new `HttpRequestMessage` and new
+content; the same message is never sent twice. Timeouts and response contract errors
+are not retried. Caller cancellation stops the loop immediately and throws
+`OperationCanceledException`. The final result or exception always reflects the last
+attempt.
 
 ## `ThrowOnError`
 
@@ -105,8 +142,9 @@ converted into a failed result.
 | Property | Meaning |
 | --- | --- |
 | `BaseAddress` | Base address for relative request URLs. Must be absolute. |
-| `Timeout` | Default timeout. When `null`, `HttpClient.Timeout` applies. |
+| `Timeout` | Timeout applied to each HTTP attempt. When `null`, `HttpClient.Timeout` applies. Use `RequestOptions.Timeout` for a whole-operation timeout. |
 | `JsonOptions` | Default JSON options. Uses web defaults. |
+| `Retry` | Default retry policy. Retries idempotent requests. |
 
 ## Dependency injection
 
@@ -117,6 +155,7 @@ builder.Services.AddLaranetHttp(options =>
 {
     options.BaseAddress = new Uri("https://api.example.com");
     options.Timeout = TimeSpan.FromSeconds(30);
+    options.Retry.MaxRetries = 2;
 });
 ```
 
@@ -131,15 +170,16 @@ builder.Services
 
 ## Logging
 
-Requests are logged with the HTTP method, URL, status code, and duration. Bodies
-and sensitive headers are not logged. Avoid putting secrets in query strings,
-because the URL is part of the log entry.
+Requests are logged with the HTTP method, URL, status code, duration, and attempt.
+Retries log the delay and the reason. Bodies and sensitive headers are not logged.
+Avoid putting secrets in query strings, because the URL is part of the log entry.
 
 ## Current limitations
 
-The first version does not include automatic retries, multipart or streaming,
-authentication, OAuth, or a custom exception hierarchy. Retries, `Retry-After`, and
-structured retry logging are planned for the next sprint.
+The first version does not include multipart or streaming, authentication, OAuth, a
+custom retry engine, or a custom exception hierarchy. Use native handlers or a
+resilience library such as Polly when you need circuit breakers, bulkheads, hedging,
+or a broader policy pipeline.
 
 For full control, use `HttpClient`, `HttpRequestMessage`, custom handlers, or a
 resilience library such as Polly directly. Laranet does not hide them.

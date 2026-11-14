@@ -88,8 +88,8 @@ The workflow:
 1. Resolves the version from the tag (`v0.1.1` becomes `0.1.1`).
 2. Verifies that every production project declares the same version.
 3. Restores, builds, and runs the full test suite.
-4. Packs the five packages.
-5. Verifies that exactly five `.nupkg` files were produced with the expected
+4. Packs the six packages.
+5. Verifies that exactly six `.nupkg` files were produced with the expected
    version and valid metadata.
 6. Requests a short-lived NuGet API key through GitHub OIDC.
 7. Pushes the packages to NuGet.org with `--skip-duplicate`.
@@ -114,7 +114,7 @@ The NuGet.org policy must match the repository:
 | Workflow file | `release.yml` |
 | Environment | Empty |
 | Scopes | Push new packages and package versions |
-| Glob patterns | `Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`, `Laranet.AspNetCore`, `Laranet.Cli` |
+| Glob patterns | `Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`, `Laranet.AspNetCore`, `Laranet.Cli`, `Laranet.Http` |
 
 The `user` input of `NuGet/login@v1` must be the NuGet.org account username. The
 workflow currently uses `ThejavaZ`.

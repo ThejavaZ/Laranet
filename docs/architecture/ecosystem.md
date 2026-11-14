@@ -60,7 +60,7 @@ Status legend:
 | `Laranet.EntityFrameworkCore` | EF Core integration, query execution, and optional conventions | Published | `Laranet.Data`, EF Core |
 | `Laranet.AspNetCore` | ASP.NET Core pagination integration | Published | `Laranet.Data`, ASP.NET Core |
 | `Laranet.Cli` | Project creation and code generation | Published | — |
-| `Laranet.Http` | Optional convenience layer over `HttpClient` | In development (V3; Sprints 18.1–18.2) | BCL, `Microsoft.Extensions.Http` |
+| `Laranet.Http` | Optional convenience layer over `HttpClient` | Implemented; next release (V3; Sprints 18.1–18.2) | BCL, `Microsoft.Extensions.Http` |
 | `Laranet.AspNetCore.Validation` | Optional request validation integration | Committed (V3; boundary pending) | `Laranet.AspNetCore` |
 | `Laranet.Analyzers` | Optional Roslyn diagnostics | Candidate | Roslyn |
 | `Laranet.Admin` | Admin resource abstractions | Candidate (V4) | `Laranet.Data` |

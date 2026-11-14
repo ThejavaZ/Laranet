@@ -1,7 +1,7 @@
 # Laranet.Http
 
 Optional convenience layer over `HttpClient` for typed, cancellation-aware API
-calls.
+calls, with safe retries for transient failures.
 
 `Laranet.Http` is not a replacement for `HttpClient` and it is not an HTTP
 framework. It delegates transport, handlers, connection management, and
@@ -34,6 +34,7 @@ builder.Services.AddLaranetHttp(options =>
     options.BaseAddress = new Uri("https://api.example.com");
     options.Timeout = TimeSpan.FromSeconds(30);
     options.JsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+    options.Retry.MaxRetries = 2;
 });
 ```
 
@@ -94,6 +95,44 @@ var result = await http.GetAsync<User>(
 | Deserialization | `JsonException` |
 | Unexpected response | `InvalidOperationException` |
 
+## Retries
+
+`RetryOptions` retries transient failures by default:
+
+- Status codes `408`, `429`, `500`, `502`, `503`, and `504`.
+- Network failures, such as a refused connection.
+
+`GET`, `PUT`, and `DELETE` are retried by default. `POST` and `PATCH` are not,
+because repeating them can duplicate writes. Opt in per request only when the
+operation is idempotent or the server supports an idempotency key:
+
+```csharp
+var result = await http.PostAsync(
+    "/orders",
+    order,
+    new RequestOptions
+    {
+        Retry = new RetryOptions
+        {
+            MaxRetries = 2,
+            RetryNonIdempotentRequests = true,
+        },
+    },
+    cancellationToken);
+```
+
+`MaxRetries` counts additional attempts, so `MaxRetries = 2` allows at most three
+attempts. The defaults are one second for the first delay, an exponential increase,
+jitter, and a 30-second maximum delay. `Retry-After` is honored and capped by
+`MaxDelay`.
+
+Every attempt builds a new `HttpRequestMessage` and new content. The same request
+message is never sent twice. Timeouts and deserialization failures are not retried,
+and caller cancellation stops the loop immediately. The final result always reflects
+the last attempt, and `ThrowOnError` still applies to that result.
+
+`RequestOptions.Retry` overrides the client policy for one request.
+
 ## Request options
 
 ```csharp
@@ -107,6 +146,7 @@ var result = await http.GetAsync<User>(
         },
         Timeout = TimeSpan.FromSeconds(10),
         JsonOptions = customJsonOptions,
+        Retry = new RetryOptions { MaxRetries = 1 },
     },
     cancellationToken);
 ```
@@ -116,15 +156,15 @@ is rejected on bodyless operations.
 
 ## Logging
 
-Requests are logged with the HTTP method, URL, status code, and duration. Bodies
-and sensitive headers are not logged. Avoid putting secrets in query strings,
-because the URL is part of the log entry.
+Requests are logged with the HTTP method, URL, status code, duration, and attempt.
+Retries log the delay and the reason. Bodies and sensitive headers are not logged.
+Avoid putting secrets in query strings, because the URL is part of the log entry.
 
 ## Limitations
 
-The first version does not include automatic retries, multipart or streaming,
-authentication, or OAuth. Retries are planned as a separate step with safe defaults
-for idempotent methods.
+The first version does not include multipart or streaming, authentication, OAuth, or
+a custom retry engine. Use `HttpClient` handlers or a resilience library such as Polly
+when you need circuit breakers, bulkheads, hedging, or a broader policy pipeline.
 
 When you need full control, use `HttpClient`, `HttpRequestMessage`, custom handlers,
 or a resilience library such as Polly directly. Laranet does not hide them.

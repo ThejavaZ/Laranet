@@ -20,7 +20,7 @@ your application uses.
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results | `dotnet add package Laranet.AspNetCore` |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` |
 | `Laranet.Cli` | Project creation and code generation tool | See below |
-| `Laranet.Http` | Typed, cancellation-aware convenience layer over `HttpClient` | Next release; source only for now |
+| `Laranet.Http` | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` | Next release; source only for now |
 
 `Laranet.EntityFrameworkCore` and `Laranet.AspNetCore` reference `Laranet.Data`, so
 you do not need to install `Laranet.Data` separately when you use them.

@@ -9,6 +9,9 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 ### Added
 
 - `Laranet.Http`, an optional convenience layer over `HttpClient`: typed `GetAsync<T>`, `PostAsync`, `PutAsync`, `PatchAsync`, and `DeleteAsync`; `HttpResult` and `HttpResult<T>` with explicit error kinds; cancellation, per-request timeouts, request and content headers, configurable JSON options, opt-in `ThrowOnError`, and `AddLaranetHttp` registration as a typed client.
+- Safe retries for `Laranet.Http` through `RetryOptions`: idempotent methods by default, opt-in `POST` and `PATCH`, transient status codes and network failures, `Retry-After`, exponential backoff with jitter, a maximum delay, and a fresh request message and content for every attempt.
+- Structured `Laranet.Http` logging with method, URL, status, duration, attempt, and retry delay, without bodies or sensitive headers.
+- `Laranet.Http` integration tests against a local test server, including retry and `Retry-After` paths.
 - ADR-0010 documenting the HTTP convenience layer, its limits, and its native `HttpClient` escape hatch.
 - Opt-in EF Core conventions in `Laranet.EntityFrameworkCore`: `IAuditable` timestamps and `ISoftDeletable` soft delete, registered with `AddLaranetAuditing` and `AddLaranetSoftDelete`, plus `ApplySoftDeleteQueryFilters` for a native global query filter.
 - `TimeProvider` support for deterministic auditing and soft-delete timestamps.
@@ -31,6 +34,7 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 ### Changed
 
 - CI now runs the full SQLite suite and the provider compatibility suite for SQL Server, PostgreSQL, MySQL, and MariaDB.
+- CI now packs and verifies `Laranet.Http` as the sixth production package.
 - The provider compatibility suite covers auditing and soft delete, including `IgnoreQueryFilters()` and query-filter composition.
 - Provider compatibility documentation now includes MySQL, MariaDB, and verified `DateTimeOffset` storage differences.
 - Testing documentation explains how to run provider compatibility tests locally, including MySQL and MariaDB.

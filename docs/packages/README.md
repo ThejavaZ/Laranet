@@ -9,7 +9,7 @@ application uses.
 | `Laranet.EntityFrameworkCore` | Asynchronous pagination and optional conventions through EF Core | `dotnet add package Laranet.EntityFrameworkCore` | [README](../../src/Laranet.EntityFrameworkCore/README.md) |
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results | `dotnet add package Laranet.AspNetCore` | [README](../../src/Laranet.AspNetCore/README.md) |
 | `Laranet.Cli` | Project creation and code generation | `dotnet tool install --global Laranet.Cli` | [README](../../src/Laranet.Cli/README.md) |
-| `Laranet.Http` | Typed, cancellation-aware convenience layer over `HttpClient` | Next release; not yet on NuGet.org | [README](../../src/Laranet.Http/README.md) |
+| `Laranet.Http` | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` | Next release; not yet on NuGet.org | [README](../../src/Laranet.Http/README.md) |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` | [README](../../src/Laranet/README.md) |
 
 ## Dependency boundaries

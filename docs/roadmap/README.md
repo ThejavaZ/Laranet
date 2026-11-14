@@ -54,7 +54,7 @@ Laranet is a **toolkit, not an opinionated application framework**.
 | `Laranet.EntityFrameworkCore` | EF Core integration, async query execution, and optional conventions | Published `0.1.1` |
 | `Laranet.AspNetCore`          | ASP.NET Core integration                         | Published `0.1.1` |
 | `Laranet.Cli`                 | Project and code generation commands             | Published `0.1.1` |
-| `Laranet.Http`                | Optional convenience layer over `HttpClient`     | In development (Sprints 18.1–18.2); next release |
+| `Laranet.Http`                | Optional convenience layer over `HttpClient` with safe retries | Implemented (Sprints 18.1–18.2); next release |
 | `Laranet.AspNetCore.Validation` | Optional request validation integration        | Planned for Version 3     |
 | `Laranet.Analyzers`           | Optional Roslyn diagnostics                      | Planned for Version 5     |
 | `Laranet.Admin`               | Admin resource abstractions                      | Candidate for Version 4   |
@@ -119,27 +119,28 @@ Before marking it complete, verify:
 
 ## Current project state
 
-**Current focus:** Version 3, [Sprint 18.2 — `Laranet.Http` resilience and release](v3.md).
-Sprint 17 — EF Core conventions and Sprint 18.1 — `Laranet.Http` foundation are
-completed. Sprint 18.2 hardens and packages `Laranet.Http`, and Sprint 18.3 covers
+**Current focus:** Version 3, [Sprint 18.3 — Validation](v3.md).
+Sprint 17 — EF Core conventions, Sprint 18.1 — `Laranet.Http` foundation, and
+Sprint 18.2 — `Laranet.Http` resilience and release are completed. Sprint 18.3 covers
 Validation. Version 2 remains open pending real external feedback.
 
-All five packages (`Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`,
-`Laranet.AspNetCore`, and `Laranet.Cli`) are published on NuGet.org as `0.1.1`. The
-release adds the multi-column `Search` overload, the shared package icon, and
+All six production packages are implemented. Five of them (`Laranet`, `Laranet.Data`,
+`Laranet.EntityFrameworkCore`, `Laranet.AspNetCore`, and `Laranet.Cli`) are published
+on NuGet.org as `0.1.1`; `Laranet.Http` is package-ready and ships with the next release.
+The published line adds the multi-column `Search` overload, the shared package icon, and
 documentation updates. `Laranet.Data` provides provider-neutral search, sorting,
 conditional filtering, and pagination, including multi-column search. `Laranet.EntityFrameworkCore` adds
 asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
-HTTP headers and Minimal API results, and `Laranet.Cli` creates projects and generates
-code. Version 2 focuses on adoption and stability: collect real feedback and add depth
-only when a concrete use case justifies it. SQL Server, PostgreSQL, MySQL, and MariaDB
-are verified by the provider compatibility suite, which runs in CI with service
-containers. The `Laranet` core package remains intentionally empty until a
-shared abstraction is required by at least two modules. [Version 3](v3.md) is in
-progress as the application-experience milestone: standards, project templates,
-`make:crud`, EF Core conventions, `Laranet.Http`, validation, and `laranet doctor`.
-`Laranet.Http` is planned for Sprints 18.1–18.2, pending ADR-0010 acceptance. The
-admin-panel proposal remains a candidate that requires an ADR and a validated use case.
+HTTP headers and Minimal API results, `Laranet.Cli` creates projects and generates
+code, and `Laranet.Http` provides typed calls with safe retries. Version 2 focuses on
+adoption and stability: collect real feedback and add depth only when a concrete use
+case justifies it. SQL Server, PostgreSQL, MySQL, and MariaDB are verified by the
+provider compatibility suite, which runs in CI with service containers. The `Laranet`
+core package remains intentionally empty until a shared abstraction is required by at
+least two modules. [Version 3](v3.md) is in progress as the application-experience
+milestone: standards, project templates, `make:crud`, EF Core conventions,
+`Laranet.Http`, validation, and `laranet doctor`. The admin-panel proposal remains a
+candidate that requires an ADR and a validated use case.
 [Version 4](v4.md) is a
 candidate for the application surface: an optional admin panel, web and Blazor
 templates, and optional data adapters, all gated by the Version 3 exit criteria.

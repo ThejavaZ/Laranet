@@ -9,7 +9,7 @@ READMEs.
 | [Core](core.md) | `Laranet` | Published, intentionally empty |
 | [Data](data.md) | `Laranet.Data` | Published |
 | [Integrations](integrations.md) | `Laranet.EntityFrameworkCore`, `Laranet.AspNetCore` | Published |
-| [HTTP](http.md) | `Laranet.Http` | In development; next release |
+| [HTTP](http.md) | `Laranet.Http` | Implemented; next release |
 
 ## How to read this reference
 

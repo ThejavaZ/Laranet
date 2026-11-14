@@ -33,7 +33,7 @@ conventions, query utilities, integrations, and code generation on top of them.
 | `Laranet.EntityFrameworkCore` | Asynchronous EF Core pagination and optional conventions. |
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results. |
 | `Laranet.Cli` | Project creation and code generation. |
-| `Laranet.Http` | Typed, cancellation-aware convenience layer over `HttpClient` (next release). |
+| `Laranet.Http` | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` (next release). |
 | `Laranet` | Core package, intentionally empty until a shared abstraction is justified. |
 
 ```bash
