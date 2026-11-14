@@ -4,7 +4,7 @@ All notable changes to Laranet will be documented in this file.
 
 This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.1] - 2026-11-13
 
 ### Added
 
@@ -136,9 +136,11 @@ Laranet follows Semantic Versioning:
 - **MINOR:** New functionality introduced in a backward-compatible manner.
 - **PATCH:** Backward-compatible bug fixes.
 
-During initial development, the project may use `0.x` versions. Public APIs should be considered subject to change until the first stable release.
+During initial development, the project may use `0.x` versions. Public APIs should be considered subject to change during the `0.x` series.
 
 ## Release History
 
 - `0.1.0` (2026-11-08): first public release of the five production packages.
 - `0.1.1` (2026-11-09): multi-column `Search`, shared package icon, and documentation updates.
+
+- `0.2.1` (2026-11-13): Laranet.Http, EF Core conventions, project templates, and `make:crud`.
