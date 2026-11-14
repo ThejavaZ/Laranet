@@ -51,9 +51,10 @@ Laranet is a **toolkit, not an opinionated application framework**.
 | ----------------------------- | ------------------------------------------------ | -------------------------- |
 | `Laranet`                     | Core abstractions and shared functionality       | Published `0.1.1`; intentionally empty |
 | `Laranet.Data`                | Query extensions, pagination, searching, sorting | Published `0.1.1` |
-| `Laranet.EntityFrameworkCore` | EF Core integration and async query execution    | Published `0.1.1` |
+| `Laranet.EntityFrameworkCore` | EF Core integration, async query execution, and optional conventions | Published `0.1.1` |
 | `Laranet.AspNetCore`          | ASP.NET Core integration                         | Published `0.1.1` |
 | `Laranet.Cli`                 | Project and code generation commands             | Published `0.1.1` |
+| `Laranet.Http`                | Optional convenience layer over `HttpClient`     | Planned for Version 3 (Sprints 18.1–18.2); ADR-0010 pending |
 | `Laranet.AspNetCore.Validation` | Optional request validation integration        | Planned for Version 3     |
 | `Laranet.Analyzers`           | Optional Roslyn diagnostics                      | Planned for Version 5     |
 | `Laranet.Admin`               | Admin resource abstractions                      | Candidate for Version 4   |
@@ -118,9 +119,11 @@ Before marking it complete, verify:
 
 ## Current project state
 
-**Current milestone:** [Version 3, Sprint 16 — `make:crud`](v3.md).
-Sprint 16 is completed; Sprint 17 — EF Core conventions is next. Version 2 remains
-open pending real external feedback.
+**Current focus:** Version 3, [Sprint 18.1 — `Laranet.Http` foundation](v3.md).
+Sprint 17 — EF Core conventions is completed. Sprint 18.1 implements `Laranet.Http`,
+Sprint 18.2 hardens and packages it, and Sprint 18.3 covers Validation. ADR-0010 must
+be accepted before implementation. Version 2 remains open pending real external
+feedback.
 
 All five packages (`Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`,
 `Laranet.AspNetCore`, and `Laranet.Cli`) are published on NuGet.org as `0.1.1`. The
@@ -130,13 +133,14 @@ conditional filtering, and pagination, including multi-column search. `Laranet.E
 asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
 HTTP headers and Minimal API results, and `Laranet.Cli` creates projects and generates
 code. Version 2 focuses on adoption and stability: collect real feedback and add depth
-only when a concrete use case justifies it. SQL Server and
-PostgreSQL are verified by the provider compatibility suite, which runs in CI with
-service containers. The `Laranet` core package remains intentionally empty until a
+only when a concrete use case justifies it. SQL Server, PostgreSQL, MySQL, and MariaDB
+are verified by the provider compatibility suite, which runs in CI with service
+containers. The `Laranet` core package remains intentionally empty until a
 shared abstraction is required by at least two modules. [Version 3](v3.md) is in
 progress as the application-experience milestone: standards, project templates,
-`make:crud`, EF Core conventions, validation, and `laranet doctor`. Its admin-panel
-proposal is a candidate that requires an ADR and a validated use case.
+`make:crud`, EF Core conventions, `Laranet.Http`, validation, and `laranet doctor`.
+`Laranet.Http` is planned for Sprints 18.1–18.2, pending ADR-0010 acceptance. The
+admin-panel proposal remains a candidate that requires an ADR and a validated use case.
 [Version 4](v4.md) is a
 candidate for the application surface: an optional admin panel, web and Blazor
 templates, and optional data adapters, all gated by the Version 3 exit criteria.

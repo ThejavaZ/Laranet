@@ -60,6 +60,7 @@ Status legend:
 | `Laranet.EntityFrameworkCore` | EF Core integration, query execution, and optional conventions | Published | `Laranet.Data`, EF Core |
 | `Laranet.AspNetCore` | ASP.NET Core pagination integration | Published | `Laranet.Data`, ASP.NET Core |
 | `Laranet.Cli` | Project creation and code generation | Published | — |
+| `Laranet.Http` | Optional convenience layer over `HttpClient` | Planned (V3; Sprints 18.1–18.2; ADR-0010 pending) | BCL, `Microsoft.Extensions.Http` |
 | `Laranet.AspNetCore.Validation` | Optional request validation integration | Committed (V3; boundary pending) | `Laranet.AspNetCore` |
 | `Laranet.Analyzers` | Optional Roslyn diagnostics | Candidate | Roslyn |
 | `Laranet.Admin` | Admin resource abstractions | Candidate (V4) | `Laranet.Data` |
@@ -115,6 +116,8 @@ The rules are:
    implemented by integrations.
 6. No runtime module may depend on `Laranet.Cli`.
 7. Optional integrations must not become mandatory dependencies of unrelated modules.
+8. `Laranet.Http` may depend on the BCL and `Microsoft.Extensions.Http`. It must not
+   depend on `Laranet.Data`, ASP.NET Core, or a specific API client.
 
 ### Provider strategy
 
@@ -217,7 +220,7 @@ A new module enters the ecosystem only when it satisfies all of these:
 | `0.1.1` | Version 2, Sprint 9 | Multi-column search, release bookkeeping | Published |
 | `0.2.0` | Version 2, Sprints 10–13 | Provider verification and feedback-gated depth | Planned |
 | `0.3.0` | Version 3, Sprints 14–16 | Standards, project templates, `make:crud` | Planned |
-| `0.4.0` | Version 3, Sprints 17–19 | EF Core conventions, validation, `laranet doctor` | Planned |
+| `0.4.0` | Version 3, Sprints 17–19 | EF Core conventions, `Laranet.Http`, validation, `laranet doctor` | Planned |
 | `0.5.0` | Version 4, Sprints 22–25 | Admin ADR, core, Razor UI, and pilot | Candidate |
 | `0.6.0` | Version 4, Sprints 26–28 | Web/Blazor templates, optional adapters, ecosystem hardening | Candidate |
 | `1.0.0` | Version 5 | API freeze, release integrity, data experience, diagnostics, enterprise template | Planned (gated by Version 4) |

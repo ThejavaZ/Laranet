@@ -19,6 +19,7 @@ Their purpose is to preserve architectural knowledge and provide transparency in
 | [0007](0007-simple-generation-profile.md) | Default to the Simplest Generation Profile | Accepted |
 | [0008](0008-runtime-and-tooling-versioning.md) | Keep Runtime and Tooling Packages on One Version Train by Default | Accepted |
 | [0009](0009-optional-ef-core-conventions.md) | Keep EF Core Conventions Optional and Close to the Framework | Accepted |
+| [0010](0010-optional-http-convenience-layer.md) | Add an Optional HTTP Convenience Layer | Accepted |
 
 ## ADR Status
 
