@@ -7,7 +7,7 @@
 
     <!-- Package metadata -->
     <PackageId>Laranet.Http</PackageId>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <Description>
       Optional convenience layer over HttpClient for typed, cancellation-aware API calls with safe retries.
     </Description>
