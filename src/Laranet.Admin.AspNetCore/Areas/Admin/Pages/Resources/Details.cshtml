@@ -20,7 +20,7 @@
         @foreach (var field in Model.Resource.Fields)
         {
             <dt>@field.Label</dt>
-            <dd>@Model.Values.GetValueOrDefault(field.Name)</dd>
+            <dd>@Model.FormatValue(field, Model.Values.GetValueOrDefault(field.Name))</dd>
         }
     </dl>
 </div>

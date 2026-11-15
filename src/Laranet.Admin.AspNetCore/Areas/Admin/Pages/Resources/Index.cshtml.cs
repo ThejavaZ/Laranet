@@ -22,6 +22,33 @@ public sealed class IndexModel(
             ? localizer[field.LocalizationKey]
             : field.Label;
 
+    public string FormatValue(AdminField field, object? value)
+    {
+        if (value is null)
+        {
+            return string.Empty;
+        }
+
+        return field.Format switch
+        {
+            "currency" => string.Format(
+                System.Globalization.CultureInfo.CurrentCulture,
+                "{0:C}",
+                value),
+            "date" => value is DateTime dt
+                ? dt.ToString("d", System.Globalization.CultureInfo.CurrentCulture)
+                : value.ToString() ?? string.Empty,
+            "datetime" => value is DateTime dt2
+                ? dt2.ToString("g", System.Globalization.CultureInfo.CurrentCulture)
+                : value.ToString() ?? string.Empty,
+            "number" => string.Format(
+                System.Globalization.CultureInfo.CurrentCulture,
+                "{0:N}",
+                value),
+            _ => value.ToString() ?? string.Empty,
+        };
+    }
+
     public string L(AdminFilter filter) =>
         filter.LocalizationKey is not null
             ? localizer[filter.LocalizationKey]
