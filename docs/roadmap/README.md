@@ -124,7 +124,9 @@ Sprint 17 — EF Core conventions, Sprint 18.1 — `Laranet.Http` foundation,
 Sprint 18.2 — `Laranet.Http` resilience and release, and Sprint 18.3 — Validation are
 completed. Sprint 18.4 — CQRS generators, Sprint 18.5 — Database and configuration
 generators, Sprint 19 — `laranet doctor`, and Sprint 21 — 1.0 readiness are completed.
-Sprint 20 remains in progress pending real-application validation. Version 2 remains open pending real
+Sprint 20 remains in progress pending real-application validation. Sprints
+25.1–25.4 plan Admin core functionality, relationships, performance, DX, polish,
+accessibility, and internationalization. Version 2 remains open pending real
 external feedback.
 
 Seven production packages are prepared for the `0.4.1` release line. The previous
