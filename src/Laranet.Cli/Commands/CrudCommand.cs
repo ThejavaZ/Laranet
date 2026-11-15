@@ -39,6 +39,14 @@ internal static class CrudCommand
             {
                 Description = "The entity fields as Name:type pairs separated by commas. Defaults to Name:string.",
             },
+            new Option<bool>("--from-model")
+            {
+                Description = "Requires an existing entity and generates the CRUD surface from its source.",
+            },
+            new Option<bool>("--scaffold")
+            {
+                Description = "Generates a new entity even when a model with this name already exists.",
+            },
             new Option<bool>("--force", "-f")
             {
                 Description = "Overwrites existing files.",
@@ -66,6 +74,8 @@ internal static class CrudCommand
         command.Options.Add(arguments.Profile);
         command.Options.Add(arguments.Context);
         command.Options.Add(arguments.Fields);
+        command.Options.Add(arguments.FromModel);
+        command.Options.Add(arguments.Scaffold);
         command.Options.Add(arguments.Force);
         command.Options.Add(arguments.DryRun);
         command.Options.Add(arguments.Flat);
@@ -93,6 +103,8 @@ internal sealed record CrudArguments(
     Option<string?> Profile,
     Option<string?> Context,
     Option<string?> Fields,
+    Option<bool> FromModel,
+    Option<bool> Scaffold,
     Option<bool> Force,
     Option<bool> DryRun,
     Option<bool> Flat,

@@ -32,7 +32,34 @@ internal static class CrudRunner
                 outputDirectory);
 
             var profile = ResolveProfile(parseResult, arguments, interaction);
-            var fields = CrudFieldParser.Parse(parseResult.GetValue(arguments.Fields));
+            var fromModel = parseResult.GetValue(arguments.FromModel);
+            var scaffold = parseResult.GetValue(arguments.Scaffold);
+
+            if (fromModel && scaffold)
+            {
+                throw new CliException("Use either --from-model or --scaffold, not both.");
+            }
+
+            var detectedMetadata = EntityIntrospector.TryRead(outputDirectory, name);
+
+            if (fromModel && detectedMetadata is null)
+            {
+                throw new CliException(
+                    $"Could not find an existing entity named '{name}'. " +
+                    "Use --scaffold to generate a new entity.");
+            }
+
+            var metadata = scaffold ? null : detectedMetadata;
+
+            if (metadata is not null)
+            {
+                output.WriteLine(
+                    $"info: detected existing entity '{name}'; generating CRUD from its source.");
+            }
+
+            var fields = metadata is null
+                ? CrudFieldParser.Parse(parseResult.GetValue(arguments.Fields))
+                : metadata.RequestFields;
             var dbContextType = ResolveContext(
                 parseResult,
                 arguments,
@@ -46,7 +73,7 @@ internal static class CrudRunner
                 parseResult.GetValue(arguments.Flat),
                 TemplateCatalog.Discover(outputDirectory));
 
-            var plan = new CrudGenerator(profile, fields, dbContextType).Create(context);
+            var plan = new CrudGenerator(profile, fields, dbContextType, metadata).Create(context);
 
             return new GenerationWriter(output, error, outputDirectory, interaction).Write(
                 plan,

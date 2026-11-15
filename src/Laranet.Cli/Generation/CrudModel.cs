@@ -56,6 +56,42 @@ internal sealed record CrudModel(
     IReadOnlyList<CrudField> Fields)
 {
     /// <summary>
+    /// Gets the metadata read from an existing source entity, if any.
+    /// </summary>
+    public EntityMetadata? Metadata { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether the CRUD surface targets an existing entity.
+    /// </summary>
+    public bool IsExistingEntity => Metadata is not null;
+
+    /// <summary>
+    /// Gets the key type used by routes and DTOs.
+    /// </summary>
+    public string KeyType => Metadata?.KeyType ?? "int";
+
+    /// <summary>
+    /// Gets the key property name.
+    /// </summary>
+    public string KeyName => Metadata?.KeyName ?? "Id";
+
+    /// <summary>
+    /// Gets the request fields.
+    /// </summary>
+    public IReadOnlyList<CrudField> RequestFields => Metadata?.RequestFields ?? Fields;
+
+    /// <summary>
+    /// Gets the response fields.
+    /// </summary>
+    public IReadOnlyList<CrudField> ResponseFields => Metadata?.ResponseFields
+        ?? [new CrudField("Id", "int", false), .. Fields];
+
+    /// <summary>
+    /// Gets a value indicating whether delete should use soft-delete semantics.
+    /// </summary>
+    public bool IsSoftDeletable => Metadata?.IsSoftDeletable == true;
+
+    /// <summary>
     /// Gets the context type with an absolute namespace qualifier.
     /// </summary>
     public string DbContextReference => $"global::{DbContextType}";

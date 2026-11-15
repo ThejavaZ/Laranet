@@ -8,6 +8,7 @@ internal sealed class CrudGenerator : IGenerator
     private readonly CrudProfile profile;
     private readonly IReadOnlyList<CrudField> fields;
     private readonly string dbContextType;
+    private readonly EntityMetadata? metadata;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CrudGenerator"/> class.
@@ -15,10 +16,12 @@ internal sealed class CrudGenerator : IGenerator
     /// <param name="profile">The generation profile.</param>
     /// <param name="fields">The mutable entity fields.</param>
     /// <param name="dbContextType">The fully qualified context type.</param>
+    /// <param name="metadata">The existing entity metadata, when introspecting.</param>
     public CrudGenerator(
         CrudProfile profile,
         IReadOnlyList<CrudField> fields,
-        string dbContextType)
+        string dbContextType,
+        EntityMetadata? metadata = null)
     {
         ArgumentNullException.ThrowIfNull(fields);
         ArgumentException.ThrowIfNullOrWhiteSpace(dbContextType);
@@ -26,6 +29,7 @@ internal sealed class CrudGenerator : IGenerator
         this.profile = profile;
         this.fields = fields;
         this.dbContextType = dbContextType;
+        this.metadata = metadata;
     }
 
     /// <inheritdoc />
@@ -34,7 +38,10 @@ internal sealed class CrudGenerator : IGenerator
         var model = CreateModel(context);
         var files = new List<GeneratedFile>();
 
-        Add(files, model.EntityDirectory, $"{model.Entity}.cs", CrudTemplates.Entity(model));
+        if (!model.IsExistingEntity)
+        {
+            Add(files, model.EntityDirectory, $"{model.Entity}.cs", CrudTemplates.Entity(model));
+        }
         Add(files, model.ContractsDirectory, $"{model.Request}.cs", CrudTemplates.Request(model));
         Add(files, model.ContractsDirectory, $"{model.Response}.cs", CrudTemplates.Response(model));
 
@@ -157,7 +164,7 @@ internal sealed class CrudGenerator : IGenerator
             _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, null),
         };
 
-        return new CrudModel(
+        var model = new CrudModel(
             entity,
             entityVariable,
             controller,
@@ -183,6 +190,14 @@ internal sealed class CrudGenerator : IGenerator
             targets.Extensions.Directory,
             targets.Extensions.Namespace,
             fields);
+
+        return metadata is null
+            ? model
+            : model with
+            {
+                Metadata = metadata,
+                EntityNamespace = metadata.Namespace,
+            };
     }
 
     private sealed record CrudTargets(

@@ -4,6 +4,15 @@ All notable changes to Laranet will be documented in this file.
 
 This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `make:crud` now introspects existing entities and generates DTOs and CRUD
+  controllers without recreating the model. It supports `--from-model` and
+  `--scaffold`, detects inherited properties, key types, nullable values,
+  `CompanyId`, data annotations, and soft-delete conventions.
+
 ## [0.3.0] - 2026-11-14
 
 ### Added

@@ -512,6 +512,13 @@ the `DbContext` directly.
 `--flat`, and `--interactive`. With `--flat`, every file goes directly into the
 output directory and uses the base namespace.
 
+When an entity source already exists under `Models/` or `Entities/`, `make:crud`
+introspects it instead of regenerating the model. Use `--from-model` to require
+that behavior or `--scaffold` to explicitly create a new entity. Introspection
+uses the real key type, inherited properties, nullable annotations, common data
+annotations, `CompanyId`, `IAuditable`, and `ISoftDeletable`. `--force` only
+controls overwriting generated output.
+
 ## Generation options
 
 | Option | Description |

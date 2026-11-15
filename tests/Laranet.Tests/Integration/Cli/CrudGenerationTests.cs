@@ -441,6 +441,133 @@ public class CrudGenerationTests
         Assert.DoesNotContain("Test.App.Models", entity);
     }
 
+    [Fact]
+    public void MakeCrud_ShouldIntrospectExistingEntity_WithoutRegeneratingIt()
+    {
+        using var directory = new TemporaryDirectory();
+        WriteProject(directory, "Test.App");
+        WriteContext(directory, "Test.App.Data", "AppDbContext");
+        WriteExistingBrand(directory);
+
+        var result = Run(
+            "make:crud",
+            "brand",
+            "--context",
+            "Test.App.Data.AppDbContext",
+            "--namespace",
+            "Test.App",
+            "--output",
+            directory.Root);
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("detected existing entity", result.Output);
+        var existingEntity = File.ReadAllText(directory.GetPath("Models", "Brand.cs"));
+        Assert.Contains("ISoftDeletable", existingEntity);
+        Assert.DoesNotContain("public sealed class Brand", existingEntity);
+
+        var request = File.ReadAllText(
+            directory.GetPath("Contracts", "BrandRequest.cs"));
+        var response = File.ReadAllText(
+            directory.GetPath("Contracts", "BrandResponse.cs"));
+        var controller = File.ReadAllText(
+            directory.GetPath("Controllers", "BrandController.cs"));
+
+        Assert.Contains("Guid CompanyId", request);
+        Assert.Contains("[StringLength(150)]", request);
+        Assert.DoesNotContain("IsDeleted", request);
+        Assert.DoesNotContain("DeletedAt", request);
+        Assert.Contains("BrandResponse(Guid Id", response);
+        Assert.Contains("DateTimeOffset CreatedAt", response);
+        Assert.DoesNotContain("DeletedAt", response);
+        Assert.Contains("{id:guid}", controller);
+        Assert.Contains("brand.IsDeleted = true;", controller);
+        Assert.Contains("brand.DeletedAt = DateTimeOffset.UtcNow;", controller);
+    }
+
+    [Fact]
+    public void MakeCrud_ShouldRequireExistingEntity_WhenFromModelIsRequested()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:crud",
+            "brand",
+            "--from-model",
+            "--context",
+            "Test.App.AppDbContext",
+            "--namespace",
+            "Test.App",
+            "--output",
+            directory.Root);
+
+        Assert.Equal(1, result.ExitCode);
+        Assert.Contains("Could not find an existing entity", result.Error);
+    }
+
+    [Fact]
+    public void MakeCrud_ShouldUseScaffoldMode_WhenExplicitlyRequested()
+    {
+        using var directory = new TemporaryDirectory();
+        WriteProject(directory, "Test.App");
+        WriteContext(directory, "Test.App.Data", "AppDbContext");
+        WriteExistingBrand(directory);
+
+        var result = Run(
+            "make:crud",
+            "brand",
+            "--scaffold",
+            "--force",
+            "--context",
+            "Test.App.Data.AppDbContext",
+            "--namespace",
+            "Test.App",
+            "--output",
+            directory.Root);
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains(
+            "public sealed class Brand",
+            File.ReadAllText(directory.GetPath("Models", "Brand.cs")));
+    }
+
+    private static void WriteExistingBrand(TemporaryDirectory directory)
+    {
+        Directory.CreateDirectory(directory.GetPath("Models"));
+        File.WriteAllText(
+            directory.GetPath("Models", "Entity.cs"),
+            """
+            namespace Test.App.Models;
+
+            public class Entity
+            {
+                public Guid Id { get; set; }
+                public DateTimeOffset CreatedAt { get; set; }
+                public DateTimeOffset? UpdatedAt { get; set; }
+            }
+            """);
+        File.WriteAllText(
+            directory.GetPath("Models", "Brand.cs"),
+            """
+            using System.ComponentModel.DataAnnotations;
+            using Laranet.EntityFrameworkCore.Conventions;
+
+            namespace Test.App.Models;
+
+            public class Brand : Entity, ISoftDeletable
+            {
+                public Guid CompanyId { get; set; }
+
+                [MaxLength(150)]
+                public string Name { get; set; } = string.Empty;
+
+                public string? Description { get; set; }
+                public bool IsActive { get; set; } = true;
+                public bool IsDeleted { get; set; }
+                public DateTimeOffset? DeletedAt { get; set; }
+            }
+            """);
+    }
+
     private static void WriteProject(TemporaryDirectory directory, string rootNamespace)
     {
         File.WriteAllText(

@@ -241,6 +241,32 @@ All profiles generate controllers, so register them with `AddControllers()` and
 [CLI package README](../../src/Laranet.Cli/README.md#generate-crud) for the full
 file list of each profile.
 
+### Existing entities
+
+When `Models/<Name>.cs` or `Entities/<Name>.cs` already exists, `make:crud` reads
+the source entity and generates the CRUD surface from it. The entity itself is
+never regenerated in this mode:
+
+```bash
+laranet make:crud Brand
+```
+
+The introspector reads inherited properties, key types, nullable types, common data
+annotations, `CompanyId`, `IAuditable`, and `ISoftDeletable`. A soft-deletable
+entity receives a soft-delete operation instead of `DbSet.Remove`.
+
+Use explicit modes when needed:
+
+| Option | Behavior |
+| --- | --- |
+| `--from-model` | Requires an existing entity and fails if it cannot be analyzed. |
+| `--scaffold` | Ignores an existing entity and requests a new model scaffold. |
+| `--force` | Only controls overwriting output files; it does not select a mode. |
+
+If the entity cannot be analyzed safely, the command fails instead of guessing its
+key or properties. Existing generated files still use the normal conflict and
+`--force` protections.
+
 ## Namespaces
 
 Without `--namespace`, the CLI walks up to the nearest `.csproj` and uses

@@ -54,12 +54,12 @@ internal static class CrudTemplates
                 return Ok(items);
             }
 
-            [HttpGet("{id:int}")]
-            public async Task<ActionResult<{{Response}}>> GetById(int id, CancellationToken cancellationToken)
+            [HttpGet("{id:{{IdRoute}}}")]
+            public async Task<ActionResult<{{Response}}>> GetById({{KeyType}} id, CancellationToken cancellationToken)
             {
                 var {{EntityVariable}} = await db.Set<{{Entity}}>()
                     .AsNoTracking()
-                    .Where({{EntityVariable}} => {{EntityVariable}}.Id == id)
+                    .Where({{EntityVariable}} => {{EntityVariable}}.{{KeyName}} == id)
                     .Select({{EntityVariable}} => new {{Response}}({{ResponseArguments}}))
                     .SingleOrDefaultAsync(cancellationToken);
 
@@ -84,14 +84,14 @@ internal static class CrudTemplates
 
                 var response = new {{Response}}({{ResponseArguments}});
 
-                return CreatedAtAction(nameof(GetById), new { id = {{EntityVariable}}.Id }, response);
+                return CreatedAtAction(nameof(GetById), new { id = {{EntityVariable}}.{{KeyName}} }, response);
             }
 
-            [HttpPut("{id:int}")]
-            public async Task<IActionResult> Update(int id, {{Request}} request, CancellationToken cancellationToken)
+            [HttpPut("{id:{{IdRoute}}}")]
+            public async Task<IActionResult> Update({{KeyType}} id, {{Request}} request, CancellationToken cancellationToken)
             {
                 var {{EntityVariable}} = await db.Set<{{Entity}}>()
-                    .SingleOrDefaultAsync({{EntityVariable}} => {{EntityVariable}}.Id == id, cancellationToken);
+                    .SingleOrDefaultAsync({{EntityVariable}} => {{EntityVariable}}.{{KeyName}} == id, cancellationToken);
 
                 if ({{EntityVariable}} is null)
                 {
@@ -104,18 +104,18 @@ internal static class CrudTemplates
                 return NoContent();
             }
 
-            [HttpDelete("{id:int}")]
-            public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+            [HttpDelete("{id:{{IdRoute}}}")]
+            public async Task<IActionResult> Delete({{KeyType}} id, CancellationToken cancellationToken)
             {
                 var {{EntityVariable}} = await db.Set<{{Entity}}>()
-                    .SingleOrDefaultAsync({{EntityVariable}} => {{EntityVariable}}.Id == id, cancellationToken);
+                    .SingleOrDefaultAsync({{EntityVariable}} => {{EntityVariable}}.{{KeyName}} == id, cancellationToken);
 
                 if ({{EntityVariable}} is null)
                 {
                     return NotFound();
                 }
 
-                db.Set<{{Entity}}>().Remove({{EntityVariable}});
+                {{DeleteOperation}}
                 await db.SaveChangesAsync(cancellationToken);
 
                 return NoContent();
@@ -137,11 +137,11 @@ internal static class CrudTemplates
                     .ToListAsync(cancellationToken);
             }
 
-            public async Task<{{Response}}?> GetByIdAsync(int id, CancellationToken cancellationToken)
+            public async Task<{{Response}}?> GetByIdAsync({{KeyType}} id, CancellationToken cancellationToken)
             {
                 return await db.Set<{{Entity}}>()
                     .AsNoTracking()
-                    .Where({{EntityVariable}} => {{EntityVariable}}.Id == id)
+                    .Where({{EntityVariable}} => {{EntityVariable}}.{{KeyName}} == id)
                     .Select({{EntityVariable}} => new {{Response}}({{ResponseArguments}}))
                     .SingleOrDefaultAsync(cancellationToken);
             }
@@ -159,10 +159,10 @@ internal static class CrudTemplates
                 return new {{Response}}({{ResponseArguments}});
             }
 
-            public async Task<bool> UpdateAsync(int id, {{Request}} request, CancellationToken cancellationToken)
+            public async Task<bool> UpdateAsync({{KeyType}} id, {{Request}} request, CancellationToken cancellationToken)
             {
                 var {{EntityVariable}} = await db.Set<{{Entity}}>()
-                    .SingleOrDefaultAsync({{EntityVariable}} => {{EntityVariable}}.Id == id, cancellationToken);
+                    .SingleOrDefaultAsync({{EntityVariable}} => {{EntityVariable}}.{{KeyName}} == id, cancellationToken);
 
                 if ({{EntityVariable}} is null)
                 {
@@ -175,17 +175,17 @@ internal static class CrudTemplates
                 return true;
             }
 
-            public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+            public async Task<bool> DeleteAsync({{KeyType}} id, CancellationToken cancellationToken)
             {
                 var {{EntityVariable}} = await db.Set<{{Entity}}>()
-                    .SingleOrDefaultAsync({{EntityVariable}} => {{EntityVariable}}.Id == id, cancellationToken);
+                    .SingleOrDefaultAsync({{EntityVariable}} => {{EntityVariable}}.{{KeyName}} == id, cancellationToken);
 
                 if ({{EntityVariable}} is null)
                 {
                     return false;
                 }
 
-                db.Set<{{Entity}}>().Remove({{EntityVariable}});
+                {{DeleteOperation}}
                 await db.SaveChangesAsync(cancellationToken);
 
                 return true;
@@ -207,8 +207,8 @@ internal static class CrudTemplates
                 return Ok(await service.GetAllAsync(cancellationToken));
             }
 
-            [HttpGet("{id:int}")]
-            public async Task<ActionResult<{{Response}}>> GetById(int id, CancellationToken cancellationToken)
+            [HttpGet("{id:{{IdRoute}}}")]
+            public async Task<ActionResult<{{Response}}>> GetById({{KeyType}} id, CancellationToken cancellationToken)
             {
                 var {{EntityVariable}} = await service.GetByIdAsync(id, cancellationToken);
 
@@ -225,11 +225,11 @@ internal static class CrudTemplates
             {
                 var {{EntityVariable}} = await service.CreateAsync(request, cancellationToken);
 
-                return CreatedAtAction(nameof(GetById), new { id = {{EntityVariable}}.Id }, {{EntityVariable}});
+                return CreatedAtAction(nameof(GetById), new { id = {{EntityVariable}}.{{KeyName}} }, {{EntityVariable}});
             }
 
-            [HttpPut("{id:int}")]
-            public async Task<IActionResult> Update(int id, {{Request}} request, CancellationToken cancellationToken)
+            [HttpPut("{id:{{IdRoute}}}")]
+            public async Task<IActionResult> Update({{KeyType}} id, {{Request}} request, CancellationToken cancellationToken)
             {
                 if (await service.UpdateAsync(id, request, cancellationToken))
                 {
@@ -239,8 +239,8 @@ internal static class CrudTemplates
                 return NotFound();
             }
 
-            [HttpDelete("{id:int}")]
-            public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+            [HttpDelete("{id:{{IdRoute}}}")]
+            public async Task<IActionResult> Delete({{KeyType}} id, CancellationToken cancellationToken)
             {
                 if (await service.DeleteAsync(id, cancellationToken))
                 {
@@ -260,7 +260,7 @@ internal static class CrudTemplates
         {
             Task<IReadOnlyList<{{Entity}}>> GetAllAsync(CancellationToken cancellationToken);
 
-            Task<{{Entity}}?> GetByIdAsync(int id, CancellationToken cancellationToken);
+            Task<{{Entity}}?> GetByIdAsync({{KeyType}} id, CancellationToken cancellationToken);
 
             Task AddAsync({{Entity}} {{EntityVariable}}, CancellationToken cancellationToken);
 
@@ -283,11 +283,11 @@ internal static class CrudTemplates
                     .ToListAsync(cancellationToken);
             }
 
-            public async Task<{{Entity}}?> GetByIdAsync(int id, CancellationToken cancellationToken)
+            public async Task<{{Entity}}?> GetByIdAsync({{KeyType}} id, CancellationToken cancellationToken)
             {
                 return await db.Set<{{Entity}}>()
                     .AsNoTracking()
-                    .SingleOrDefaultAsync({{EntityVariable}} => {{EntityVariable}}.Id == id, cancellationToken);
+                    .SingleOrDefaultAsync({{EntityVariable}} => {{EntityVariable}}.{{KeyName}} == id, cancellationToken);
             }
 
             public async Task AddAsync({{Entity}} {{EntityVariable}}, CancellationToken cancellationToken)
@@ -304,7 +304,7 @@ internal static class CrudTemplates
 
             public async Task DeleteAsync({{Entity}} {{EntityVariable}}, CancellationToken cancellationToken)
             {
-                db.Set<{{Entity}}>().Remove({{EntityVariable}});
+                {{DeleteOperation}}
                 await db.SaveChangesAsync(cancellationToken);
             }
         }
@@ -325,7 +325,7 @@ internal static class CrudTemplates
                     .ToList();
             }
 
-            public async Task<{{Response}}?> GetByIdAsync(int id, CancellationToken cancellationToken)
+            public async Task<{{Response}}?> GetByIdAsync({{KeyType}} id, CancellationToken cancellationToken)
             {
                 var {{EntityVariable}} = await repository.GetByIdAsync(id, cancellationToken);
 
@@ -349,7 +349,7 @@ internal static class CrudTemplates
                 return new {{Response}}({{ResponseArguments}});
             }
 
-            public async Task<bool> UpdateAsync(int id, {{Request}} request, CancellationToken cancellationToken)
+            public async Task<bool> UpdateAsync({{KeyType}} id, {{Request}} request, CancellationToken cancellationToken)
             {
                 var {{EntityVariable}} = await repository.GetByIdAsync(id, cancellationToken);
 
@@ -364,7 +364,7 @@ internal static class CrudTemplates
                 return true;
             }
 
-            public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+            public async Task<bool> DeleteAsync({{KeyType}} id, CancellationToken cancellationToken)
             {
                 var {{EntityVariable}} = await repository.GetByIdAsync(id, cancellationToken);
 
@@ -463,7 +463,11 @@ internal static class CrudTemplates
             ("{{Route}}", model.Route),
             ("{{Initializers}}", Initializers(model)),
             ("{{Assignments}}", Assignments(model)),
-            ("{{ResponseArguments}}", ResponseArguments(model)));
+            ("{{ResponseArguments}}", ResponseArguments(model)),
+            ("{{IdRoute}}", RouteConstraint(model.KeyType)),
+            ("{{KeyType}}", model.KeyType),
+            ("{{KeyName}}", model.KeyName),
+            ("{{DeleteOperation}}", DeleteOperation(model)));
     }
 
     /// <summary>
@@ -489,7 +493,11 @@ internal static class CrudTemplates
             ("{{Response}}", model.Response),
             ("{{Initializers}}", Initializers(model)),
             ("{{Assignments}}", Assignments(model)),
-            ("{{ResponseArguments}}", ResponseArguments(model)));
+            ("{{ResponseArguments}}", ResponseArguments(model)),
+            ("{{IdRoute}}", RouteConstraint(model.KeyType)),
+            ("{{KeyType}}", model.KeyType),
+            ("{{KeyName}}", model.KeyName),
+            ("{{DeleteOperation}}", DeleteOperation(model)));
     }
 
     /// <summary>
@@ -512,7 +520,10 @@ internal static class CrudTemplates
             ("{{EntityVariable}}", model.EntityVariable),
             ("{{Request}}", model.Request),
             ("{{Response}}", model.Response),
-            ("{{Route}}", model.Route));
+            ("{{Route}}", model.Route),
+            ("{{IdRoute}}", RouteConstraint(model.KeyType)),
+            ("{{KeyType}}", model.KeyType),
+            ("{{KeyName}}", model.KeyName));
     }
 
     /// <summary>
@@ -530,7 +541,9 @@ internal static class CrudTemplates
             ("{{Namespace}}", model.RepositoryInterfaceNamespace),
             ("{{RepositoryInterface}}", model.RepositoryInterface),
             ("{{Entity}}", model.Entity),
-            ("{{EntityVariable}}", model.EntityVariable));
+            ("{{EntityVariable}}", model.EntityVariable),
+            ("{{KeyType}}", model.KeyType),
+            ("{{KeyName}}", model.KeyName));
     }
 
     /// <summary>
@@ -552,7 +565,10 @@ internal static class CrudTemplates
             ("{{RepositoryInterface}}", model.RepositoryInterface),
             ("{{Context}}", model.DbContextReference),
             ("{{Entity}}", model.Entity),
-            ("{{EntityVariable}}", model.EntityVariable));
+            ("{{EntityVariable}}", model.EntityVariable),
+            ("{{KeyType}}", model.KeyType),
+            ("{{KeyName}}", model.KeyName),
+            ("{{DeleteOperation}}", DeleteOperation(model)));
     }
 
     /// <summary>
@@ -578,7 +594,10 @@ internal static class CrudTemplates
             ("{{Response}}", model.Response),
             ("{{Initializers}}", Initializers(model)),
             ("{{Assignments}}", Assignments(model)),
-            ("{{ResponseArguments}}", ResponseArguments(model)));
+            ("{{ResponseArguments}}", ResponseArguments(model)),
+            ("{{KeyType}}", model.KeyType),
+            ("{{KeyName}}", model.KeyName),
+            ("{{DeleteOperation}}", DeleteOperation(model)));
     }
 
     /// <summary>
@@ -608,7 +627,7 @@ internal static class CrudTemplates
     {
         return string.Join(
             '\n',
-            model.Fields.Select(field =>
+            model.RequestFields.Select(field =>
                 $"    public {field.Declaration} {field.Name} {{ get; set; }}{(field.RequiresDefault ? " = string.Empty;" : string.Empty)}"));
     }
 
@@ -616,23 +635,23 @@ internal static class CrudTemplates
     {
         var builder = new StringBuilder();
 
-        for (var index = 0; index < model.Fields.Count; index++)
+        for (var index = 0; index < model.RequestFields.Count; index++)
         {
-            var field = model.Fields[index];
+            var field = model.RequestFields[index];
 
             if (index > 0)
             {
                 builder.AppendLine();
             }
 
-            if (field.IsString && !field.IsNullable)
+            if (field.IsRequired)
             {
                 builder.AppendLine("    [Required]");
             }
 
             if (field.IsString)
             {
-                builder.AppendLine("    [StringLength(200)]");
+                builder.AppendLine($"    [StringLength({field.MaxLength ?? 200})]");
             }
 
             builder
@@ -655,7 +674,7 @@ internal static class CrudTemplates
 
     private static string RequestUsings(CrudModel model)
     {
-        return model.Fields.Any(field => field.IsString)
+        return model.RequestFields.Any(field => field.IsString)
             ? Usings(model.ContractsNamespace, "System.ComponentModel.DataAnnotations")
             : string.Empty;
     }
@@ -664,25 +683,27 @@ internal static class CrudTemplates
     {
         return string.Join(
             ", ",
-            new[] { "int Id" }.Concat(
-                model.Fields.Select(field =>
-                    $"{field.Declaration} {field.Name}")));
+            new[] { $"{model.KeyType} {model.KeyName}" }.Concat(
+                model.ResponseFields
+                    .Where(field => field.Name != model.KeyName)
+                    .Select(field => $"{field.Declaration} {field.Name}")));
     }
 
     private static string ResponseArguments(CrudModel model)
     {
         return string.Join(
             ", ",
-            new[] { $"{model.EntityVariable}.Id" }.Concat(
-                model.Fields.Select(field =>
-                    $"{model.EntityVariable}.{field.Name}")));
+            new[] { $"{model.EntityVariable}.{model.KeyName}" }.Concat(
+                model.ResponseFields
+                    .Where(field => field.Name != model.KeyName)
+                    .Select(field => $"{model.EntityVariable}.{field.Name}")));
     }
 
     private static string Initializers(CrudModel model)
     {
         return string.Join(
             '\n',
-            model.Fields.Select(field =>
+            model.RequestFields.Select(field =>
                 $"            {field.Name} = request.{field.Name},"));
     }
 
@@ -690,7 +711,7 @@ internal static class CrudTemplates
     {
         return string.Join(
             '\n',
-            model.Fields.Select(field =>
+            model.RequestFields.Select(field =>
                 $"        {model.EntityVariable}.{field.Name} = request.{field.Name};"));
     }
 
@@ -706,6 +727,27 @@ internal static class CrudTemplates
         return lines.Length == 0
             ? string.Empty
             : string.Join('\n', lines) + "\n\n";
+    }
+
+    private static string RouteConstraint(string type)
+    {
+        return type switch
+        {
+            "int" => "int",
+            "long" => "long",
+            "Guid" => "guid",
+            _ => "string",
+        };
+    }
+
+    private static string DeleteOperation(CrudModel model)
+    {
+        return model.IsSoftDeletable
+            ? $"""
+                       {model.EntityVariable}.IsDeleted = true;
+                       {model.EntityVariable}.DeletedAt = DateTimeOffset.UtcNow;
+               """
+            : $"db.Set<{model.Entity}>().Remove({model.EntityVariable});";
     }
 
     private static string Render(

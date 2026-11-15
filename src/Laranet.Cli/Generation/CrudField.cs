@@ -6,7 +6,12 @@ namespace Laranet.Cli.Generation;
 /// <param name="Name">The normalized property name.</param>
 /// <param name="Type">The C# type without a nullable suffix.</param>
 /// <param name="IsNullable">Whether the property accepts <see langword="null"/>.</param>
-internal sealed record CrudField(string Name, string Type, bool IsNullable)
+/// <param name="MaxLength">The maximum string length, when declared by the entity.</param>
+internal sealed record CrudField(
+    string Name,
+    string Type,
+    bool IsNullable,
+    int? MaxLength = null)
 {
     /// <summary>
     /// Gets the type declaration, including the nullable suffix.
@@ -22,6 +27,13 @@ internal sealed record CrudField(string Name, string Type, bool IsNullable)
     /// Gets a value indicating whether the property is a string.
     /// </summary>
     public bool IsString => Type == "string";
+
+    /// <summary>
+    /// Gets a value indicating whether the field is required in a request.
+    /// </summary>
+    public bool IsRequired => !IsNullable
+        && Type is not ("bool" or "int" or "long" or "decimal" or "double" or "float"
+            or "DateTime" or "DateTimeOffset" or "DateOnly" or "TimeOnly" or "Guid");
 }
 
 /// <summary>
