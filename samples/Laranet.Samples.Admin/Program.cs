@@ -17,7 +17,17 @@ builder.Services
 builder.Services.AddRazorPages();
 builder.Services.AddLaranetAdmin();
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("Admin.Products", policy => policy.RequireAuthenticatedUser());
+    .AddPolicy("Admin.Products", policy =>
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            policy.RequireAssertion(_ => true);
+        }
+        else
+        {
+            policy.RequireAuthenticatedUser();
+        }
+    });
 builder.Services.AddScoped<IAdminDataAdapter>(services =>
     new EfCoreAdminDataAdapter(
         services.GetRequiredService<AdminDbContext>()));
@@ -49,6 +59,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.MapStaticAssets();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

@@ -40,6 +40,7 @@
 </form>
 
 <span class="admin-muted">@Model.Results.TotalCount results</span>
+    <a class="admin-button-secondary" asp-page-handler="Export" asp-route-resource="@Model.Resource.Name">Export CSV</a>
 </div>
 
 @if (Model.SupportsBulk)
@@ -55,6 +56,17 @@
     </form>
 }
 
+@if (Model.Results.Items.Count == 0)
+{
+    <div class="admin-empty-state">
+        <div class="admin-empty-icon">▦</div>
+        <h2>No records found</h2>
+        <p>Try adjusting your search or filters, or create a new record.</p>
+        <a class="admin-button" asp-page="/Resources/Create" asp-route-resource="@Model.Resource.Name">Create @Model.Resource.Name.TrimEnd('s')</a>
+    </div>
+}
+else
+{
 <table class="admin-table">
     <thead>
         <tr>
@@ -130,8 +142,24 @@
     }
     </tbody>
 </table>
+}
 
 <div class="admin-footer">
+    <form method="get" class="admin-page-size">
+        <input type="hidden" name="resource" value="@Model.Resource.Name" />
+        <input type="hidden" name="Search" value="@Model.Search" />
+        <input type="hidden" name="SortBy" value="@Model.SortBy" />
+        <input type="hidden" name="SortDescending" value="@Model.SortDescending" />
+        <label>
+            Page size
+            <select name="PageSize" onchange="this.form.submit()">
+                <option value="10" selected="@(Model.PageSize == 10)">10</option>
+                <option value="25" selected="@(Model.PageSize == 25)">25</option>
+                <option value="50" selected="@(Model.PageSize == 50)">50</option>
+                <option value="100" selected="@(Model.PageSize == 100)">100</option>
+            </select>
+        </label>
+    </form>
     <span>Page @Model.Results.Page of @Model.Results.TotalPages</span>
     <span>@Model.Results.TotalCount items</span>
 </div>

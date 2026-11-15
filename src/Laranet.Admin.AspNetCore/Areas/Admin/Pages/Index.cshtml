@@ -1,0 +1,41 @@
+@page "/admin"
+@model Laranet.Admin.AspNetCore.Areas.Admin.Pages.IndexModel
+
+<div class="admin-page-heading">
+    <div>
+        <h1>Dashboard</h1>
+        <p>Manage your application data from one place.</p>
+    </div>
+</div>
+
+<div class="admin-dashboard">
+    @if (Model.Resources.Count == 0)
+    {
+        <div class="admin-empty-state">
+            <div class="admin-empty-icon">▦</div>
+            <h2>No resources registered</h2>
+            <p>Register an <code>AdminResource</code> to get started.</p>
+        </div>
+    }
+    else
+    {
+        <div class="admin-resource-grid">
+            @foreach (var resource in Model.Resources)
+            {
+                <a class="admin-resource-card"
+                   asp-page="/Resources/Index"
+                   asp-route-resource="@resource.Name">
+                    <span class="admin-resource-icon">▦</span>
+                    <span class="admin-resource-name">@resource.Name</span>
+                    <span class="admin-resource-meta">
+                        @resource.Fields.Count fields
+                        @if (resource.SearchFields.Count > 0)
+                        {
+                            <span>· searchable</span>
+                        }
+                    </span>
+                </a>
+            }
+        </div>
+    }
+</div>

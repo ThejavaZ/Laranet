@@ -41,6 +41,9 @@ public sealed class IndexModel(
     public int PageNumber { get; set; } = 1;
 
     [BindProperty(SupportsGet = true)]
+    public int PageSize { get; set; } = 25;
+
+    [BindProperty(SupportsGet = true)]
     public string? SortBy { get; set; }
 
     [BindProperty(SupportsGet = true)]
@@ -60,7 +63,7 @@ public sealed class IndexModel(
             definition,
             new AdminQuery(
                 PageNumber,
-                25,
+                PageSize,
                 Search,
                 ReadFilters(),
                 SortBy,
@@ -94,6 +97,37 @@ public sealed class IndexModel(
             resource,
             adminMessage = "Selected records updated successfully.",
         });
+    }
+
+    public async Task<IActionResult> OnGetExportAsync(
+        string resource,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetResource(resource, AdminOperation.List, out var definition))
+        {
+            return NotFound();
+        }
+
+        var all = await adapter.ListAsync(
+            definition,
+            new AdminQuery(1, 10000, Search, ReadFilters(), SortBy, SortDescending),
+            cancellationToken);
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine(string.Join(",", definition.Fields.Select(f => $"\"{f.Label}\"")));
+
+        foreach (var item in all.Items)
+        {
+            var values = definition.Fields.Select(f =>
+            {
+                var val = item.GetValueOrDefault(f.Name);
+                return $"\"{val?.ToString()?.Replace("\"", "\"\"")}\"";
+            });
+            sb.AppendLine(string.Join(",", values));
+        }
+
+        var bytes = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
+        return File(bytes, "text/csv", $"{definition.Name}.csv");
     }
 
     [ValidateAntiForgeryToken]
