@@ -7,7 +7,7 @@
 
     <!-- Package metadata -->
     <PackageId>Laranet.AspNetCore.Validation</PackageId>
-    <Version>0.4.2</Version>
+    <Version>0.4.3</Version>
     <Description>
       Optional FluentValidation endpoint filter integration for ASP.NET Core Minimal APIs.
     </Description>

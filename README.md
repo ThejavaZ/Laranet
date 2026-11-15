@@ -37,7 +37,7 @@ conventions, query utilities, integrations, and code generation on top of them.
 | `Laranet.Admin` | Provider-neutral administrative contracts. |
 | `Laranet.Admin.AspNetCore` | Razor Pages admin integration. |
 | `Laranet.Admin.EntityFrameworkCore` | EF Core admin data adapter. |
-| [`Laranet.Http`](https://www.nuget.org/packages/Laranet.Http/0.4.2) | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` (0.4.2). |
+| [`Laranet.Http`](https://www.nuget.org/packages/Laranet.Http/0.4.3) | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` (0.4.3). |
 | `Laranet.Admin` | Experimental provider-neutral admin contracts and prototype. |
 | `Laranet.Admin.AspNetCore` | Experimental Razor Pages admin integration. |
 | `Laranet.Admin.EntityFrameworkCore` | Experimental EF Core admin data adapter. |

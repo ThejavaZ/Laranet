@@ -7,7 +7,7 @@
 
     <!-- Package metadata -->
     <PackageId>Laranet.Data</PackageId>
-    <Version>0.4.2</Version>
+    <Version>0.4.3</Version>
     <Description>
       Provider-neutral IQueryable search, sorting, and pagination utilities
       for Laranet.
