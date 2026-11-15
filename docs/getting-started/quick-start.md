@@ -1,7 +1,7 @@
 # Quick Start
 
 This page gets a minimal, paginated Web API running with Laranet. It assumes the
-`0.1.x` packages are available from NuGet.org. Otherwise, use the
+`0.2.x` packages are available from NuGet.org. Otherwise, use the
 [from-source installation](installation.md#build-from-source).
 
 ## 1. Create a project

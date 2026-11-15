@@ -60,7 +60,7 @@ Status legend:
 | `Laranet.EntityFrameworkCore` | EF Core integration, query execution, and optional conventions | Published | `Laranet.Data`, EF Core |
 | `Laranet.AspNetCore` | ASP.NET Core pagination integration | Published | `Laranet.Data`, ASP.NET Core |
 | `Laranet.Cli` | Project creation and code generation | Published | — |
-| `Laranet.Http` | Optional convenience layer over `HttpClient` | Implemented; next release (V3; Sprints 18.1–18.2) | BCL, `Microsoft.Extensions.Http` |
+| `Laranet.Http` | Optional convenience layer over `HttpClient` | Published (V3; Sprints 18.1–18.2) | BCL, `Microsoft.Extensions.Http` |
 | `Laranet.AspNetCore.Validation` | Optional request validation integration | Committed (V3; boundary pending) | `Laranet.AspNetCore` |
 | `Laranet.Analyzers` | Optional Roslyn diagnostics | Candidate | Roslyn |
 | `Laranet.Admin` | Admin resource abstractions | Candidate (V4) | `Laranet.Data` |
@@ -218,11 +218,11 @@ A new module enters the ecosystem only when it satisfies all of these:
 | --- | --- | --- | --- |
 | `0.1.0` | Version 1 | Data, EF Core, ASP.NET Core, and CLI | Published |
 | `0.1.1` | Version 2, Sprint 9 | Multi-column search, release bookkeeping | Published |
-| `0.2.0` | Version 2, Sprints 10–13 | Provider verification and feedback-gated depth | Planned |
-| `0.3.0` | Version 3, Sprints 14–16 | Standards, project templates, `make:crud` | Planned |
-| `0.4.0` | Version 3, Sprints 17–19 | EF Core conventions, `Laranet.Http`, validation, `laranet doctor` | Planned |
-| `0.5.0` | Version 4, Sprints 22–25 | Admin ADR, core, Razor UI, and pilot | Candidate |
-| `0.6.0` | Version 4, Sprints 26–28 | Web/Blazor templates, optional adapters, ecosystem hardening | Candidate |
+| `0.2.0` | Version 3, Sprints 14–17 | Standards, project templates, `make:crud`, EF Core conventions | Published |
+| `0.2.1` | Version 3, Sprints 18.1–18.2 | `Laranet.Http` foundation and resilience | Published |
+| `0.3.0` | Version 3, Sprints 18.3–19 | Validation and `laranet doctor` | Planned |
+| `0.4.0` | Version 4, Sprints 22–25 | Admin ADR, core, Razor UI, and pilot | Candidate |
+| `0.5.0` | Version 4, Sprints 26–28 | Web/Blazor templates, optional adapters, ecosystem hardening | Candidate |
 | `1.0.0` | Version 5 | API freeze, release integrity, data experience, diagnostics, enterprise template | Planned (gated by Version 4) |
 | `1.x` | Version 6 | Modules, API resources, events, jobs, permissions | Direction (not scheduled) |
 

@@ -6,7 +6,7 @@ Laranet brings expressive APIs, developer-friendly abstractions, and elegant pat
 to the C# ecosystem without replacing the native .NET building blocks.
 
 This package is the foundation of the Laranet toolkit. It is intentionally empty in
-the `0.1.x` line: it will only receive an abstraction when at least two published
+the `0.2.x` line: it will only receive an abstraction when at least two published
 modules need it and cannot depend on each other. See
 [ADR-0005](https://github.com/TheJavaZ/Laranet/blob/main/docs/architecture/decisions/0005-intentionally-empty-core.md).
 
@@ -17,6 +17,7 @@ Functionality is distributed in independent, optional packages:
 | [`Laranet.Data`](https://www.nuget.org/packages/Laranet.Data) | Provider-neutral `IQueryable` search, sorting, filtering, and pagination |
 | [`Laranet.EntityFrameworkCore`](https://www.nuget.org/packages/Laranet.EntityFrameworkCore) | Asynchronous pagination and optional conventions through Entity Framework Core |
 | [`Laranet.AspNetCore`](https://www.nuget.org/packages/Laranet.AspNetCore) | Pagination HTTP headers and Minimal API results |
+| [`Laranet.Http`](https://www.nuget.org/packages/Laranet.Http) | Typed, cancellation-aware convenience layer over `HttpClient` with safe retries |
 | [`Laranet.Cli`](https://www.nuget.org/packages/Laranet.Cli) | Project creation and code generation tool |
 
 ## Install

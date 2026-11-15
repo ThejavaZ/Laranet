@@ -20,12 +20,10 @@ your application uses.
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results | `dotnet add package Laranet.AspNetCore` |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` |
 | `Laranet.Cli` | Project creation and code generation tool | See below |
-| `Laranet.Http` | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` | Next release; source only for now |
+| `Laranet.Http` | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` | `dotnet add package Laranet.Http` |
 
 `Laranet.EntityFrameworkCore` and `Laranet.AspNetCore` reference `Laranet.Data`, so
 you do not need to install `Laranet.Data` separately when you use them.
-`Laranet.Http` is implemented in the repository and will be published with the next
-release.
 
 ## Install the CLI
 
@@ -79,13 +77,13 @@ dotnet nuget add source "$(pwd)/artifacts/packages" --name laranet-local
 Then install packages with the version produced by the build:
 
 ```bash
-dotnet add package Laranet.Data --version 0.1.1
+dotnet add package Laranet.Data --version 0.2.1
 ```
 
 Install the locally built CLI:
 
 ```bash
-dotnet tool install --global Laranet.Cli --version 0.1.1 --add-source artifacts/packages
+dotnet tool install --global Laranet.Cli --version 0.2.1 --add-source artifacts/packages
 ```
 
 Alternatively, add project references directly to `src/` while working inside the
@@ -94,7 +92,7 @@ repository. The projects in [`samples/`](../../samples) use this approach.
 ## Documentation status
 
 Laranet is in initial development. The package identifiers and installation commands
-above describe the `0.1.1` release. If a package is not available from NuGet yet, use
+above describe the `0.2.1` release. If a package is not available from NuGet yet, use
 the from-source workflow.
 
 ## Next steps

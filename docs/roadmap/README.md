@@ -49,12 +49,12 @@ Laranet is a **toolkit, not an opinionated application framework**.
 
 | Package                       | Responsibility                                   | Status                     |
 | ----------------------------- | ------------------------------------------------ | -------------------------- |
-| `Laranet`                     | Core abstractions and shared functionality       | Published `0.1.1`; intentionally empty |
-| `Laranet.Data`                | Query extensions, pagination, searching, sorting | Published `0.1.1` |
-| `Laranet.EntityFrameworkCore` | EF Core integration, async query execution, and optional conventions | Published `0.1.1` |
-| `Laranet.AspNetCore`          | ASP.NET Core integration                         | Published `0.1.1` |
-| `Laranet.Cli`                 | Project and code generation commands             | Published `0.1.1` |
-| `Laranet.Http`                | Optional convenience layer over `HttpClient` with safe retries | Implemented (Sprints 18.1–18.2); next release |
+| `Laranet`                     | Core abstractions and shared functionality       | Published `0.2.1`; intentionally empty |
+| `Laranet.Data`                | Query extensions, pagination, searching, sorting | Published `0.2.1` |
+| `Laranet.EntityFrameworkCore` | EF Core integration, async query execution, and optional conventions | Published `0.2.1` |
+| `Laranet.AspNetCore`          | ASP.NET Core integration                         | Published `0.2.1` |
+| `Laranet.Cli`                 | Project and code generation commands             | Published `0.2.1` |
+| `Laranet.Http`                | Optional convenience layer over `HttpClient` with safe retries | Published `0.2.1` |
 | `Laranet.AspNetCore.Validation` | Optional request validation integration        | Planned for Version 3     |
 | `Laranet.Analyzers`           | Optional Roslyn diagnostics                      | Planned for Version 5     |
 | `Laranet.Admin`               | Admin resource abstractions                      | Candidate for Version 4   |
@@ -124,20 +124,18 @@ Sprint 17 — EF Core conventions, Sprint 18.1 — `Laranet.Http` foundation, an
 Sprint 18.2 — `Laranet.Http` resilience and release are completed. Sprint 18.3 covers
 Validation. Version 2 remains open pending real external feedback.
 
-All six production packages are implemented. Five of them (`Laranet`, `Laranet.Data`,
-`Laranet.EntityFrameworkCore`, `Laranet.AspNetCore`, and `Laranet.Cli`) are published
-on NuGet.org as `0.1.1`; `Laranet.Http` is package-ready and ships with the next release.
-The published line adds the multi-column `Search` overload, the shared package icon, and
-documentation updates. `Laranet.Data` provides provider-neutral search, sorting,
-conditional filtering, and pagination, including multi-column search. `Laranet.EntityFrameworkCore` adds
-asynchronous pagination, `Laranet.AspNetCore` exposes pagination metadata through
-HTTP headers and Minimal API results, `Laranet.Cli` creates projects and generates
-code, and `Laranet.Http` provides typed calls with safe retries. Version 2 focuses on
-adoption and stability: collect real feedback and add depth only when a concrete use
-case justifies it. SQL Server, PostgreSQL, MySQL, and MariaDB are verified by the
-provider compatibility suite, which runs in CI with service containers. The `Laranet`
-core package remains intentionally empty until a shared abstraction is required by at
-least two modules. [Version 3](v3.md) is in progress as the application-experience
+All six production packages are implemented and published on NuGet.org as `0.2.1`.
+The published line adds `Laranet.Http`, optional EF Core conventions, project
+templates, and `make:crud`. `Laranet.Data` provides provider-neutral search, sorting,
+conditional filtering, and pagination, including multi-column search.
+`Laranet.EntityFrameworkCore` adds asynchronous pagination and optional conventions,
+`Laranet.AspNetCore` exposes pagination metadata through HTTP headers and Minimal API
+results, `Laranet.Cli` creates projects and generates code, and `Laranet.Http`
+provides typed calls with safe retries. Version 2 focuses on adoption and stability:
+collect real feedback and add depth only when a concrete use case justifies it. SQL
+Server, PostgreSQL, MySQL, and MariaDB are verified by the provider compatibility
+suite, which runs in CI with service containers. The `Laranet` core package remains
+intentionally empty until a shared abstraction is required by at least two modules. [Version 3](v3.md) is in progress as the application-experience
 milestone: standards, project templates, `make:crud`, EF Core conventions,
 `Laranet.Http`, validation, and `laranet doctor`. The admin-panel proposal remains a
 candidate that requires an ADR and a validated use case.

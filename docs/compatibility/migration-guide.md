@@ -11,9 +11,9 @@ documented in the [changelog](../../CHANGELOG.md) and in this guide.
 
 ## Current release status
 
-The published packages are `0.1.1`. This release adds the multi-column `Search`
-overload, the shared package icon, and documentation updates. There are no breaking
-changes between `0.1.0` and `0.1.1`.
+The current published release is `0.2.1`. It adds `Laranet.Http`, the optional EF
+Core conventions, project templates, and `make:crud`. There are no breaking changes
+between `0.1.1` and `0.2.1`; the new public APIs are additive.
 
 This page is the place where each published migration will be recorded.
 
@@ -44,6 +44,16 @@ versions from different releases is not supported.
 
 ## Published migrations
 
+### 0.2.1
+
+- **Affected packages:** all six production packages. `Laranet.Http` is new.
+- **What changed:** added `Laranet.Http`, optional EF Core auditing and soft-delete
+  conventions, project templates, and `make:crud`. Provider verification now covers
+  SQL Server, PostgreSQL, MySQL, and MariaDB.
+- **Impact:** none for existing packages. The new APIs are additive and optional.
+- **Migration:** update every Laranet package to `0.2.1` and add `Laranet.Http` only
+  when the application calls external HTTP APIs.
+
 ### 0.1.1
 
 - **Affected packages:** all five production packages.
@@ -61,9 +71,10 @@ packages:
 
 ```xml
 <ItemGroup>
-  <PackageReference Include="Laranet.Data" Version="0.1.1" />
-  <PackageReference Include="Laranet.EntityFrameworkCore" Version="0.1.1" />
-  <PackageReference Include="Laranet.AspNetCore" Version="0.1.1" />
+  <PackageReference Include="Laranet.Data" Version="0.2.1" />
+  <PackageReference Include="Laranet.EntityFrameworkCore" Version="0.2.1" />
+  <PackageReference Include="Laranet.AspNetCore" Version="0.2.1" />
+  <PackageReference Include="Laranet.Http" Version="0.2.1" />
 </ItemGroup>
 ```
 

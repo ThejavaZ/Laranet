@@ -14,6 +14,7 @@ Packages in a release:
 - `Laranet.Data`
 - `Laranet.EntityFrameworkCore`
 - `Laranet.AspNetCore`
+- `Laranet.Http`
 - `Laranet.Cli`
 
 The release workflow fails when the tag does not match every declared version.
@@ -26,7 +27,8 @@ Before a release, review the public surface:
   until it has a justified shared abstraction.
 - Extension methods live in their documented namespaces:
   `Laranet.Data.Extensions`, `Laranet.EntityFrameworkCore.Extensions`, and
-  `Laranet.AspNetCore.Extensions`.
+  `Laranet.AspNetCore.Extensions`. `AddLaranetHttp` follows the native
+  `Microsoft.Extensions.DependencyInjection` convention.
 - Every public member has XML documentation. The build treats missing documentation
   as an error.
 - `PagedResult<T>` remains the only pagination result type.
@@ -45,6 +47,8 @@ CI validates the generated `.nuspec` files for every release package:
 - `Laranet.EntityFrameworkCore` depends on `Laranet.Data` and EF Core only.
 - `Laranet.AspNetCore` references the ASP.NET Core shared framework and
   `Laranet.Data`.
+- `Laranet.Http` references `Microsoft.Extensions.Http` and does not depend on
+  ASP.NET Core.
 - `Laranet.Cli` is a `DotnetTool` package with the `laranet` command.
 
 ## Preparing a release
@@ -67,6 +71,7 @@ CI validates the generated `.nuspec` files for every release package:
    dotnet pack src/Laranet.Data/Laranet.Data.csproj --configuration Release --no-build --output artifacts/packages
    dotnet pack src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj --configuration Release --no-build --output artifacts/packages
    dotnet pack src/Laranet.AspNetCore/Laranet.AspNetCore.csproj --configuration Release --no-build --output artifacts/packages
+   dotnet pack src/Laranet.Http/Laranet.Http.csproj --configuration Release --no-build --output artifacts/packages
    dotnet pack src/Laranet.Cli/Laranet.Cli.csproj --configuration Release --no-build --output artifacts/packages
    ```
 
@@ -74,8 +79,8 @@ CI validates the generated `.nuspec` files for every release package:
 7. Tag the commit and push the tag:
 
    ```bash
-   git tag v0.1.1
-   git push origin v0.1.1
+   git tag v0.2.1
+   git push origin v0.2.1
    ```
 
 ## Automated publication
@@ -85,7 +90,7 @@ with a version input.
 
 The workflow:
 
-1. Resolves the version from the tag (`v0.1.1` becomes `0.1.1`).
+1. Resolves the version from the tag (`v0.2.1` becomes `0.2.1`).
 2. Verifies that every production project declares the same version.
 3. Restores, builds, and runs the full test suite.
 4. Packs the six packages.
@@ -132,11 +137,11 @@ NuGet.org API key. The temporary key from the workflow is not available outside
 GitHub Actions.
 
 ```bash
-dotnet nuget push artifacts/packages/Laranet.0.1.1.nupkg \
+dotnet nuget push artifacts/packages/Laranet.0.2.1.nupkg \
   --api-key "$NUGET_API_KEY" \
   --source https://api.nuget.org/v3/index.json
 
-# Repeat for the other four packages.
+# Repeat for the other five packages.
 ```
 
 `--skip-duplicate` makes retries safe when a package version already exists.
@@ -148,7 +153,7 @@ dotnet nuget push artifacts/packages/Laranet.0.1.1.nupkg \
 3. Confirm the CLI installs and reports the expected version:
 
    ```bash
-   dotnet tool install --global Laranet.Cli --version 0.1.1
+   dotnet tool install --global Laranet.Cli --version 0.2.1
    laranet --version
    ```
 

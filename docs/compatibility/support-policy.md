@@ -63,15 +63,17 @@ Compatibility guarantees apply to officially supported package versions and docu
 
 ### Published versions
 
-The current release line is `0.1.x`:
+The current release line is `0.2.x`:
 
 | Version | Packages | Status |
 | --- | --- | --- |
-| `0.1.0` | All five production packages | Published |
-| `0.1.1` | All five production packages | Published |
+| `0.1.0` | All five original production packages | Published |
+| `0.1.1` | All five original production packages | Published |
+| `0.2.0` | All five original production packages | Published |
+| `0.2.1` | All six production packages | Published |
 
-Within a version line, patch releases are backward compatible and keep package
-versions synchronized.
+`Laranet.Http` was introduced in `0.2.1`. Within a version line, patch releases are
+backward compatible and keep package versions synchronized.
 
 ## 6. .NET Release Evaluation
 

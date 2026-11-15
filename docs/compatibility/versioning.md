@@ -70,8 +70,8 @@ Breaking changes must be explicitly documented and reflected in the version numb
 
 ## 4. Initial Release
 
-The initial public release was `0.1.0`. The current `0.1.x` line contains the first
-published implementation of Laranet's functionality.
+The initial public release was `0.1.0`. The current `0.2.x` line contains the
+published implementation of Laranet's functionality, including `Laranet.Http`.
 
 Each release's scope is defined by the features included in it and documented in the
 changelog.
@@ -88,11 +88,12 @@ For example:
 
 | Package                     | Version |
 | --------------------------- | ------- |
-| Laranet                     | 0.1.1   |
-| Laranet.Data                | 0.1.1   |
-| Laranet.EntityFrameworkCore | 0.1.1   |
-| Laranet.AspNetCore          | 0.1.1   |
-| Laranet.Cli                 | 0.1.1   |
+| Laranet                     | 0.2.1   |
+| Laranet.Data                | 0.2.1   |
+| Laranet.EntityFrameworkCore | 0.2.1   |
+| Laranet.AspNetCore          | 0.2.1   |
+| Laranet.Http                | 0.2.1   |
+| Laranet.Cli                 | 0.2.1   |
 
 Packages that are not part of a particular release do not need to be published.
 
@@ -104,8 +105,8 @@ Laranet versions do not correspond directly to .NET versions.
 
 For example:
 
-- Laranet `0.1.x` may target .NET 10.
-- Laranet `0.2.0` may continue targeting .NET 10.
+- Laranet `0.2.x` may target .NET 10.
+- A future Laranet `0.3.x` may continue targeting .NET 10.
 - A future Laranet release may support multiple .NET target frameworks.
 
 A new .NET release does not automatically require a new Laranet major or minor version.

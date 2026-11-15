@@ -77,6 +77,7 @@ dotnet pack src/Laranet/Laranet.csproj --configuration Release --no-build --outp
 dotnet pack src/Laranet.Data/Laranet.Data.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.AspNetCore/Laranet.AspNetCore.csproj --configuration Release --no-build --output artifacts/packages
+dotnet pack src/Laranet.Http/Laranet.Http.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.Cli/Laranet.Cli.csproj --configuration Release --no-build --output artifacts/packages
 
 bash .github/scripts/verify-packages.sh artifacts/packages
@@ -88,8 +89,8 @@ tool configuration, and the shared package icon. It is the same script CI uses.
 ## Inspect a package
 
 ```bash
-unzip -l artifacts/packages/Laranet.Data.0.1.1.nupkg
-unzip -p artifacts/packages/Laranet.Data.0.1.1.nupkg '*.nuspec'
+unzip -l artifacts/packages/Laranet.Data.0.2.1.nupkg
+unzip -p artifacts/packages/Laranet.Data.0.2.1.nupkg '*.nuspec'
 ```
 
 Confirm that the icon, README, and expected dependencies are present.
