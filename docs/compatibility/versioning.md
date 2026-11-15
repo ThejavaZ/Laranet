@@ -88,13 +88,13 @@ For example:
 
 | Package                     | Version |
 | --------------------------- | ------- |
-| Laranet                     | 0.4.3   |
-| Laranet.Data                | 0.4.3   |
-| Laranet.EntityFrameworkCore | 0.4.3   |
-| Laranet.AspNetCore          | 0.4.3   |
-| Laranet.AspNetCore.Validation | 0.4.3 |
-| Laranet.Http                | 0.4.3   |
-| Laranet.Cli                 | 0.4.3   |
+| Laranet                     | 0.4.4   |
+| Laranet.Data                | 0.4.4   |
+| Laranet.EntityFrameworkCore | 0.4.4   |
+| Laranet.AspNetCore          | 0.4.4   |
+| Laranet.AspNetCore.Validation | 0.4.4 |
+| Laranet.Http                | 0.4.4   |
+| Laranet.Cli                 | 0.4.4   |
 
 Packages that are not part of a particular release do not need to be published.
 `Laranet.AspNetCore.Validation` is implemented for the planned `0.3.0` line, and

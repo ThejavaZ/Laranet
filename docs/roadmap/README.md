@@ -129,7 +129,7 @@ Sprint 20 remains in progress pending real-application validation. Sprints
 accessibility, and internationalization. Version 2 remains open pending real
 external feedback.
 
-Seven production packages are prepared for the `0.4.3` release line. The previous
+Seven production packages are prepared for the `0.4.4` release line. The previous
 published line was `0.2.1`; the new line adds the optional FluentValidation
 integration, CLI generators, `laranet doctor`, and CRUD introspection, while retaining `Laranet.Http`,
 optional EF Core conventions,
