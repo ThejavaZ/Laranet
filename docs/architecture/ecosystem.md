@@ -63,8 +63,8 @@ Status legend:
 | `Laranet.Http` | Optional convenience layer over `HttpClient` | Published (V3; Sprints 18.1–18.2) | BCL, `Microsoft.Extensions.Http` |
 | `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs | Implemented for `0.3.0` (V3; Sprint 18.3) | `FluentValidation`, ASP.NET Core |
 | `Laranet.Analyzers` | Optional Roslyn diagnostics | Candidate | Roslyn |
-| `Laranet.Admin` | Provider-neutral admin resource and adapter contracts | Prototype (V4; Sprint 20) | — |
-| `Laranet.Admin.AspNetCore` | Razor-based admin UI | Candidate (V4) | `Laranet.Admin`, `Laranet.AspNetCore` |
+| `Laranet.Admin` | Provider-neutral admin resource and adapter contracts | Prototype; ADR accepted (V4; Sprints 20–22) | — |
+| `Laranet.Admin.AspNetCore` | Optional Razor-based admin UI | Candidate after real-app review (V4) | `Laranet.Admin`, ASP.NET Core |
 | `Laranet.Data.Dapper` | Dapper adapter | Candidate | `Laranet.Data`, Dapper |
 | `Laranet.Data.AdoNet` | ADO.NET adapter | Candidate | `Laranet.Data` |
 | `Laranet.Testing` | Test fixtures and helpers | Candidate | Test frameworks |
@@ -225,7 +225,7 @@ A new module enters the ecosystem only when it satisfies all of these:
 | `0.1.1` | Version 2, Sprint 9 | Multi-column search, release bookkeeping | Published |
 | `0.2.0` | Version 3, Sprints 14–17 | Standards, project templates, `make:crud`, EF Core conventions | Published |
 | `0.2.1` | Version 3, Sprints 18.1–18.2 | `Laranet.Http` foundation and resilience | Published |
-| `0.3.0` | Version 3, Sprints 18.3–19 | Validation, CLI generators for CQRS/DbContext/configuration, and `laranet doctor` | Release candidate |
+| `0.3.1` | Version 3, Sprints 18.3–19 and 21.5 | Validation, CLI generators, `laranet doctor`, and CRUD introspection | Release candidate |
 | `0.4.0` | Version 4, Sprints 22–25 | Admin ADR, core, Razor UI, and pilot | Candidate |
 | `0.5.0` | Version 4, Sprints 26–28 | Web/Blazor templates, optional adapters, ecosystem hardening | Candidate |
 | `1.0.0` | Version 5 | API freeze, release integrity, data experience, diagnostics, enterprise template | Planned (gated by Version 4) |
