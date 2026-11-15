@@ -18,12 +18,15 @@ your application uses.
 | `Laranet.Data` | Provider-neutral `IQueryable` search, sorting, filtering, and pagination | `dotnet add package Laranet.Data` |
 | `Laranet.EntityFrameworkCore` | Asynchronous pagination and optional conventions through EF Core | `dotnet add package Laranet.EntityFrameworkCore` |
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results | `dotnet add package Laranet.AspNetCore` |
+| `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs (ships with `0.3.0`) | `dotnet add package Laranet.AspNetCore.Validation` |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` |
 | `Laranet.Cli` | Project creation and code generation tool | See below |
 | `Laranet.Http` | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` | `dotnet add package Laranet.Http` |
 
 `Laranet.EntityFrameworkCore` and `Laranet.AspNetCore` reference `Laranet.Data`, so
 you do not need to install `Laranet.Data` separately when you use them.
+`Laranet.AspNetCore.Validation` is independent: it references only FluentValidation and
+the ASP.NET Core shared framework, and ships with `0.3.0`.
 
 ## Install the CLI
 
@@ -64,6 +67,7 @@ mkdir -p artifacts/packages
 dotnet pack src/Laranet.Data/Laranet.Data.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.AspNetCore/Laranet.AspNetCore.csproj --configuration Release --no-build --output artifacts/packages
+dotnet pack src/Laranet.AspNetCore.Validation/Laranet.AspNetCore.Validation.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.Http/Laranet.Http.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.Cli/Laranet.Cli.csproj --configuration Release --no-build --output artifacts/packages
 ```

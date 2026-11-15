@@ -1,13 +1,13 @@
 # Validation
 
-> **Status:** Laranet 0.2.x does not ship a validation package. This guide documents
-> the native ASP.NET Core options that work with the current packages. An optional
-> integration is planned for Version 3; see the [roadmap](../roadmap/v3.md).
+> **Status:** Sprint 18.3 is implemented. `Laranet.AspNetCore.Validation` ships with
+> `0.3.0` as an optional, independently consumable package. Native ASP.NET Core
+> validation remains the default; see the [roadmap](../roadmap/v3.md).
 
 Laranet does not introduce a validation engine, a `FormRequest` clone, or a custom
 result type. ASP.NET Core and `System.ComponentModel.DataAnnotations` already provide
-the primitives, and FluentValidation can be added as an independent library when the
-project needs it.
+the primitives. `Laranet.AspNetCore.Validation` only connects FluentValidation to
+Minimal API endpoint filters when a project chooses to use it.
 
 ## Request models
 
@@ -139,18 +139,33 @@ app.MapPost("/products", async (
 The manual path keeps the same error shape as MVC and the built-in Minimal API
 validation.
 
-## FluentValidation
+## FluentValidation with Laranet
 
-FluentValidation is a separate library. Install it only when attributes are not enough
-— for example, when rules depend on multiple properties, external services, or
+FluentValidation is a separate library. Use it only when attributes are not enough —
+for example, when rules depend on multiple properties, external services, or
 conditional logic.
 
+`Laranet.AspNetCore.Validation` is a thin adapter for Minimal APIs. It is not a
+validation engine, it does not define a request base class, and it does not add a
+custom error type. Install it only if you already use FluentValidation:
+
 ```bash
-dotnet add package FluentValidation
+dotnet add package Laranet.AspNetCore.Validation
 ```
+
+The package references `FluentValidation`. If you want assembly scanning, add
+FluentValidation's dependency injection package too:
+
+```bash
+dotnet add package FluentValidation.DependencyInjectionExtensions
+```
+
+Define a request and a validator as usual:
 
 ```csharp
 using FluentValidation;
+
+public sealed record CreateProductRequest(string Name, decimal Price);
 
 public sealed class CreateProductRequestValidator
     : AbstractValidator<CreateProductRequest>
@@ -170,50 +185,63 @@ public sealed class CreateProductRequestValidator
 Register the validator with the native container:
 
 ```csharp
-builder.Services.AddScoped<IValidator<CreateProductRequest>, CreateProductRequestValidator>();
+builder.Services.AddScoped<
+    IValidator<CreateProductRequest>,
+    CreateProductRequestValidator>();
 ```
 
-Validate it in an endpoint filter:
+Or scan an assembly with FluentValidation's dependency injection package:
 
 ```csharp
-public sealed class ValidationFilter<T>(IValidator<T> validator) : IEndpointFilter
-{
-    public async ValueTask<object?> InvokeAsync(
-        EndpointFilterInvocationContext context,
-        EndpointFilterDelegate next)
+using FluentValidation;
+
+builder.Services.AddValidatorsFromAssemblyContaining<
+    CreateProductRequestValidator>();
+```
+
+Add the filter to the endpoint:
+
+```csharp
+using Laranet.AspNetCore.Validation;
+
+app.MapPost("/products", (CreateProductRequest request) =>
     {
-        var argument = context.Arguments.OfType<T>().FirstOrDefault();
-
-        if (argument is null)
-        {
-            return await next(context);
-        }
-
-        var result = await validator.ValidateAsync(argument, context.HttpContext.RequestAborted);
-
-        if (result.IsValid)
-        {
-            return await next(context);
-        }
-
-        var errors = result.Errors
-            .GroupBy(error => error.PropertyName)
-            .ToDictionary(
-                group => group.Key,
-                group => group.Select(error => error.ErrorMessage).ToArray());
-
-        return Results.ValidationProblem(errors);
-    }
-}
+        // Reaching this line means the request is valid.
+        return Results.Created();
+    })
+    .WithFluentValidation<CreateProductRequest>();
 ```
 
-```csharp
-app.MapPost("/products", CreateProduct)
-    .AddEndpointFilter<ValidationFilter<CreateProductRequest>>();
-```
+The filter validates the first argument of type `CreateProductRequest`, so it also
+works with `[AsParameters]` request types. All validators registered for the type run,
+and their errors are combined and grouped by property. An invalid request produces the
+native `ValidationProblemDetails` response with status `400` and content type
+`application/problem+json`. The endpoint does not run.
 
-Use one validation system per project. Mixing attributes and FluentValidation for the
-same request type makes the error behavior harder to predict.
+Behavior to keep in mind:
+
+- No argument of the request type: the filter passes the request through.
+- No validator registered: the filter throws `InvalidOperationException` with a clear
+  message. Register at least one validator before adding the filter.
+- Validation receives `HttpContext.RequestAborted`.
+
+See the [Validation API](../api/validation.md) for the complete contract.
+
+### MVC controllers
+
+`Laranet.AspNetCore.Validation` targets Minimal API endpoint filters only. Controllers
+keep the native `[ApiController]` behavior and DataAnnotations validation. For
+FluentValidation in MVC, use FluentValidation's own MVC integration or a custom
+`IAsyncActionFilter`; Laranet does not ship an MVC filter.
+
+### Opting out
+
+The package is optional. If you do not install it, or you install it and never call
+`WithFluentValidation<T>()`, native ASP.NET Core validation behaves exactly as before.
+There is no global middleware and no automatic endpoint registration.
+
+Use one validation system per request type. Mixing attributes and FluentValidation for
+the same type makes the error behavior harder to predict.
 
 ## Custom validation attributes
 
@@ -254,16 +282,21 @@ Keep one shape for validation failures:
 This is `ValidationProblemDetails`, produced by MVC, the built-in Minimal API
 validation, or `Results.ValidationProblem`.
 
-## What Laranet will add
+## What Laranet adds
 
-Version 3 studies an optional validation integration that wires the native mechanisms
-without replacing them. It will not introduce a custom validation engine or a
-`FormRequest` type. The package boundary (`Laranet.AspNetCore.Validation` or a broader
-`Laranet.Validation`) and the final scope are recorded in the
-[Version 3 roadmap](../roadmap/v3.md).
+Laranet ships one optional adapter so a project that already uses FluentValidation does
+not need to write its own endpoint filter. It does not replace the native mechanisms:
+DataAnnotations and `AddValidation()` remain the default, and MVC continues to use
+`[ApiController]` validation.
+
+The package intentionally does not include a custom validation engine, a `FormRequest`
+type, `Result<T>`, or an `AddLaranetValidation` registration wrapper. The dependency
+direction and the package boundary are recorded in
+[ADR-0011](../architecture/decisions/0011-optional-fluentvalidation-integration.md).
 
 ## Related
 
+- [Validation API](../api/validation.md)
 - [Error handling](error-handling.md)
 - [Dependency injection](../concepts/dependency-injection.md)
 - [Version 3 roadmap](../roadmap/v3.md)

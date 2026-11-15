@@ -55,7 +55,7 @@ Laranet is a **toolkit, not an opinionated application framework**.
 | `Laranet.AspNetCore`          | ASP.NET Core integration                         | Published `0.2.1` |
 | `Laranet.Cli`                 | Project and code generation commands             | Published `0.2.1` |
 | `Laranet.Http`                | Optional convenience layer over `HttpClient` with safe retries | Published `0.2.1` |
-| `Laranet.AspNetCore.Validation` | Optional request validation integration        | Planned for Version 3     |
+| `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs | Implemented for `0.3.0` |
 | `Laranet.Analyzers`           | Optional Roslyn diagnostics                      | Planned for Version 5     |
 | `Laranet.Admin`               | Admin resource abstractions                      | Candidate for Version 4   |
 | `Laranet.Admin.AspNetCore`    | Razor-based admin UI                             | Candidate for Version 4   |
@@ -119,16 +119,18 @@ Before marking it complete, verify:
 
 ## Current project state
 
-**Current focus:** Version 3, [Sprint 18.3 — Validation](v3.md).
-Sprint 17 — EF Core conventions, Sprint 18.1 — `Laranet.Http` foundation, and
-Sprint 18.2 — `Laranet.Http` resilience and release are completed. Sprint 18.3 covers
-Validation. Sprints 18.4 and 18.5 plan CLI generators for CQRS commands, `DbContext`,
-and configuration. Version 2 remains open pending real external feedback.
+**Current focus:** Version 3, [Sprint 18.4 — CQRS generators](v3.md).
+Sprint 17 — EF Core conventions, Sprint 18.1 — `Laranet.Http` foundation,
+Sprint 18.2 — `Laranet.Http` resilience and release, and Sprint 18.3 — Validation are
+completed. Sprint 18.4 plans CLI generators for CQRS commands, and Sprint 18.5 plans
+generators for `DbContext` and configuration. Version 2 remains open pending real
+external feedback.
 
-All six production packages are implemented and published on NuGet.org as `0.2.1`.
-The published line adds `Laranet.Http`, optional EF Core conventions, project
-templates, and `make:crud`. `Laranet.Data` provides provider-neutral search, sorting,
-conditional filtering, and pagination, including multi-column search.
+Six production packages are implemented and published on NuGet.org as `0.2.1`. The
+repository also contains `Laranet.AspNetCore.Validation`, implemented for the upcoming
+`0.3.0` line. The published line adds `Laranet.Http`, optional EF Core conventions,
+project templates, and `make:crud`. `Laranet.Data` provides provider-neutral search,
+sorting, conditional filtering, and pagination, including multi-column search.
 `Laranet.EntityFrameworkCore` adds asynchronous pagination and optional conventions,
 `Laranet.AspNetCore` exposes pagination metadata through HTTP headers and Minimal API
 results, `Laranet.Cli` creates projects and generates code, and `Laranet.Http`

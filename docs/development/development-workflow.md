@@ -77,6 +77,7 @@ dotnet pack src/Laranet/Laranet.csproj --configuration Release --no-build --outp
 dotnet pack src/Laranet.Data/Laranet.Data.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.AspNetCore/Laranet.AspNetCore.csproj --configuration Release --no-build --output artifacts/packages
+dotnet pack src/Laranet.AspNetCore.Validation/Laranet.AspNetCore.Validation.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.Http/Laranet.Http.csproj --configuration Release --no-build --output artifacts/packages
 dotnet pack src/Laranet.Cli/Laranet.Cli.csproj --configuration Release --no-build --output artifacts/packages
 

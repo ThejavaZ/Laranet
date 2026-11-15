@@ -4,6 +4,26 @@ All notable changes to Laranet will be documented in this file.
 
 This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `Laranet.AspNetCore.Validation`, an optional FluentValidation endpoint filter for
+  Minimal APIs. It provides `WithFluentValidation<TRequest>()` and
+  `FluentValidationEndpointFilter<TRequest>`, runs every registered validator with
+  `HttpContext.RequestAborted`, groups errors by property, and returns the native
+  `ValidationProblemDetails` response with status `400`.
+- Unit and integration tests for valid requests, invalid requests, multiple validators,
+  grouped errors, the missing-validator contract, and opt-in behavior.
+- ADR-0011 documenting the optional FluentValidation integration, its package boundary,
+  and its limits.
+- Validation API reference and updated validation guide covering native-first
+  guidance, MVC limitations, opting out, and optional assembly scanning with
+  `FluentValidation.DependencyInjectionExtensions`.
+- CI and release workflows now pack and verify seven production packages, including
+  the FluentValidation dependency and the absence of dependencies on other Laranet
+  packages.
+
 ## [0.2.1] - 2026-11-14
 
 ### Added

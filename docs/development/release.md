@@ -14,6 +14,7 @@ Packages in a release:
 - `Laranet.Data`
 - `Laranet.EntityFrameworkCore`
 - `Laranet.AspNetCore`
+- `Laranet.AspNetCore.Validation`
 - `Laranet.Http`
 - `Laranet.Cli`
 
@@ -28,7 +29,8 @@ Before a release, review the public surface:
 - Extension methods live in their documented namespaces:
   `Laranet.Data.Extensions`, `Laranet.EntityFrameworkCore.Extensions`, and
   `Laranet.AspNetCore.Extensions`. `AddLaranetHttp` follows the native
-  `Microsoft.Extensions.DependencyInjection` convention.
+  `Microsoft.Extensions.DependencyInjection` convention, and
+  `Laranet.AspNetCore.Validation` uses its own namespace.
 - Every public member has XML documentation. The build treats missing documentation
   as an error.
 - `PagedResult<T>` remains the only pagination result type.
@@ -47,6 +49,8 @@ CI validates the generated `.nuspec` files for every release package:
 - `Laranet.EntityFrameworkCore` depends on `Laranet.Data` and EF Core only.
 - `Laranet.AspNetCore` references the ASP.NET Core shared framework and
   `Laranet.Data`.
+- `Laranet.AspNetCore.Validation` references the ASP.NET Core shared framework and
+  `FluentValidation`, and does not depend on other Laranet packages.
 - `Laranet.Http` references `Microsoft.Extensions.Http` and does not depend on
   ASP.NET Core.
 - `Laranet.Cli` is a `DotnetTool` package with the `laranet` command.
@@ -71,6 +75,7 @@ CI validates the generated `.nuspec` files for every release package:
    dotnet pack src/Laranet.Data/Laranet.Data.csproj --configuration Release --no-build --output artifacts/packages
    dotnet pack src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj --configuration Release --no-build --output artifacts/packages
    dotnet pack src/Laranet.AspNetCore/Laranet.AspNetCore.csproj --configuration Release --no-build --output artifacts/packages
+   dotnet pack src/Laranet.AspNetCore.Validation/Laranet.AspNetCore.Validation.csproj --configuration Release --no-build --output artifacts/packages
    dotnet pack src/Laranet.Http/Laranet.Http.csproj --configuration Release --no-build --output artifacts/packages
    dotnet pack src/Laranet.Cli/Laranet.Cli.csproj --configuration Release --no-build --output artifacts/packages
    ```
@@ -93,8 +98,8 @@ The workflow:
 1. Resolves the version from the tag (`v0.2.1` becomes `0.2.1`).
 2. Verifies that every production project declares the same version.
 3. Restores, builds, and runs the full test suite.
-4. Packs the six packages.
-5. Verifies that exactly six `.nupkg` files were produced with the expected
+4. Packs the seven packages.
+5. Verifies that exactly seven `.nupkg` files were produced with the expected
    version and valid metadata.
 6. Requests a short-lived NuGet API key through GitHub OIDC.
 7. Pushes the packages to NuGet.org with `--skip-duplicate`.
@@ -119,7 +124,7 @@ The NuGet.org policy must match the repository:
 | Workflow file | `release.yml` |
 | Environment | Empty |
 | Scopes | Push new packages and package versions |
-| Glob patterns | `Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`, `Laranet.AspNetCore`, `Laranet.Cli`, `Laranet.Http` |
+| Glob patterns | `Laranet`, `Laranet.Data`, `Laranet.EntityFrameworkCore`, `Laranet.AspNetCore`, `Laranet.AspNetCore.Validation`, `Laranet.Cli`, `Laranet.Http` |
 
 The `user` input of `NuGet/login@v1` must be the NuGet.org account username. The
 workflow currently uses `ThejavaZ`.
@@ -141,7 +146,7 @@ dotnet nuget push artifacts/packages/Laranet.0.2.1.nupkg \
   --api-key "$NUGET_API_KEY" \
   --source https://api.nuget.org/v3/index.json
 
-# Repeat for the other five packages.
+# Repeat for the other six packages.
 ```
 
 `--skip-duplicate` makes retries safe when a package version already exists.

@@ -10,6 +10,7 @@ READMEs.
 | [Data](data.md) | `Laranet.Data` | Published |
 | [Integrations](integrations.md) | `Laranet.EntityFrameworkCore`, `Laranet.AspNetCore` | Published |
 | [HTTP](http.md) | `Laranet.Http` | Published |
+| [Validation](validation.md) | `Laranet.AspNetCore.Validation` | Implemented for `0.3.0` |
 
 ## How to read this reference
 
@@ -29,11 +30,11 @@ intent and shows the common combinations.
 
 ## Not covered yet
 
-Modules that are planned or under evaluation, such as validation and administrative
-resources, are not part of the published API. The [roadmap](../roadmap/README.md)
-tracks their status, and the
-[ecosystem architecture](../architecture/ecosystem.md) defines when a module is
-admitted. `Laranet.Http` is published and documented here.
+Modules that are planned or under evaluation, such as administrative resources, are
+not part of the published API. The [roadmap](../roadmap/README.md) tracks their status,
+and the [ecosystem architecture](../architecture/ecosystem.md) defines when a module is
+admitted. `Laranet.Http` and `Laranet.AspNetCore.Validation` are documented here;
+`Laranet.AspNetCore.Validation` ships with `0.3.0`.
 
 ## Related
 

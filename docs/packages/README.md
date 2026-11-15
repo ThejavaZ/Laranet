@@ -8,23 +8,30 @@ application uses.
 | `Laranet.Data` | Provider-neutral query search, sorting, filtering, and pagination | `dotnet add package Laranet.Data` | [README](../../src/Laranet.Data/README.md) |
 | `Laranet.EntityFrameworkCore` | Asynchronous pagination and optional conventions through EF Core | `dotnet add package Laranet.EntityFrameworkCore` | [README](../../src/Laranet.EntityFrameworkCore/README.md) |
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results | `dotnet add package Laranet.AspNetCore` | [README](../../src/Laranet.AspNetCore/README.md) |
+| `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs | `dotnet add package Laranet.AspNetCore.Validation` | [README](../../src/Laranet.AspNetCore.Validation/README.md) |
 | `Laranet.Cli` | Project creation and code generation | `dotnet tool install --global Laranet.Cli` | [README](../../src/Laranet.Cli/README.md) |
 | `Laranet.Http` | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` | `dotnet add package Laranet.Http` | [README](../../src/Laranet.Http/README.md) |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` | [README](../../src/Laranet/README.md) |
+
+`Laranet.AspNetCore.Validation` is implemented for the `0.3.0` release line. The other
+packages describe the published `0.2.1` line.
 
 ## Dependency boundaries
 
 ```text
 Laranet.AspNetCore ──► Laranet.Data ◄── Laranet.EntityFrameworkCore
-        │                                      │
-        └──────── optional integrations ───────┘
-                        (no mandatory dependency on Core)
+
+Laranet.AspNetCore.Validation  (independent: ASP.NET Core + FluentValidation,
+                                no dependency on other Laranet packages)
 ```
 
 - `Laranet.Data` does not reference EF Core, ASP.NET Core, or any database provider.
 - `Laranet.EntityFrameworkCore` references `Laranet.Data` and EF Core.
 - `Laranet.AspNetCore` references `Laranet.Data` and the ASP.NET Core shared
   framework.
+- `Laranet.AspNetCore.Validation` references FluentValidation and the ASP.NET Core
+  shared framework. It does not reference `Laranet.AspNetCore` or any other Laranet
+  package.
 - `Laranet.Http` references `Microsoft.Extensions.Http` and does not depend on
   `Laranet.Data`, ASP.NET Core, or a specific API client.
 - `Laranet.Cli` is a .NET tool with no runtime dependency on the other packages.
@@ -38,6 +45,7 @@ Laranet.AspNetCore ──► Laranet.Data ◄── Laranet.EntityFrameworkCore
 | Asynchronous EF Core pagination | `Laranet.EntityFrameworkCore` |
 | Auditing or soft delete with EF Core | `Laranet.EntityFrameworkCore` |
 | Paginated Minimal API or MVC response | `Laranet.AspNetCore` + `Laranet.EntityFrameworkCore` |
+| FluentValidation in a Minimal API | `Laranet.AspNetCore.Validation` |
 | Call another API with typed requests and responses | `Laranet.Http` |
 | Scaffold a new project or generate code | `Laranet.Cli` |
 
@@ -56,6 +64,7 @@ Laranet.AspNetCore ──► Laranet.Data ◄── Laranet.EntityFrameworkCore
 - [Data (`Laranet.Data`)](../api/data.md)
 - [Integrations](../api/integrations.md)
 - [HTTP (`Laranet.Http`)](../api/http.md)
+- [Validation (`Laranet.AspNetCore.Validation`)](../api/validation.md)
 
 ## Installation details
 

@@ -61,7 +61,7 @@ Status legend:
 | `Laranet.AspNetCore` | ASP.NET Core pagination integration | Published | `Laranet.Data`, ASP.NET Core |
 | `Laranet.Cli` | Project creation and code generation | Published | — |
 | `Laranet.Http` | Optional convenience layer over `HttpClient` | Published (V3; Sprints 18.1–18.2) | BCL, `Microsoft.Extensions.Http` |
-| `Laranet.AspNetCore.Validation` | Optional request validation integration | Committed (V3; boundary pending) | `Laranet.AspNetCore` |
+| `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs | Implemented for `0.3.0` (V3; Sprint 18.3) | `FluentValidation`, ASP.NET Core |
 | `Laranet.Analyzers` | Optional Roslyn diagnostics | Candidate | Roslyn |
 | `Laranet.Admin` | Admin resource abstractions | Candidate (V4) | `Laranet.Data` |
 | `Laranet.Admin.AspNetCore` | Razor-based admin UI | Candidate (V4) | `Laranet.Admin`, `Laranet.AspNetCore` |
@@ -94,9 +94,11 @@ Laranet (Core)
 Laranet.Data ◄── Laranet.EntityFrameworkCore
     ▲
     │
-Laranet.AspNetCore ◄── Laranet.AspNetCore.Validation
-    ▲
-    │
+Laranet.AspNetCore
+
+Laranet.AspNetCore.Validation  (ASP.NET Core + FluentValidation;
+                                no dependency on other Laranet packages)
+
 Laranet.Admin.AspNetCore ◄── Laranet.Admin ◄── Laranet.Data
 
 Laranet.Cli ──► generated projects (no runtime dependency)
@@ -118,6 +120,9 @@ The rules are:
 7. Optional integrations must not become mandatory dependencies of unrelated modules.
 8. `Laranet.Http` may depend on the BCL and `Microsoft.Extensions.Http`. It must not
    depend on `Laranet.Data`, ASP.NET Core, or a specific API client.
+9. `Laranet.AspNetCore.Validation` may depend on `FluentValidation` and the ASP.NET Core
+   shared framework. It must not depend on `Laranet.AspNetCore`, `Laranet.Data`, EF
+   Core, or any other Laranet package.
 
 ### Provider strategy
 

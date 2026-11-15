@@ -219,13 +219,18 @@ public async Task<ActionResult<PagedResult<Product>>> Get(
 | --- | --- |
 | `Laranet.EntityFrameworkCore` | `Laranet.Data`, `Microsoft.EntityFrameworkCore` |
 | `Laranet.AspNetCore` | `Laranet.Data`, ASP.NET Core shared framework |
+| `Laranet.AspNetCore.Validation` | FluentValidation, ASP.NET Core shared framework |
 
-Neither package adds EF Core or ASP.NET Core to `Laranet.Data`.
+None of these packages adds EF Core or ASP.NET Core to `Laranet.Data`.
+`Laranet.AspNetCore.Validation` is a separate optional package; see the
+[Validation API](validation.md).
 
 ## Related
 
 - [Data API](data.md)
+- [Validation API](validation.md)
 - [Pagination guide](../guides/pagination.md)
 - [EF Core conventions guide](../guides/ef-core-conventions.md)
 - [`Laranet.EntityFrameworkCore` README](../../src/Laranet.EntityFrameworkCore/README.md)
 - [`Laranet.AspNetCore` README](../../src/Laranet.AspNetCore/README.md)
+- [`Laranet.AspNetCore.Validation` README](../../src/Laranet.AspNetCore.Validation/README.md)

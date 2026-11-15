@@ -32,6 +32,7 @@ conventions, query utilities, integrations, and code generation on top of them.
 | `Laranet.Data` | Provider-neutral `IQueryable` search, sorting, filtering, and pagination. |
 | `Laranet.EntityFrameworkCore` | Asynchronous EF Core pagination and optional conventions. |
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results. |
+| `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs (0.3.0). |
 | `Laranet.Cli` | Project creation and code generation. |
 | [`Laranet.Http`](https://www.nuget.org/packages/Laranet.Http/0.2.1) | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` (0.2.1). |
 | `Laranet` | Core package, intentionally empty until a shared abstraction is justified. |
@@ -40,6 +41,7 @@ conventions, query utilities, integrations, and code generation on top of them.
 dotnet add package Laranet.Data
 dotnet add package Laranet.EntityFrameworkCore
 dotnet add package Laranet.AspNetCore
+dotnet add package Laranet.AspNetCore.Validation
 dotnet tool install --global Laranet.Cli
 ```
 

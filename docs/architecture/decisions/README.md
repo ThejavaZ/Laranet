@@ -20,6 +20,7 @@ Their purpose is to preserve architectural knowledge and provide transparency in
 | [0008](0008-runtime-and-tooling-versioning.md) | Keep Runtime and Tooling Packages on One Version Train by Default | Accepted |
 | [0009](0009-optional-ef-core-conventions.md) | Keep EF Core Conventions Optional and Close to the Framework | Accepted |
 | [0010](0010-optional-http-convenience-layer.md) | Add an Optional HTTP Convenience Layer | Accepted |
+| [0011](0011-optional-fluentvalidation-integration.md) | Add an Optional FluentValidation Integration | Accepted |
 
 ## ADR Status
 
