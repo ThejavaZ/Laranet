@@ -63,7 +63,7 @@
                        value="@Model.Values.GetValueOrDefault(field.Name)"
                        min="@field.Min"
                        max="@field.Max"
-                       step="@field.Step"
+                       step="@Laranet.Admin.AspNetCore.AdminInputTypeResolver.ResolveStep(field)"
                        maxlength="@(field.MaxLength?.ToString())"
                        minlength="@(field.MinLength?.ToString())"
                        required="@(field.IsRequired ? "required" : null)" />
