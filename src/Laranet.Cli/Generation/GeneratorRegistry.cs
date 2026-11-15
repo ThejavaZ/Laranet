@@ -19,6 +19,7 @@ internal static class GeneratorRegistry
             [GeneratorKind.Handler] = new CqrsGenerator(GeneratorKind.Handler),
             [GeneratorKind.DbContext] = new DatabaseGenerator(),
             [GeneratorKind.Config] = new ConfigurationGenerator(),
+            [GeneratorKind.ApiResource] = new ApiResourceGenerator(),
         };
 
     /// <summary>

@@ -66,9 +66,10 @@ internal static class CrudFieldParser
     /// Parses a comma-separated list of <c>Name:type</c> fields.
     /// </summary>
     /// <param name="value">The field list, or <see langword="null"/> for the default field.</param>
+    /// <param name="allowId">Whether <c>Id</c> may be declared explicitly.</param>
     /// <returns>The parsed fields.</returns>
     /// <exception cref="CliException">The field list is invalid.</exception>
-    public static IReadOnlyList<CrudField> Parse(string? value)
+    public static IReadOnlyList<CrudField> Parse(string? value, bool allowId = false)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -95,7 +96,7 @@ internal static class CrudFieldParser
 
             var name = NameNormalizer.Normalize(item[..separator]);
 
-            if (name.Equals("Id", StringComparison.OrdinalIgnoreCase))
+            if (!allowId && name.Equals("Id", StringComparison.OrdinalIgnoreCase))
             {
                 throw new CliException(
                     "'Id' is generated automatically and cannot be declared as a field.");

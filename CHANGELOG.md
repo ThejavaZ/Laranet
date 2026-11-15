@@ -24,6 +24,21 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
   selectors, and bulk actions.
 - Provider compatibility tests cover the EF Core admin adapter.
 
+## [Unreleased]
+
+### Changed
+
+- `make:resource` now generates an API Resource view model. The previous
+  model/service/controller scaffold is available as `make:all`.
+- `make:dbcontext` design-time factories no longer contain hardcoded connection
+  strings; they read `ConnectionStrings__<ContextName>` from the environment.
+
+### Added
+
+- `make:resource` for API Resource view models with `FromEntity`.
+- CLI command map documentation.
+- Vanilla CLI list output, dry-run tree, and Levenshtein command suggestions.
+
 ## [0.3.1] - 2026-11-15
 
 ### Added

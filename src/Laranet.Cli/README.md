@@ -225,7 +225,8 @@ other properties that require human judgment.
 | `laranet make:service <name>` | A service class in `Services/` |
 | `laranet make:controller <name>` | An ASP.NET Core controller in `Controllers/` |
 | `laranet make:middleware <name>` | An ASP.NET Core middleware in `Middleware/` |
-| `laranet make:resource <name>` | A model, a service, and a controller together |
+| `laranet make:all <name>` | A model, a service, and a controller together |
+| `laranet make:resource <name>` | An API resource view model with `FromEntity` |
 | `laranet make:crud <entity>` | An entity, DTOs, and CRUD endpoints |
 | `laranet make:repository <name>` | An optional repository scaffold in `Repositories/` |
 | `laranet make:command <name>` | A command record, optionally with a handler |

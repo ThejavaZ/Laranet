@@ -17,6 +17,7 @@ internal sealed class TemplateCatalog
         [GeneratorKind.Handler] = "handler.tpl",
         [GeneratorKind.DbContext] = "dbcontext.tpl",
         [GeneratorKind.Config] = "config.tpl",
+        [GeneratorKind.ApiResource] = "apiresource.tpl",
     };
 
     private readonly string? directory;

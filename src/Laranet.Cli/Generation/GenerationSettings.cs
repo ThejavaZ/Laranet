@@ -8,6 +8,7 @@ internal sealed record GenerationSettings(
     CqrsProfile Profile = CqrsProfile.Simple,
     bool WithHandler = false,
     bool WithTests = false,
+    IReadOnlyList<CrudField>? Fields = null,
     DatabaseProvider Provider = DatabaseProvider.SqlServer,
     IReadOnlyList<string>? Entities = null,
     IReadOnlyList<string>? Sections = null);

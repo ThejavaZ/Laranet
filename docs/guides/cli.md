@@ -65,6 +65,7 @@ laranet make:model Product
 laranet make:service Product
 laranet make:controller Product
 laranet make:middleware RequestLogging
+laranet make:all Product
 laranet make:resource Product
 laranet make:crud Product --fields "Name:string,Price:decimal"
 laranet make:command CreateOrder --with-handler
@@ -77,7 +78,8 @@ laranet make:query FindOrder --mediator mediatr
 | `make:service <name>` | `Services/<Name>Service.cs` |
 | `make:controller <name>` | `Controllers/<Name>Controller.cs` |
 | `make:middleware <name>` | `Middleware/<Name>Middleware.cs` |
-| `make:resource <name>` | Model, service, and controller |
+| `make:all <name>` | Model, service, and controller |
+| `make:resource <name>` | API resource view model with `FromEntity` |
 | `make:crud <entity>` | Entity, DTOs, and CRUD endpoints |
 | `make:repository <name>` | Optional `Repositories/<Name>Repository.cs` scaffold |
 | `make:command <name>` | `Commands/<Name>Command.cs`, optionally a handler |

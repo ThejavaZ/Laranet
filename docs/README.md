@@ -50,6 +50,7 @@ them.
 - [Validation](guides/validation.md)
 - [Error Handling](guides/error-handling.md)
 - [CLI](guides/cli.md)
+- [CLI command map](development/cli-command-map.md)
 - [Admin prototype](guides/admin.md)
 
 ## API Reference

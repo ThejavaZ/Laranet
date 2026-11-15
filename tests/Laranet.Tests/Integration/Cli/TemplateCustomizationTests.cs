@@ -88,7 +88,7 @@ public class TemplateCustomizationTests
             """);
 
         var result = Run(
-            "make:resource",
+            "make:all",
             "product",
             "--output",
             directory.Root,

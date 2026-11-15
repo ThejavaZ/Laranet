@@ -16,4 +16,5 @@ internal enum GeneratorKind
     Handler,
     DbContext,
     Config,
+    ApiResource,
 }

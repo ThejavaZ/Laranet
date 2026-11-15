@@ -99,7 +99,7 @@ public class CliGenerationTests
         using var directory = new TemporaryDirectory();
 
         var result = Run(
-            "make:resource",
+            "make:all",
             "product-category",
             "--output",
             directory.Root,
@@ -208,7 +208,7 @@ public class CliGenerationTests
         File.WriteAllText(modelPath, "custom content");
 
         var result = Run(
-            "make:resource",
+            "make:all",
             "product",
             "--output",
             directory.Root,
@@ -785,7 +785,7 @@ public class CliGenerationTests
         using var directory = new TemporaryDirectory();
 
         Run(
-            "make:resource",
+            "make:all",
             "product",
             "--output",
             directory.Root,

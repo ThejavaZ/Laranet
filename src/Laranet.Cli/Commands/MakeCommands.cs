@@ -46,12 +46,14 @@ internal static class MakeCommands
             input);
 
         yield return Create(
-            "make:resource",
+            "make:all",
             "Generates a model, a service, and a controller together.",
             GeneratorKind.Resource,
             output,
             error,
             input);
+
+        yield return ApiResourceCommand.Create(output, error, input);
 
         yield return CrudCommand.Create(output, error, input);
 

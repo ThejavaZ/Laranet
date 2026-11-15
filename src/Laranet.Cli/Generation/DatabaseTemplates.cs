@@ -73,28 +73,34 @@ internal static class DatabaseTemplates
         DatabaseProvider provider)
     {
         var providerUsing = ProviderUsing(provider);
-        var configure = ProviderConfiguration(provider);
+        var configure = string.Join(
+            "\n",
+            ProviderConfiguration(provider, contextName)
+                .Split('\n')
+                .Select(line => string.IsNullOrWhiteSpace(line) ? line : "        " + line));
+        var providerUsingLine = string.IsNullOrWhiteSpace(providerUsing)
+            ? string.Empty
+            : providerUsing + "\n";
 
-        return $$"""
-            using Microsoft.EntityFrameworkCore;
-            using Microsoft.EntityFrameworkCore.Design;
-            using {{contextNamespace}};
-            {{providerUsing}}
-            namespace {{@namespace}};
+        return $@"using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using {contextNamespace};
 
-            public sealed class {{contextName}}Factory
-                : IDesignTimeDbContextFactory<{{contextName}}>
-            {
-                public {{contextName}} CreateDbContext(string[] args)
-                {
-                    var optionsBuilder = new DbContextOptionsBuilder<{{contextName}}>();
-                    {{configure}}
+{providerUsingLine}namespace {@namespace};
 
-                    return new {{contextName}}(optionsBuilder.Options);
-                }
-            }
+public sealed class {contextName}Factory
+    : IDesignTimeDbContextFactory<{contextName}>
+{{
+    public {contextName} CreateDbContext(string[] args)
+    {{
+        var optionsBuilder = new DbContextOptionsBuilder<{contextName}>();
+{configure}
 
-            """;
+        return new {contextName}(optionsBuilder.Options);
+    }}
+}}
+";
+
     }
 
     private static string ProviderUsing(DatabaseProvider provider)
@@ -109,19 +115,28 @@ internal static class DatabaseTemplates
         };
     }
 
-    private static string ProviderConfiguration(DatabaseProvider provider)
+    private static string ProviderConfiguration(DatabaseProvider provider, string contextName)
     {
-        return provider switch
+        var method = provider switch
         {
-            DatabaseProvider.SqlServer =>
-                "optionsBuilder.UseSqlServer(\"Server=(localdb)\\\\mssqllocaldb;Database=AppDb;Trusted_Connection=True;\");",
-            DatabaseProvider.Postgres =>
-                "optionsBuilder.UseNpgsql(\"Host=localhost;Database=app;Username=postgres;Password=postgres\");",
-            DatabaseProvider.MySql =>
-                "optionsBuilder.UseMySql(\"Server=localhost;Database=app;User=root;Password=\", ServerVersion.AutoDetect(\"Server=localhost;Database=app;User=root;Password=\"));",
-            DatabaseProvider.Sqlite =>
-                "optionsBuilder.UseSqlite(\"Data Source=app.db\");",
+            DatabaseProvider.SqlServer => "UseSqlServer",
+            DatabaseProvider.Postgres => "UseNpgsql",
+            DatabaseProvider.MySql => "UseMySql",
+            DatabaseProvider.Sqlite => "UseSqlite",
             _ => throw new ArgumentOutOfRangeException(nameof(provider)),
         };
+
+        var mySqlSuffix = provider == DatabaseProvider.MySql
+            ? ", ServerVersion.AutoDetect(connectionString)"
+            : string.Empty;
+
+        return $$"""
+        var connectionString = Environment.GetEnvironmentVariable(
+            "ConnectionStrings__{{contextName}}")
+            ?? throw new InvalidOperationException(
+                "Set the ConnectionStrings__{{contextName}} environment variable before running design-time commands.");
+
+        optionsBuilder.{{method}}(connectionString{{mySqlSuffix}});
+        """;
     }
 }
