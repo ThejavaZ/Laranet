@@ -6,24 +6,56 @@
     var sidebar = document.querySelector("[data-sidebar]");
     var overlay = document.querySelector("[data-sidebar-overlay]");
 
-    function toggleSidebar() {
+    function openSidebar() {
         if (!sidebar) return;
-        var isOpen = sidebar.classList.toggle("is-open");
-        if (hamburger) hamburger.classList.toggle("is-active", isOpen);
+        sidebar.classList.add("is-open");
+        if (hamburger) hamburger.classList.add("is-active");
         if (overlay) {
-            overlay.classList.toggle("is-visible", isOpen);
-            overlay.style.display = isOpen ? "block" : "none";
+            overlay.classList.add("is-visible");
+            overlay.style.display = "block";
         }
-        document.body.style.overflow = isOpen ? "hidden" : "";
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeSidebar() {
+        if (!sidebar) return;
+        sidebar.classList.remove("is-open");
+        if (hamburger) hamburger.classList.remove("is-active");
+        if (overlay) {
+            overlay.classList.remove("is-visible");
+            overlay.style.display = "none";
+        }
+        document.body.style.overflow = "";
+    }
+
+    function toggleSidebar() {
+        if (sidebar && sidebar.classList.contains("is-open")) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
     }
 
     if (hamburger) {
-        hamburger.addEventListener("click", toggleSidebar);
+        hamburger.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSidebar();
+        });
     }
 
     if (overlay) {
-        overlay.addEventListener("click", toggleSidebar);
+        overlay.addEventListener("click", closeSidebar);
     }
+
+    // Close sidebar on nav link click (mobile)
+    document.querySelectorAll(".admin-nav-link").forEach(function (link) {
+        link.addEventListener("click", function () {
+            if (window.innerWidth < 768) {
+                closeSidebar();
+            }
+        });
+    });
 
     // Loading states
     function setLoading(form) {

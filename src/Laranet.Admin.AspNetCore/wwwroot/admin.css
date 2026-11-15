@@ -738,6 +738,10 @@ a {
 
 /* Mobile sidebar */
 @media (max-width: 767px) {
+    .admin-hamburger {
+        display: flex !important;
+    }
+
     .admin-sidebar {
         position: fixed;
         top: 72px;
@@ -747,18 +751,27 @@ a {
         transform: translateX(-100%);
         transition: transform .25s ease;
         width: 260px;
+        background: #111827;
     }
 
     .admin-sidebar.is-open {
         transform: translateX(0);
     }
 
-    .admin-hamburger {
-        display: flex;
-    }
-
     .admin-environment {
         display: none;
+    }
+
+    .admin-sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .45);
+        z-index: 40;
+    }
+
+    .admin-sidebar-overlay.is-visible {
+        display: block;
     }
 }
 
