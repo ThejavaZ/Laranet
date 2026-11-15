@@ -9,21 +9,37 @@
 </head>
 <body class="admin-shell">
     <header class="admin-topbar">
-        <a class="admin-brand" asp-page="/Resources/Index" asp-route-resource="Products">
+        <button class="admin-hamburger" type="button" data-hamburger aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <a class="admin-brand" asp-page="/Index">
             <span class="admin-brand-mark">L</span>
             <span>Laranet Admin</span>
         </a>
-        <span class="admin-environment">Development</span>
+        <div class="admin-topbar-actions">
+            <span class="admin-environment">Development</span>
+            <form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" class="admin-logout-form">
+                <button type="submit" class="admin-logout-button">Logout</button>
+            </form>
+        </div>
     </header>
 
     <div class="admin-layout">
-        <aside class="admin-sidebar">
+        <aside class="admin-sidebar" data-sidebar>
             <p class="admin-sidebar-label">Workspace</p>
+            <a class="admin-nav-link" asp-page="/Index">
+                <span>▦</span>
+                Dashboard
+            </a>
             <a class="admin-nav-link" asp-page="/Resources/Index" asp-route-resource="Products">
                 <span>▦</span>
                 Products
             </a>
         </aside>
+
+        <div class="admin-sidebar-overlay" data-sidebar-overlay></div>
 
         <main class="admin-content">
             @if (Context.Request.Query.TryGetValue("adminMessage", out var adminMessage))

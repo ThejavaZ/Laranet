@@ -1,6 +1,31 @@
 (function () {
     "use strict";
 
+    // Hamburger menu toggle
+    var hamburger = document.querySelector("[data-hamburger]");
+    var sidebar = document.querySelector("[data-sidebar]");
+    var overlay = document.querySelector("[data-sidebar-overlay]");
+
+    function toggleSidebar() {
+        if (!sidebar) return;
+        var isOpen = sidebar.classList.toggle("is-open");
+        if (hamburger) hamburger.classList.toggle("is-active", isOpen);
+        if (overlay) {
+            overlay.classList.toggle("is-visible", isOpen);
+            overlay.style.display = isOpen ? "block" : "none";
+        }
+        document.body.style.overflow = isOpen ? "hidden" : "";
+    }
+
+    if (hamburger) {
+        hamburger.addEventListener("click", toggleSidebar);
+    }
+
+    if (overlay) {
+        overlay.addEventListener("click", toggleSidebar);
+    }
+
+    // Loading states
     function setLoading(form) {
         if (form.dataset.loadingStarted === "true") {
             return;
@@ -42,6 +67,7 @@
         });
     });
 
+    // Toasts
     document.querySelectorAll("[data-toast]").forEach(function (toast) {
         var close = toast.querySelector("[data-toast-close]");
         var remove = function () {
@@ -57,4 +83,23 @@
 
         window.setTimeout(remove, 4500);
     });
+
+    // Responsive table: add data-label for mobile card view
+    function setupResponsiveTables() {
+        document.querySelectorAll(".admin-table").forEach(function (table) {
+            var headers = Array.from(table.querySelectorAll("thead th")).map(function (th) {
+                return th.textContent.trim();
+            });
+
+            table.querySelectorAll("tbody tr").forEach(function (row) {
+                row.querySelectorAll("td").forEach(function (cell, index) {
+                    if (headers[index]) {
+                        cell.setAttribute("data-label", headers[index]);
+                    }
+                });
+            });
+        });
+    }
+
+    setupResponsiveTables();
 })();
