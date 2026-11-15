@@ -83,6 +83,8 @@ laranet make:query FindOrder --mediator mediatr
 | `make:command <name>` | `Commands/<Name>Command.cs`, optionally a handler |
 | `make:query <name>` | `Queries/<Name>Query.cs`, optionally a handler |
 | `make:handler <name>` | `Handlers/<Name>Handler.cs` for a command or query |
+| `make:dbcontext <name>` | EF Core context, configurations, and design-time factory |
+| `make:config <name>` | Options class and native registration extension |
 
 Names are normalized to PascalCase and suffixes are applied only when missing.
 
@@ -111,6 +113,53 @@ The CLI does not install those packages; add them to the generated project yours
 `--with-handler` is available on `make:command` and `make:query`. `--with-tests`
 adds an xUnit request scaffold. `make:handler` requires a name ending in
 `Command`, `Query`, `CommandHandler`, or `QueryHandler`.
+
+## Generate a DbContext
+
+Generate a native EF Core context with configurations and a design-time factory:
+
+```bash
+laranet make:dbcontext Catalog \
+  --provider sqlite \
+  --entities "Product,Order"
+```
+
+This creates:
+
+```text
+DbContexts/CatalogContext.cs
+Configurations/ProductConfiguration.cs
+Configurations/OrderConfiguration.cs
+Factories/CatalogContextFactory.cs
+```
+
+The context uses `DbSet<T>` and `ApplyConfigurationsFromAssembly`. The factory
+uses the selected provider (`sqlserver`, `postgres`, `mysql`, or `sqlite`;
+`sqlserver` is the default). Install the matching provider package in the
+generated application; the CLI remains provider-independent.
+
+`--entities` is a comma-separated list. `--output`, `--namespace`, `--force`,
+`--dry-run`, `--flat`, and `--interactive` work as with other generators.
+
+## Generate configuration
+
+Generate native options and registration:
+
+```bash
+laranet make:config Database \
+  --section Database \
+  --section Database:ReadOnly
+```
+
+The command creates `Configuration/DatabaseOptions.cs` and
+`Configuration/DatabaseServiceCollectionExtensions.cs`. The options type has a
+`SectionName` constant and `init` properties. Registration uses
+`AddOptions<T>().Bind(...).ValidateDataAnnotations().ValidateOnStart()`. The
+first section is the default registration and additional sections are named
+options registrations.
+
+This is ordinary `Microsoft.Extensions.Options` code. The generator does not
+create `LaranetDbContext`, `LaranetOptions<T>`, or a custom configuration system.
 
 ## Generate CRUD
 

@@ -28,6 +28,10 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
   output, optional MediatR or Wolverine contracts, `simple`/`standard`/`clean`
   profiles, optional handlers and xUnit scaffolds, and the existing safe writer
   options.
+- `Laranet.Cli` now generates native EF Core contexts and configuration through
+  `make:dbcontext` and `make:config`, including provider selection, entity
+  configurations, design-time factories, options binding, validation on start,
+  and repeatable named configuration sections.
 
 ## [0.2.1] - 2026-11-14
 
