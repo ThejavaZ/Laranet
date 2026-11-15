@@ -15,7 +15,22 @@
         <div class="admin-form-field">
             <label>
             @field.Label
-            <input name="@field.Name" value="@Model.Values.GetValueOrDefault(field.Name)" />
+            @if (Model.Lookups.TryGetValue(field.Name, out var options))
+            {
+                <select name="@field.Name">
+                    @foreach (var option in options)
+                    {
+                        <option value="@option.Key"
+                                selected="@(Convert.ToString(Model.Values.GetValueOrDefault(field.Name)) == Convert.ToString(option.Key))">
+                            @option.Label
+                        </option>
+                    }
+                </select>
+            }
+            else
+            {
+                <input name="@field.Name" value="@Model.Values.GetValueOrDefault(field.Name)" />
+            }
             </label>
         </div>
     }

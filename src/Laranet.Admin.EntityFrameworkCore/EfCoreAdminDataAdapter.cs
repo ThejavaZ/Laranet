@@ -9,7 +9,7 @@ namespace Laranet.Admin.EntityFrameworkCore;
 /// Implements administrative data operations over an application-provided EF Core
 /// <see cref="DbContext"/>.
 /// </summary>
-public sealed class EfCoreAdminDataAdapter : IAdminDataAdapter
+public sealed class EfCoreAdminDataAdapter : IAdminDataAdapter, IAdminEnhancementAdapter
 {
     private readonly DbContext db;
     private readonly TimeProvider timeProvider;
@@ -129,6 +129,76 @@ public sealed class EfCoreAdminDataAdapter : IAdminDataAdapter
         }
 
         await db.SaveChangesAsync(cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<AdminLookupOption>> GetLookupAsync(
+        AdminResource resource,
+        AdminRelation relation,
+        CancellationToken cancellationToken = default)
+    {
+        var source = CreateQuery(relation.RelatedType);
+        var rows = await ToListAsync(source, cancellationToken);
+
+        return rows.Cast<object>()
+            .Select(entity =>
+            {
+                var type = entity.GetType();
+                var key = type.GetProperty(relation.KeyProperty)?.GetValue(entity);
+                var label = type.GetProperty(relation.DisplayProperty)?.GetValue(entity);
+
+                return new AdminLookupOption(key!, Convert.ToString(label) ?? string.Empty);
+            })
+            .OrderBy(option => option.Label, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
+    /// <inheritdoc />
+    public async Task<int> ExecuteBulkActionAsync(
+        AdminResource resource,
+        string action,
+        IReadOnlyList<object> keys,
+        CancellationToken cancellationToken = default)
+    {
+        if (!string.Equals(action, "soft-delete", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new NotSupportedException(
+                $"The EF Core adapter does not support the bulk action '{action}'.");
+        }
+
+        var count = 0;
+
+        foreach (var key in keys)
+        {
+            var entity = await FindAsync(resource, key, cancellationToken);
+
+            if (entity is null)
+            {
+                continue;
+            }
+
+            var isDeleted = resource.ModelType.GetProperty("IsDeleted");
+            var deletedAt = resource.ModelType.GetProperty("DeletedAt");
+
+            if (isDeleted?.PropertyType != typeof(bool))
+            {
+                throw new InvalidOperationException(
+                    $"Resource '{resource.Name}' does not support soft-delete.");
+            }
+
+            isDeleted.SetValue(entity, true);
+
+            if (deletedAt?.PropertyType == typeof(DateTimeOffset?))
+            {
+                deletedAt.SetValue(entity, timeProvider.GetUtcNow());
+            }
+
+            count++;
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+
+        return count;
     }
 
     private IQueryable CreateQuery(Type entityType)

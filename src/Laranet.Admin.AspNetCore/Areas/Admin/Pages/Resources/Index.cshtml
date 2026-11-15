@@ -42,6 +42,19 @@
 <span class="admin-muted">@Model.Results.TotalCount results</span>
 </div>
 
+@if (Model.SupportsBulk)
+{
+    <form id="bulk-form" class="admin-bulk-form" method="post" asp-page-handler="Bulk"
+          asp-route-resource="@Model.Resource.Name"
+          data-confirm="Apply soft-delete to the selected records?"
+          data-loading-form>
+        <input type="hidden" name="action" value="soft-delete" />
+        <button class="admin-button-secondary" type="submit" data-loading-button>
+            Soft-delete selected
+        </button>
+    </form>
+}
+
 <table class="admin-table">
     <thead>
         <tr>
@@ -83,6 +96,10 @@
             <td>@item.GetValueOrDefault(field.Name)</td>
         }
         <td class="admin-actions">
+            @if (Model.SupportsBulk)
+            {
+                <input type="checkbox" name="keys" value="@item.GetValueOrDefault(Model.Resource.KeyField.Name)" form="bulk-form" />
+            }
             <a asp-page="/Resources/Edit"
                asp-route-resource="@Model.Resource.Name"
                asp-route-key="@item.GetValueOrDefault(Model.Resource.KeyField.Name)">Edit</a>

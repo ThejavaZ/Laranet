@@ -95,6 +95,25 @@ public interface IAdminDataAdapter
 }
 
 /// <summary>
+/// Optionally supplies relationship lookup values and bulk actions to an admin UI.
+/// </summary>
+public interface IAdminEnhancementAdapter
+{
+    /// <summary>Gets options for a relationship selector.</summary>
+    Task<IReadOnlyList<AdminLookupOption>> GetLookupAsync(
+        AdminResource resource,
+        AdminRelation relation,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Executes a bulk action for selected keys.</summary>
+    Task<int> ExecuteBulkActionAsync(
+        AdminResource resource,
+        string action,
+        IReadOnlyList<object> keys,
+        CancellationToken cancellationToken = default);
+}
+
+/// <summary>
 /// Decides whether the current principal may perform an administrative operation.
 /// </summary>
 public interface IAdminAuthorization

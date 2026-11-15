@@ -13,6 +13,8 @@ public sealed class IndexModel(
 
     public AdminPage Results { get; private set; } = new([], 1, 25, 0);
 
+    public bool SupportsBulk => adapter is IAdminEnhancementAdapter;
+
     [BindProperty(SupportsGet = true)]
     public string? Search { get; set; }
 
@@ -47,6 +49,32 @@ public sealed class IndexModel(
             cancellationToken);
 
         return Page();
+    }
+
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> OnPostBulkAsync(
+        string resource,
+        string action,
+        string[] keys,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetResource(resource, AdminOperation.BulkAction, out var definition)
+            || adapter is not IAdminEnhancementAdapter enhancements)
+        {
+            return NotFound();
+        }
+
+        await enhancements.ExecuteBulkActionAsync(
+            definition,
+            action,
+            keys.Cast<object>().ToArray(),
+            cancellationToken);
+
+        return RedirectToPage(new
+        {
+            resource,
+            adminMessage = "Selected records updated successfully.",
+        });
     }
 
     [ValidateAntiForgeryToken]

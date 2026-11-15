@@ -13,6 +13,8 @@ public sealed class EditModel(
 
     public IReadOnlyDictionary<string, object?> Values { get; private set; } = null!;
 
+    public IReadOnlyDictionary<string, IReadOnlyList<AdminLookupOption>> Lookups { get; private set; } = new Dictionary<string, IReadOnlyList<AdminLookupOption>>();
+
     public async Task<IActionResult> OnGetAsync(
         string resource,
         string key,
@@ -26,7 +28,14 @@ public sealed class EditModel(
         Values = await adapter.ReadAsync(Resource, key, cancellationToken)
             ?? new Dictionary<string, object?>();
 
-        return Values.Count == 0 ? NotFound() : Page();
+        if (Values.Count == 0)
+        {
+            return NotFound();
+        }
+
+        await LoadLookupsAsync(cancellationToken);
+
+        return Page();
     }
 
     [ValidateAntiForgeryToken]
@@ -74,5 +83,22 @@ public sealed class EditModel(
                    field => field.Name,
                    field => (object?)Request.Form[field.Name].FirstOrDefault())
                ?? [];
+    }
+
+    private async Task LoadLookupsAsync(CancellationToken cancellationToken)
+    {
+        if (adapter is not IAdminEnhancementAdapter enhancements)
+        {
+            return;
+        }
+
+        Lookups = (await Task.WhenAll(
+                Resource.RelationDefinitions.Select(async relation =>
+                    (relation.Name, Values: await enhancements.GetLookupAsync(
+                        Resource,
+                        relation,
+                        cancellationToken))))
+            .ConfigureAwait(false))
+            .ToDictionary(item => item.Name, item => item.Values);
     }
 }

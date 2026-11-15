@@ -13,12 +13,18 @@ public sealed class CreateModel(
 
     public bool Allowed { get; private set; }
 
-    public IActionResult OnGet(string resource)
+    public IReadOnlyDictionary<string, IReadOnlyList<AdminLookupOption>> Lookups { get; private set; } = new Dictionary<string, IReadOnlyList<AdminLookupOption>>();
+
+    public async Task<IActionResult> OnGetAsync(
+        string resource,
+        CancellationToken cancellationToken)
     {
         if (!TryGetResource(resource, AdminOperation.Create))
         {
             return NotFound();
         }
+
+        await LoadLookupsAsync(cancellationToken);
 
         return Page();
     }
@@ -42,6 +48,23 @@ public sealed class CreateModel(
                 resource,
                 adminMessage = "Record created successfully.",
             });
+    }
+
+    private async Task LoadLookupsAsync(CancellationToken cancellationToken)
+    {
+        if (adapter is not IAdminEnhancementAdapter enhancements)
+        {
+            return;
+        }
+
+        Lookups = (await Task.WhenAll(
+                Resource.RelationDefinitions.Select(async relation =>
+                    (relation.Name, Values: await enhancements.GetLookupAsync(
+                        Resource,
+                        relation,
+                        cancellationToken))))
+            .ConfigureAwait(false))
+            .ToDictionary(item => item.Name, item => item.Values);
     }
 
     private bool TryGetResource(string name, AdminOperation operation)

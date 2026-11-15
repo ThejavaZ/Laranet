@@ -29,6 +29,21 @@ public sealed record AdminFilter(
 public sealed record AdminAction(string Name, string Label, bool MutatesData);
 
 /// <summary>
+/// Describes a selectable relationship used by an administrative form.
+/// </summary>
+public sealed record AdminRelation(
+    string Name,
+    string Label,
+    Type RelatedType,
+    string KeyProperty = "Id",
+    string DisplayProperty = "Name");
+
+/// <summary>
+/// Represents one option in a relationship selector.
+/// </summary>
+public sealed record AdminLookupOption(object Key, string Label);
+
+/// <summary>
 /// Describes the fields shown by a resource form.
 /// </summary>
 public sealed record AdminForm(IReadOnlyList<AdminField> Fields);
@@ -45,7 +60,8 @@ public sealed record AdminResource(
     string? PermissionPolicy = null,
     AdminForm? Form = null,
     string? DefaultOrderField = null,
-    bool DefaultOrderDescending = false)
+    bool DefaultOrderDescending = false,
+    IReadOnlyList<AdminRelation>? Relations = null)
 {
     /// <summary>
     /// Gets the field used as the resource key.
@@ -65,4 +81,9 @@ public sealed record AdminResource(
     public IReadOnlyList<AdminField> OrderableFields => Fields
         .Where(item => item.IsOrderable)
         .ToArray();
+
+    /// <summary>
+    /// Gets the configured relationships.
+    /// </summary>
+    public IReadOnlyList<AdminRelation> RelationDefinitions => Relations ?? [];
 }

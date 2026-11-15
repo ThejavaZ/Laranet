@@ -11,6 +11,7 @@ public sealed class AdminResourceBuilder<TModel>
     private readonly List<AdminField> fields = [];
     private readonly List<AdminFilter> filters = [];
     private readonly List<AdminAction> actions = [];
+    private readonly List<AdminRelation> relations = [];
     private string? permissionPolicy;
     private string? defaultOrder;
     private bool orderDescending;
@@ -75,6 +76,25 @@ public sealed class AdminResourceBuilder<TModel>
     }
 
     /// <summary>
+    /// Adds a relationship selector based on a foreign-key property.
+    /// </summary>
+    public void BelongsTo<TValue, TRelated>(
+        Expression<Func<TModel, TValue>> foreignKey,
+        string label,
+        string keyProperty = "Id",
+        string displayProperty = "Name")
+    {
+        var name = PropertyName(foreignKey);
+        relations.Add(new AdminRelation(
+            name,
+            label,
+            typeof(TRelated),
+            keyProperty,
+            displayProperty));
+        EnsureField(name, label);
+    }
+
+    /// <summary>
     /// Sets the permission policy used by the resource.
     /// </summary>
     public void Permission(string policy)
@@ -111,7 +131,8 @@ public sealed class AdminResourceBuilder<TModel>
             permissionPolicy,
             new AdminForm(formFields),
             defaultOrder,
-            orderDescending);
+            orderDescending,
+            relations);
     }
 
     internal void MarkSearchable(int index)

@@ -15,4 +15,6 @@ public enum AdminOperation
     Update,
     /// <summary>Deletes a resource row.</summary>
     Delete,
+    /// <summary>Executes a bulk resource action.</summary>
+    BulkAction,
 }
