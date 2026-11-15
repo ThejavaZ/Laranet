@@ -12,7 +12,7 @@
 
     <!-- Package metadata -->
     <PackageId>Laranet.Cli</PackageId>
-    <Version>0.4.1</Version>
+    <Version>0.4.2</Version>
     <Description>
       Command-line tool for generating Laranet application code.
     </Description>

@@ -24,7 +24,7 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
   selectors, and bulk actions.
 - Provider compatibility tests cover the EF Core admin adapter.
 
-## [0.4.1] - 2026-11-15
+## [0.4.2] - 2026-11-15
 
 ### Changed
 

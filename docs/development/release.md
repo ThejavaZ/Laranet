@@ -91,8 +91,8 @@ validation and API review are complete.
 7. Tag the commit and push the tag:
 
    ```bash
-   git tag v0.4.1
-   git push origin v0.4.1
+   git tag v0.4.2
+   git push origin v0.4.2
    ```
 
 ## Automated publication
@@ -102,7 +102,7 @@ with a version input.
 
 The workflow:
 
-1. Resolves the version from the tag (`v0.4.1` becomes `0.4.1`).
+1. Resolves the version from the tag (`v0.4.2` becomes `0.4.2`).
 2. Verifies that every production project declares the same version.
 3. Restores, builds, and runs the full test suite.
 4. Packs the ten packages.
@@ -149,7 +149,7 @@ NuGet.org API key. The temporary key from the workflow is not available outside
 GitHub Actions.
 
 ```bash
-dotnet nuget push artifacts/packages/Laranet.0.4.1.nupkg \
+dotnet nuget push artifacts/packages/Laranet.0.4.2.nupkg \
   --api-key "$NUGET_API_KEY" \
   --source https://api.nuget.org/v3/index.json
 
@@ -165,7 +165,7 @@ dotnet nuget push artifacts/packages/Laranet.0.4.1.nupkg \
 3. Confirm the CLI installs and reports the expected version:
 
    ```bash
-   dotnet tool install --global Laranet.Cli --version 0.4.1
+   dotnet tool install --global Laranet.Cli --version 0.4.2
    laranet --version
    ```
 
