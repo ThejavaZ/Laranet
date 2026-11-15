@@ -168,11 +168,59 @@ The `repository` layout always creates the solution. Add `--sln` to the
 the repository shape because they need a solution to build their projects
 together.
 
+## Doctor
+
+`laranet doctor` checks a project without modifying it:
+
+```bash
+laranet doctor
+laranet doctor --path src/MyApp --json
+```
+
+Deterministic rules report circular project references, unsupported target
+frameworks, unsupported Laranet or EF Core versions, and duplicate top-level
+type declarations that indicate generated-file conflicts.
+
+Three source heuristics are opt-in because they cannot prove architectural intent:
+
+```bash
+laranet doctor \
+  --check-pagination \
+  --check-controller-dbcontext \
+  --check-dto-entities \
+  --strict
+```
+
+The pagination heuristic looks for endpoint mappings that materialize a query
+without `Paginate` or `Take`. The controller rule reports direct `DbContext`
+references, and the DTO rule reports properties whose types are model entities.
+Warnings return exit code `0` by default; `--strict` returns `1` for warnings.
+Errors always return `1`. Invalid paths and unreadable project files return `2`.
+
+Use `--json` for automation. The JSON report contains `diagnostics`,
+`errorCount`, `warningCount`, and `exitCode`. Diagnostic codes are:
+
+| Code | Meaning |
+| --- | --- |
+| `LARANET001` | Missing project reference |
+| `LARANET002` | Circular project reference |
+| `LARANET003` | Unsupported target framework |
+| `LARANET004` | Unsupported Laranet package version |
+| `LARANET005` | Unsupported EF Core version |
+| `LARANET006` | Duplicate top-level type declaration |
+| `LARANET007` | Unbounded endpoint query heuristic |
+| `LARANET008` | Direct `DbContext` use in a controller |
+| `LARANET009` | DTO exposes an entity type |
+
+Doctor does not claim to measure SOLID compliance, architectural quality, or
+other properties that require human judgment.
+
 ## Commands
 
 | Command | Generates |
 | --- | --- |
 | `laranet new <name>` | A new project |
+| `laranet doctor` | Deterministic project diagnostics |
 | `laranet make:model <name>` | A model class in `Models/` |
 | `laranet make:service <name>` | A service class in `Services/` |
 | `laranet make:controller <name>` | An ASP.NET Core controller in `Controllers/` |

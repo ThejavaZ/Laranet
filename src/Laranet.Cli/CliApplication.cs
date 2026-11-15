@@ -21,6 +21,7 @@ internal static class CliApplication
             "Creates Laranet projects and generates application code from the command line.");
 
         rootCommand.Subcommands.Add(NewCommand.Create(output, error, input));
+        rootCommand.Subcommands.Add(DoctorCommand.Create(output, error));
 
         foreach (var command in MakeCommands.Create(output, error, input))
         {
