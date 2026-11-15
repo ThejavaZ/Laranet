@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/Laranet.AspNetCore/Laranet.AspNetCore.csproj" />
     <Project Path="src/Laranet.AspNetCore.Validation/Laranet.AspNetCore.Validation.csproj" />
+    <Project Path="src/Laranet.Admin/Laranet.Admin.csproj" />
     <Project Path="src/Laranet.Cli/Laranet.Cli.csproj" />
     <Project Path="src/Laranet.Data/Laranet.Data.csproj" />
     <Project Path="src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj" />
@@ -11,6 +12,7 @@
   <Folder Name="/samples/">
     <Project Path="samples/Laranet.Samples.Console/Laranet.Samples.Console.csproj" />
     <Project Path="samples/Laranet.Samples.WebApi/Laranet.Samples.WebApi.csproj" />
+    <Project Path="samples/Laranet.Samples.Admin/Laranet.Samples.Admin.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Laranet.Tests/Laranet.Tests.csproj" />

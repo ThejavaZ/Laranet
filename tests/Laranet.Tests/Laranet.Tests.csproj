@@ -33,10 +33,12 @@
     <ProjectReference Include="../../src/Laranet/Laranet.csproj" />
     <ProjectReference Include="../../src/Laranet.AspNetCore/Laranet.AspNetCore.csproj" />
     <ProjectReference Include="../../src/Laranet.AspNetCore.Validation/Laranet.AspNetCore.Validation.csproj" />
+    <ProjectReference Include="../../src/Laranet.Admin/Laranet.Admin.csproj" />
     <ProjectReference Include="../../src/Laranet.Cli/Laranet.Cli.csproj" />
     <ProjectReference Include="../../src/Laranet.Data/Laranet.Data.csproj" />
     <ProjectReference Include="../../src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj" />
     <ProjectReference Include="../../src/Laranet.Http/Laranet.Http.csproj" />
+    <ProjectReference Include="../../samples/Laranet.Samples.Admin/Laranet.Samples.Admin.csproj" />
   </ItemGroup>
 
 </Project>
