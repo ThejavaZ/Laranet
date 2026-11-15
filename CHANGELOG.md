@@ -16,6 +16,13 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
   authorization and antiforgery and remains outside the release train.
 - Experimental `Laranet.Admin.EntityFrameworkCore` adapter with provider-translatable
   search, filters, ordering, pagination, CRUD, and soft-delete support.
+- `Laranet.Admin` now validates resource metadata before registration and includes
+  a typed resource builder with search, filter, ordering, form, formatting, action,
+  and permission conventions.
+- `Laranet.Admin.AspNetCore` now includes a polished Razor Pages UI with
+  confirmation, loading states, toasts, sorting, dynamic filters, relationship
+  selectors, and bulk actions.
+- Provider compatibility tests cover the EF Core admin adapter.
 
 ## [0.3.1] - 2026-11-15
 
