@@ -407,6 +407,11 @@ public sealed class EfCoreAdminDataAdapter : IAdminDataAdapter, IAdminEnhancemen
             return value;
         }
 
+        if (type == typeof(Guid) && value is string stringValue)
+        {
+            return Guid.Parse(stringValue);
+        }
+
         if (type.IsEnum)
         {
             return Enum.Parse(type, value.ToString()!, ignoreCase: true);
