@@ -62,7 +62,11 @@ public sealed class IndexModel(
 
         await adapter.DeleteAsync(definition, key, cancellationToken);
 
-        return RedirectToPage(new { resource });
+        return RedirectToPage(new
+        {
+            resource,
+            adminMessage = "Record deleted successfully.",
+        });
     }
 
     private bool TryGetResource(

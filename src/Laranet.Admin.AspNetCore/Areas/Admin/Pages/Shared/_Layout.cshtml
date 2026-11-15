@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] · Laranet Admin</title>
     <link rel="stylesheet" href="~/_content/Laranet.Admin.AspNetCore/admin.css" />
+    <script defer src="~/_content/Laranet.Admin.AspNetCore/admin.js"></script>
 </head>
 <body class="admin-shell">
     <header class="admin-topbar">
@@ -25,6 +26,13 @@
         </aside>
 
         <main class="admin-content">
+            @if (Context.Request.Query.TryGetValue("adminMessage", out var adminMessage))
+            {
+                <div class="admin-toast" role="status" data-toast>
+                    <span>@adminMessage</span>
+                    <button type="button" data-toast-close aria-label="Close notification">×</button>
+                </div>
+            }
             @RenderBody()
         </main>
     </div>

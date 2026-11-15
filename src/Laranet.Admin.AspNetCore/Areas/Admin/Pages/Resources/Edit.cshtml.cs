@@ -42,7 +42,13 @@ public sealed class EditModel(
 
         await adapter.UpdateAsync(Resource, key, ReadValues(), cancellationToken);
 
-        return RedirectToPage("/Resources/Index", new { resource });
+        return RedirectToPage(
+            "/Resources/Index",
+            new
+            {
+                resource,
+                adminMessage = "Record updated successfully.",
+            });
     }
 
     private bool TryGetResource(string name, AdminOperation operation)

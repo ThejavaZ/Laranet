@@ -13,19 +13,30 @@
 
 <div class="admin-card">
 <div class="admin-toolbar">
-<form class="admin-search" method="get">
+<form class="admin-search" method="get" data-loading-form>
     <label>
         <span class="sr-only">Search</span>
         <input name="Search" value="@Model.Search" />
     </label>
     @foreach (var filter in Model.Resource.Filters)
     {
-        <label>
-            @filter.Label
-            <input name="@filter.Name" value="@Request.Query[filter.Name]" />
+        <label class="admin-filter">
+            <span>@filter.Label</span>
+            @if (filter.ValueType == typeof(bool))
+            {
+                <select name="@filter.Name">
+                    <option value="">All</option>
+                    <option value="true" selected="@(Request.Query[filter.Name] == "true")">Active</option>
+                    <option value="false" selected="@(Request.Query[filter.Name] == "false")">Inactive</option>
+                </select>
+            }
+            else
+            {
+                <input name="@filter.Name" value="@Request.Query[filter.Name]" />
+            }
         </label>
     }
-    <button class="admin-button-secondary" type="submit">Search</button>
+    <button class="admin-button-secondary" type="submit" data-loading-button>Search</button>
 </form>
 
 <span class="admin-muted">@Model.Results.TotalCount results</span>
@@ -36,7 +47,29 @@
         <tr>
         @foreach (var field in Model.Resource.Fields)
         {
-            <th>@field.Label</th>
+            <th>
+            @if (field.IsOrderable)
+            {
+                var descending = Model.SortBy == field.Name && !Model.SortDescending;
+                <a class="admin-sort-link"
+                   asp-page="/Resources/Index"
+                   asp-route-resource="@Model.Resource.Name"
+                   asp-route-Search="@Model.Search"
+                   asp-route-PageNumber="1"
+                   asp-route-SortBy="@field.Name"
+                   asp-route-SortDescending="@descending">
+                    @field.Label
+                    @if (Model.SortBy == field.Name)
+                    {
+                        <span aria-hidden="true">@(Model.SortDescending ? "↓" : "↑")</span>
+                    }
+                </a>
+            }
+            else
+            {
+                @field.Label
+            }
+            </th>
         }
         <th>Actions</th>
         </tr>
@@ -54,10 +87,12 @@
                asp-route-resource="@Model.Resource.Name"
                asp-route-key="@item.GetValueOrDefault(Model.Resource.KeyField.Name)">Edit</a>
             <form method="post"
+                  data-confirm="Delete this record?"
+                  data-loading-form
                   asp-page-handler="Delete"
                   asp-route-resource="@Model.Resource.Name"
                   asp-route-key="@item.GetValueOrDefault(Model.Resource.KeyField.Name)">
-                <button class="admin-danger" type="submit">Delete</button>
+                <button class="admin-danger" type="submit" data-loading-button>Delete</button>
             </form>
         </td>
         </tr>

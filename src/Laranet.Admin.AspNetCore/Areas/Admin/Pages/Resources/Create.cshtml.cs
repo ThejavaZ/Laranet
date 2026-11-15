@@ -35,7 +35,13 @@ public sealed class CreateModel(
 
         await adapter.CreateAsync(Resource, ReadValues(), cancellationToken);
 
-        return RedirectToPage("/Resources/Index", new { resource });
+        return RedirectToPage(
+            "/Resources/Index",
+            new
+            {
+                resource,
+                adminMessage = "Record created successfully.",
+            });
     }
 
     private bool TryGetResource(string name, AdminOperation operation)
