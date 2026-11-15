@@ -134,9 +134,9 @@ public sealed class EditModel(
 
     private Dictionary<string, object?> ReadValues()
     {
-        return Resource.Form?.Fields.ToDictionary(
-                   field => field.Name,
-                   field => (object?)Request.Form[field.Name].FirstOrDefault())
-               ?? [];
+        var fields = Resource.Form?.Fields ?? Resource.Fields;
+        return fields.ToDictionary(
+            field => field.Name,
+            field => (object?)Request.Form[field.Name].FirstOrDefault());
     }
 }

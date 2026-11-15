@@ -116,6 +116,9 @@
 
     document.querySelectorAll("[data-confirm-form]").forEach(function (form) {
         form.addEventListener("submit", function (event) {
+            if (form.dataset.confirmed === "true") {
+                return;
+            }
             console.log("[admin.js] modal form submit intercepted");
             event.preventDefault();
             pendingForm = form;
