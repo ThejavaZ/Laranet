@@ -93,7 +93,20 @@
         <tr>
         @foreach (var field in Model.Resource.Fields)
         {
-            <td>@item.GetValueOrDefault(field.Name)</td>
+            <td>
+                @if (field.IsKey)
+                {
+                    <a class="admin-link" asp-page="/Resources/Details"
+                       asp-route-resource="@Model.Resource.Name"
+                       asp-route-key="@item.GetValueOrDefault(field.Name)">
+                        @item.GetValueOrDefault(field.Name)
+                    </a>
+                }
+                else
+                {
+                    @item.GetValueOrDefault(field.Name)
+                }
+            </td>
         }
         <td class="admin-actions">
             @if (Model.SupportsBulk)

@@ -1,6 +1,36 @@
 namespace Laranet.Admin;
 
 /// <summary>
+/// Identifies the input control rendered for an admin field.
+/// </summary>
+/// <summary>
+/// Identifies the input control rendered for an admin field.
+/// </summary>
+public enum AdminFieldType
+{
+    /// <summary>Infers the input type from the .NET type.</summary>
+    Auto,
+    /// <summary>Renders a single-line text input.</summary>
+    Text,
+    /// <summary>Renders a multi-line textarea.</summary>
+    TextArea,
+    /// <summary>Renders a numeric input.</summary>
+    Number,
+    /// <summary>Renders a date input.</summary>
+    Date,
+    /// <summary>Renders a date and time input.</summary>
+    DateTime,
+    /// <summary>Renders a checkbox.</summary>
+    Checkbox,
+    /// <summary>Renders a select dropdown.</summary>
+    Select,
+    /// <summary>Renders a file input.</summary>
+    File,
+    /// <summary>Renders a hidden input.</summary>
+    Hidden,
+}
+
+/// <summary>
 /// Describes a field displayed or edited by an administrative resource.
 /// </summary>
 public sealed record AdminField(
@@ -12,16 +42,23 @@ public sealed record AdminField(
     bool IsSearchable = false,
     bool IsFilterable = false,
     bool IsOrderable = false,
-    string? Format = null);
+    string? Format = null,
+    AdminFieldType FieldType = AdminFieldType.Auto,
+    bool IsRequired = false,
+    int? MaxLength = null,
+    int? MinLength = null,
+    string? Min = null,
+    string? Max = null,
+    string? Step = null,
+    string? Placeholder = null,
+    string? HelpText = null,
+    string? DefaultValue = null,
+    int? Rows = null);
 
 /// <summary>
 /// Describes a filter supported by an administrative resource.
 /// </summary>
-public sealed record AdminFilter(
-    string Name,
-    string Label,
-    Type ValueType,
-    bool IsRange = false);
+public sealed record AdminFilter(string Name, string Label, Type ValueType, bool IsRange = false);
 
 /// <summary>
 /// Describes an explicit action available on an administrative resource.
@@ -69,6 +106,25 @@ public sealed record AdminResource(
     public AdminField KeyField => Fields.First(item => item.IsKey);
 
     /// <summary>
+    /// Gets the fields enabled for text search.
+    /// </summary>
+    public IReadOnlyList<AdminField> SearchFields => Fields
+        .Where(item => item.IsSearchable)
+        .ToArray();
+
+    /// <summary>
+    /// Gets the fields enabled for ordering.
+    /// </summary>
+    public IReadOnlyList<AdminField> OrderableFields => Fields
+        .Where(item => item.IsOrderable)
+        .ToArray();
+
+    /// <summary>
+    /// Gets the configured relationships.
+    /// </summary>
+    public IReadOnlyList<AdminRelation> RelationDefinitions => Relations ?? [];
+
+    /// <summary>
     /// Validates the metadata before it is registered.
     /// </summary>
     /// <exception cref="ArgumentException">
@@ -111,23 +167,4 @@ public sealed record AdminResource(
                 nameof(Relations));
         }
     }
-
-    /// <summary>
-    /// Gets the fields enabled for text search.
-    /// </summary>
-    public IReadOnlyList<AdminField> SearchFields => Fields
-        .Where(item => item.IsSearchable)
-        .ToArray();
-
-    /// <summary>
-    /// Gets the fields enabled for ordering.
-    /// </summary>
-    public IReadOnlyList<AdminField> OrderableFields => Fields
-        .Where(item => item.IsOrderable)
-        .ToArray();
-
-    /// <summary>
-    /// Gets the configured relationships.
-    /// </summary>
-    public IReadOnlyList<AdminRelation> RelationDefinitions => Relations ?? [];
 }

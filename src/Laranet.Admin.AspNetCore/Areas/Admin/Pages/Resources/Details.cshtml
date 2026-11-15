@@ -1,0 +1,26 @@
+@page "/admin/{resource}/{key}"
+@model Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources.DetailsModel
+
+<div class="admin-page-heading">
+    <div>
+        <h1>@Model.Resource.Name details</h1>
+        <p>Read-only view of this record.</p>
+    </div>
+    <div class="admin-form-actions">
+        <a class="admin-button" asp-page="/Resources/Edit"
+           asp-route-resource="@Model.Resource.Name"
+           asp-route-key="@Model.Values.GetValueOrDefault(Model.Resource.KeyField.Name)">Edit</a>
+        <a class="admin-button-secondary" asp-page="/Resources/Index"
+           asp-route-resource="@Model.Resource.Name">Back</a>
+    </div>
+</div>
+
+<div class="admin-card admin-form-card">
+    <dl class="admin-detail">
+        @foreach (var field in Model.Resource.Fields)
+        {
+            <dt>@field.Label</dt>
+            <dd>@Model.Values.GetValueOrDefault(field.Name)</dd>
+        }
+    </dl>
+</div>

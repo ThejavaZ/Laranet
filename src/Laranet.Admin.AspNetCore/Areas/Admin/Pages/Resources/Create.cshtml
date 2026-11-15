@@ -25,9 +25,22 @@
                     }
                 </select>
             }
+            else if (field.FieldType == AdminFieldType.TextArea)
+            {
+                <textarea name="@field.Name" rows="@(field.Rows ?? 4)" placeholder="@field.Placeholder">@field.DefaultValue</textarea>
+            }
             else
             {
-                <input name="@field.Name" type="@(field.Type == typeof(bool) ? "checkbox" : "text")" />
+                <input name="@field.Name"
+                       type="@Laranet.Admin.AspNetCore.AdminInputTypeResolver.Resolve(field)"
+                       placeholder="@field.Placeholder"
+                       value="@field.DefaultValue"
+                       min="@field.Min"
+                       max="@field.Max"
+                       step="@field.Step"
+                       maxlength="@(field.MaxLength?.ToString())"
+                       minlength="@(field.MinLength?.ToString())"
+                       required="@(field.IsRequired ? "required" : null)" />
             }
             </label>
         </div>

@@ -27,9 +27,21 @@
                     }
                 </select>
             }
+            else if (field.FieldType == AdminFieldType.TextArea)
+            {
+                <textarea name="@field.Name" rows="@(field.Rows ?? 4)">@Model.Values.GetValueOrDefault(field.Name)</textarea>
+            }
             else
             {
-                <input name="@field.Name" value="@Model.Values.GetValueOrDefault(field.Name)" />
+                <input name="@field.Name"
+                       type="@Laranet.Admin.AspNetCore.AdminInputTypeResolver.Resolve(field)"
+                       value="@Model.Values.GetValueOrDefault(field.Name)"
+                       min="@field.Min"
+                       max="@field.Max"
+                       step="@field.Step"
+                       maxlength="@(field.MaxLength?.ToString())"
+                       minlength="@(field.MinLength?.ToString())"
+                       required="@(field.IsRequired ? "required" : null)" />
             }
             </label>
         </div>
