@@ -20,6 +20,7 @@ internal static class CliApplication
         var rootCommand = new RootCommand(
             "Creates Laranet projects and generates application code from the command line.");
 
+        rootCommand.Subcommands.Add(ListCommand.Create(output));
         rootCommand.Subcommands.Add(NewCommand.Create(output, error, input));
         rootCommand.Subcommands.Add(DoctorCommand.Create(output, error));
 
@@ -37,10 +38,48 @@ internal static class CliApplication
         TextWriter? error = null,
         TextReader? input = null)
     {
+        output ??= Console.Out;
+        error ??= Console.Error;
+        input ??= Console.In;
+
+        var knownCommands = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "new",
+            "doctor",
+            "list",
+            "make:model",
+            "make:service",
+            "make:controller",
+            "make:middleware",
+            "make:resource",
+            "make:crud",
+            "make:repository",
+            "make:command",
+            "make:query",
+            "make:handler",
+            "make:dbcontext",
+            "make:config",
+        };
+
+        if (args.Length > 0 && !args[0].StartsWith("-", StringComparison.Ordinal)
+            && !knownCommands.Contains(args[0]))
+        {
+            var suggestion = CliStyle.FindClosest(args[0], knownCommands);
+
+            if (suggestion is not null)
+            {
+                CliStyle.WriteError(
+                    error,
+                    $"command '{args[0]}' was not found.",
+                    $"did you mean `{suggestion}`?");
+                return 1;
+            }
+        }
+
         var configuration = new InvocationConfiguration
         {
-            Output = output ?? Console.Out,
-            Error = error ?? Console.Error,
+            Output = output,
+            Error = error,
         };
 
         return CreateRootCommand(output, error, input)
