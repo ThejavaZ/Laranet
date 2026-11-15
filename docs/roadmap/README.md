@@ -49,12 +49,12 @@ Laranet is a **toolkit, not an opinionated application framework**.
 
 | Package                       | Responsibility                                   | Status                     |
 | ----------------------------- | ------------------------------------------------ | -------------------------- |
-| `Laranet`                     | Core abstractions and shared functionality       | `0.3.0` release candidate; intentionally empty |
-| `Laranet.Data`                | Query extensions, pagination, searching, sorting | `0.3.0` release candidate |
-| `Laranet.EntityFrameworkCore` | EF Core integration, async query execution, and optional conventions | `0.3.0` release candidate |
-| `Laranet.AspNetCore`          | ASP.NET Core integration                         | `0.3.0` release candidate |
-| `Laranet.Cli`                 | Project and code generation commands             | `0.3.0` release candidate |
-| `Laranet.Http`                | Optional convenience layer over `HttpClient` with safe retries | `0.3.0` release candidate |
+| `Laranet`                     | Core abstractions and shared functionality       | `0.3.1` release candidate; intentionally empty |
+| `Laranet.Data`                | Query extensions, pagination, searching, sorting | `0.3.1` release candidate |
+| `Laranet.EntityFrameworkCore` | EF Core integration, async query execution, and optional conventions | `0.3.1` release candidate |
+| `Laranet.AspNetCore`          | ASP.NET Core integration                         | `0.3.1` release candidate |
+| `Laranet.Cli`                 | Project and code generation commands             | `0.3.1` release candidate |
+| `Laranet.Http`                | Optional convenience layer over `HttpClient` with safe retries | `0.3.1` release candidate |
 | `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs | Implemented for `0.3.0` |
 | `Laranet.Analyzers`           | Optional Roslyn diagnostics                      | Planned for Version 5     |
 | `Laranet.Admin`               | Experimental provider-neutral admin contracts   | Prototype; V4 candidate |
@@ -119,8 +119,7 @@ Before marking it complete, verify:
 
 ## Current project state
 
-**Current focus:** Version 3 release `0.3.0`; Sprint 20 remains pending external
-validation of the experimental Admin prototype.
+**Current focus:** Version 4, [Sprint 22 — Admin architecture and ADR](v4.md).
 Sprint 17 — EF Core conventions, Sprint 18.1 — `Laranet.Http` foundation,
 Sprint 18.2 — `Laranet.Http` resilience and release, and Sprint 18.3 — Validation are
 completed. Sprint 18.4 — CQRS generators, Sprint 18.5 — Database and configuration
@@ -128,9 +127,9 @@ generators, Sprint 19 — `laranet doctor`, and Sprint 21 — 1.0 readiness are 
 Sprint 20 remains in progress pending real-application validation. Version 2 remains open pending real
 external feedback.
 
-Seven production packages are prepared for the `0.3.0` release line. The previous
+Seven production packages are prepared for the `0.3.1` release line. The previous
 published line was `0.2.1`; the new line adds the optional FluentValidation
-integration, CLI generators, and `laranet doctor`, while retaining `Laranet.Http`,
+integration, CLI generators, `laranet doctor`, and CRUD introspection, while retaining `Laranet.Http`,
 optional EF Core conventions,
 project templates, and `make:crud`. `Laranet.Data` provides provider-neutral search,
 sorting, conditional filtering, and pagination, including multi-column search.

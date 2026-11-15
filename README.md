@@ -35,7 +35,7 @@ conventions, query utilities, integrations, and code generation on top of them.
 | `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs (0.3.0). |
 | `Laranet.Cli` | Project creation and code generation. |
 | `Laranet.Admin` | Experimental provider-neutral administrative contracts and prototype. |
-| [`Laranet.Http`](https://www.nuget.org/packages/Laranet.Http/0.3.0) | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` (0.3.0). |
+| [`Laranet.Http`](https://www.nuget.org/packages/Laranet.Http/0.3.1) | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` (0.3.1). |
 | `Laranet` | Core package, intentionally empty until a shared abstraction is justified. |
 
 ```bash

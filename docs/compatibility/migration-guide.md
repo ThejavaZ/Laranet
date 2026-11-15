@@ -11,7 +11,7 @@ documented in the [changelog](../../CHANGELOG.md) and in this guide.
 
 ## Current release status
 
-The current release candidate is `0.3.0`. It adds the optional FluentValidation
+The current release candidate is `0.3.1`. It adds the optional FluentValidation
 Minimal API integration, CLI CQRS/database/configuration generators, and
 `laranet doctor`. The new APIs are additive; the experimental Admin prototype is
 not part of this release.
@@ -66,6 +66,16 @@ versions from different releases is not supported.
 - **Migration:** update every production package and the CLI tool to `0.3.0`.
   Install `Laranet.AspNetCore.Validation` only when using FluentValidation.
 
+### 0.3.1
+
+- **Affected packages:** `Laranet.Cli` and the synchronized production package line.
+- **What changed:** `make:crud` introspects existing entities, supports
+  `--from-model` and `--scaffold`, detects inherited properties and key types, and
+  handles `CompanyId`, data annotations, and soft-delete conventions.
+- **Impact:** existing scaffold behavior remains available through `--scaffold`;
+  `--force` still only controls overwriting generated files.
+- **Migration:** update every production package and the CLI tool to `0.3.1`.
+
 ### 0.1.1
 
 - **Affected packages:** all five production packages.
@@ -83,11 +93,11 @@ packages:
 
 ```xml
 <ItemGroup>
-  <PackageReference Include="Laranet.Data" Version="0.3.0" />
-  <PackageReference Include="Laranet.EntityFrameworkCore" Version="0.3.0" />
-  <PackageReference Include="Laranet.AspNetCore" Version="0.3.0" />
-  <PackageReference Include="Laranet.AspNetCore.Validation" Version="0.3.0" />
-  <PackageReference Include="Laranet.Http" Version="0.3.0" />
+  <PackageReference Include="Laranet.Data" Version="0.3.1" />
+  <PackageReference Include="Laranet.EntityFrameworkCore" Version="0.3.1" />
+  <PackageReference Include="Laranet.AspNetCore" Version="0.3.1" />
+  <PackageReference Include="Laranet.AspNetCore.Validation" Version="0.3.1" />
+  <PackageReference Include="Laranet.Http" Version="0.3.1" />
 </ItemGroup>
 ```
 
