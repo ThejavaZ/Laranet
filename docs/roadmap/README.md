@@ -122,7 +122,8 @@ Before marking it complete, verify:
 **Current focus:** Version 3, [Sprint 18.3 — Validation](v3.md).
 Sprint 17 — EF Core conventions, Sprint 18.1 — `Laranet.Http` foundation, and
 Sprint 18.2 — `Laranet.Http` resilience and release are completed. Sprint 18.3 covers
-Validation. Version 2 remains open pending real external feedback.
+Validation. Sprints 18.4 and 18.5 plan CLI generators for CQRS commands, `DbContext`,
+and configuration. Version 2 remains open pending real external feedback.
 
 All six production packages are implemented and published on NuGet.org as `0.2.1`.
 The published line adds `Laranet.Http`, optional EF Core conventions, project
@@ -137,8 +138,9 @@ Server, PostgreSQL, MySQL, and MariaDB are verified by the provider compatibilit
 suite, which runs in CI with service containers. The `Laranet` core package remains
 intentionally empty until a shared abstraction is required by at least two modules. [Version 3](v3.md) is in progress as the application-experience
 milestone: standards, project templates, `make:crud`, EF Core conventions,
-`Laranet.Http`, validation, and `laranet doctor`. The admin-panel proposal remains a
-candidate that requires an ADR and a validated use case.
+`Laranet.Http`, validation, CLI generators for CQRS, `DbContext`, and configuration,
+and `laranet doctor`. The admin-panel proposal remains a candidate that requires an
+ADR and a validated use case.
 [Version 4](v4.md) is a
 candidate for the application surface: an optional admin panel, web and Blazor
 templates, and optional data adapters, all gated by the Version 3 exit criteria.
