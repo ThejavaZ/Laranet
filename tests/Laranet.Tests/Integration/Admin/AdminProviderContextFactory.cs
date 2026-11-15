@@ -1,18 +1,27 @@
 using Laranet.Admin;
 using Laranet.Admin.EntityFrameworkCore;
 using Laranet.Tests.Integration.Data.TestSupport;
-using Microsoft.Data.Sqlite;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
+using Npgsql;
 
 namespace Laranet.Tests.Integration.Admin;
 
 internal static class AdminProviderContextFactory
 {
+    private const string DefaultSqlServerConnection =
+        "Server=localhost,1433;Database=laranet_tests;User Id=sa;Password=Laranet!Tests1;TrustServerCertificate=True;Encrypt=True;Pooling=False";
+    private const string DefaultPostgreSqlConnection =
+        "Host=localhost;Port=5432;Database=laranet_tests;Username=postgres;Password=laranet;Pooling=false";
+    private const string DefaultMySqlConnection =
+        "Server=localhost;Port=3306;Database=laranet_tests;User Id=root;Password=laranet;SslMode=Disabled;AllowPublicKeyRetrieval=True;Pooling=False";
+
     public static async Task<AdminProviderDatabase> CreateAsync(
         DataTestProvider provider,
         Action<AdminProviderContext> seed)
     {
-        var context = CreateContext(provider, out var connection);
+        var (context, connection) = await CreateContextAsync(provider);
         await context.Database.EnsureCreatedAsync();
         seed(context);
         await context.SaveChangesAsync();
@@ -20,40 +29,71 @@ internal static class AdminProviderContextFactory
         return new AdminProviderDatabase(context, provider, connection);
     }
 
-    private static AdminProviderContext CreateContext(
-        DataTestProvider provider,
-        out SqliteConnection? connection)
+    private static async Task<(AdminProviderContext Context, IDisposable? Connection)> CreateContextAsync(
+        DataTestProvider provider)
     {
-        connection = null;
-        var builder = new DbContextOptionsBuilder<AdminProviderContext>();
-
         switch (provider)
         {
             case DataTestProvider.Sqlite:
-                connection = new SqliteConnection("Data Source=:memory:");
-                connection.Open();
-                builder.UseSqlite(connection);
-                break;
+                {
+                    var connection = new Microsoft.Data.Sqlite.SqliteConnection("Data Source=:memory:");
+                    await connection.OpenAsync();
+                    var options = new DbContextOptionsBuilder<AdminProviderContext>()
+                        .UseSqlite(connection)
+                        .Options;
+                    return (new AdminProviderContext(options), connection);
+                }
+
             case DataTestProvider.SqlServer:
-                builder.UseSqlServer(
-                    Environment.GetEnvironmentVariable("LARANET_SQLSERVER_CONNECTION")
-                    ?? "Server=localhost,1433;Database=laranet_tests;User Id=sa;Password=Laranet!Tests1;TrustServerCertificate=True;Encrypt=True;Pooling=False");
-                break;
+                {
+                    var connectionString = Environment.GetEnvironmentVariable("LARANET_SQLSERVER_CONNECTION")
+                        ?? DefaultSqlServerConnection;
+                    var builder = new SqlConnectionStringBuilder(connectionString)
+                    {
+                        InitialCatalog = $"LaranetAdminTests_{Guid.NewGuid():N}",
+                        Pooling = false,
+                    };
+                    var options = new DbContextOptionsBuilder<AdminProviderContext>()
+                        .UseSqlServer(builder.ConnectionString)
+                        .Options;
+                    var context = new AdminProviderContext(options);
+                    return (context, null);
+                }
+
             case DataTestProvider.PostgreSql:
-                builder.UseNpgsql(
-                    Environment.GetEnvironmentVariable("LARANET_POSTGRES_CONNECTION")
-                    ?? "Host=localhost;Port=5432;Database=laranet_tests;Username=postgres;Password=laranet;Pooling=false");
-                break;
+                {
+                    var connectionString = Environment.GetEnvironmentVariable("LARANET_POSTGRES_CONNECTION")
+                        ?? DefaultPostgreSqlConnection;
+                    var builder = new NpgsqlConnectionStringBuilder(connectionString)
+                    {
+                        Database = $"laranet_admin_tests_{Guid.NewGuid():N}",
+                        Pooling = false,
+                    };
+                    var options = new DbContextOptionsBuilder<AdminProviderContext>()
+                        .UseNpgsql(builder.ConnectionString)
+                        .Options;
+                    var context = new AdminProviderContext(options);
+                    return (context, null);
+                }
+
             case DataTestProvider.MySql:
-                builder.UseMySQL(
-                    Environment.GetEnvironmentVariable("LARANET_MYSQL_CONNECTION")
-                    ?? "Server=localhost;Port=3306;Database=laranet_tests;User Id=root;Password=laranet;SslMode=Disabled;AllowPublicKeyRetrieval=True;Pooling=False");
-                break;
+                {
+                    var connectionString = Environment.GetEnvironmentVariable("LARANET_MYSQL_CONNECTION")
+                        ?? DefaultMySqlConnection;
+                    var builder = new MySqlConnectionStringBuilder(connectionString)
+                    {
+                        Database = $"laranet_admin_tests_{Guid.NewGuid():N}",
+                    };
+                    var options = new DbContextOptionsBuilder<AdminProviderContext>()
+                        .UseMySQL(builder.ConnectionString)
+                        .Options;
+                    var context = new AdminProviderContext(options);
+                    return (context, null);
+                }
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(provider));
         }
-
-        return new AdminProviderContext(builder.Options);
     }
 
     public sealed class AdminProviderContext(DbContextOptions<AdminProviderContext> options)
@@ -86,12 +126,12 @@ internal static class AdminProviderContextFactory
 
 internal sealed class AdminProviderDatabase : IAsyncDisposable
 {
-    private readonly SqliteConnection? _connection;
+    private readonly IDisposable? _connection;
 
     public AdminProviderDatabase(
         AdminProviderContextFactory.AdminProviderContext context,
         DataTestProvider provider,
-        SqliteConnection? connection = null)
+        IDisposable? connection = null)
     {
         Context = context;
         Provider = provider;
