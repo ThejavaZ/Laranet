@@ -62,6 +62,9 @@ internal static class CliApplication
             "make:dbcontext",
             "make:config",
             "admin:resource",
+            "admin:install",
+            "admin:user",
+            "admin:check",
             "make:admin-resource",
         };
 

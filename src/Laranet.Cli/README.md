@@ -235,6 +235,10 @@ other properties that require human judgment.
 | `laranet make:dbcontext <name>` | A native EF Core context, configurations, and design-time factory |
 | `laranet make:config <name>` | Native options and dependency-injection registration |
 | `laranet make:admin-resource <name>` | Admin resource class with typed metadata |
+| `laranet admin:install` | Installs the admin panel in the application |
+| `laranet admin:resource <name>` | Generates an admin resource with auto-detection |
+| `laranet admin:user` | Generates a seeder for the first admin user |
+| `laranet admin:check` | Validates the admin installation |
 
 Names are normalized to PascalCase. For example, `product-category`,
 `product_category`, and `productCategory` all generate `ProductCategory`.

@@ -76,6 +76,9 @@ internal static class MakeCommands
         }
 
         yield return AdminResourceCommand.Create(output, error, input);
+        yield return AdminInstallCommand.Create(output, error, input);
+        yield return AdminUserCommand.Create(output, error, input);
+        yield return AdminCheckCommand.Create(output, error);
     }
 
     private static Command Create(

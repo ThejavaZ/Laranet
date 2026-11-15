@@ -4,6 +4,17 @@ All notable changes to Laranet will be documented in this file.
 
 This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `laranet admin:install` generates the admin installation guide.
+- `laranet admin:resource <Entity>` generates an Admin resource with auto-detection
+  from existing entities.
+- `laranet admin:user` generates a seeder that reads credentials from configuration
+  or environment variables.
+- `laranet admin:check` validates the admin installation with text and JSON output.
+
 ## [0.4.0] - 2026-11-15
 
 ### Added

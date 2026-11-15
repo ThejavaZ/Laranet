@@ -22,6 +22,10 @@ flags, and the overlaps that were resolved during the CLI audit.
 | `make:dbcontext` | `DbContexts/`, `Configurations/`, `Factories/`. | `--provider`, `--entities`, `-o`, `-n`, `-f`, `--dry-run`, `--flat`, `-i` |
 | `make:config` | `Configuration/<Name>Options.cs` and registration. | `--section`, `-o`, `-n`, `-f`, `--dry-run`, `--flat`, `-i` |
 | `doctor` | No files. Diagnostics only. | `--path`, `--json`, `--strict`, `--check-pagination`, `--check-controller-dbcontext`, `--check-dto-entities` |
+| `admin:install` | `Admin/README.md` installation guide. | `-o`, `-n`, `-f`, `--dry-run` |
+| `admin:resource` | `Admin/Resources/<Name>Resource.cs`. | `-o`, `-n`, `--fields`, `--policy`, `-f`, `--dry-run`, `--flat`, `-i` |
+| `admin:user` | `Seeders/<Name>Seeder.cs`. | `-o`, `-n`, `-f`, `--dry-run`, `--flat`, `-i` |
+| `admin:check` | No files. Validates admin installation. | `--path`, `--json` |
 | `list` | No files. Command catalog. | none |
 
 ## Resolved overlaps

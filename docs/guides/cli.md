@@ -88,6 +88,10 @@ laranet make:query FindOrder --mediator mediatr
 | `make:dbcontext <name>` | EF Core context, configurations, and design-time factory |
 | `make:config <name>` | Options class and native registration extension |
 | `make:admin-resource <name>` | Admin resource class with typed metadata |
+| `admin:install` | Installs the admin panel in the application |
+| `admin:resource <name>` | Generates an admin resource with auto-detection |
+| `admin:user` | Generates a seeder for the first admin user |
+| `admin:check` | Validates the admin installation |
 
 ## Doctor
 

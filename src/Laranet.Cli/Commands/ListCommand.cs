@@ -34,6 +34,13 @@ internal static class ListCommand
         ("Diagnóstico", new[]
         {
             "doctor",
+            "admin:check",
+        }),
+        ("Administración", new[]
+        {
+            "admin:install",
+            "admin:resource",
+            "admin:user",
         }),
         ("Información", new[]
         {
@@ -59,6 +66,9 @@ internal static class ListCommand
         ["make:handler"] = "Genera un handler para un comando o consulta.",
         ["make:config"] = "Genera opciones y registro de configuración.",
         ["admin:resource"] = "Genera una clase AdminResource para una entidad.",
+        ["admin:install"] = "Instala el panel admin en la aplicación.",
+        ["admin:user"] = "Genera un seeder para el primer usuario admin.",
+        ["admin:check"] = "Valida la instalación del panel admin.",
         ["make:dbcontext"] = "Genera un DbContext, configuraciones y factory.",
         ["doctor"] = "Verifica dependencias, versiones y riesgos del proyecto.",
         ["list"] = "Muestra los comandos disponibles.",
