@@ -10,18 +10,33 @@
 <body class="admin-shell">
     <header class="admin-topbar">
         <button class="admin-hamburger" type="button" data-hamburger aria-label="Toggle navigation">
-            <span></span>
-            <span></span>
-            <span></span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
         </button>
         <a class="admin-brand" asp-page="/Index">
-            <span class="admin-brand-mark">L</span>
+            <span class="admin-brand-mark">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                </svg>
+            </span>
             <span>Laranet Admin</span>
         </a>
         <div class="admin-topbar-actions">
             <span class="admin-environment">Development</span>
             <form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" class="admin-logout-form">
-                <button type="submit" class="admin-logout-button">Logout</button>
+                <button type="submit" class="admin-logout-button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </button>
             </form>
         </div>
     </header>
@@ -30,11 +45,18 @@
         <aside class="admin-sidebar" data-sidebar>
             <p class="admin-sidebar-label">Workspace</p>
             <a class="admin-nav-link" asp-page="/Index">
-                <span>▦</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                </svg>
                 Dashboard
             </a>
             <a class="admin-nav-link" asp-page="/Resources/Index" asp-route-resource="Products">
-                <span>▦</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                </svg>
                 Products
             </a>
         </aside>
@@ -44,13 +66,34 @@
         <main class="admin-content">
             @if (Context.Request.Query.TryGetValue("adminMessage", out var adminMessage))
             {
-                <div class="admin-toast" role="status" data-toast>
+                <div class="admin-toast admin-toast-success" role="status" data-toast>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
                     <span>@adminMessage</span>
                     <button type="button" data-toast-close aria-label="Close notification">×</button>
                 </div>
             }
             @RenderBody()
         </main>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="admin-modal-overlay" data-modal-overlay>
+        <div class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div class="admin-modal-header">
+                <h3 id="modal-title">Confirm action</h3>
+                <button type="button" class="admin-modal-close" data-modal-close aria-label="Close">×</button>
+            </div>
+            <div class="admin-modal-body">
+                <p data-modal-message>Are you sure you want to proceed?</p>
+            </div>
+            <div class="admin-modal-footer">
+                <button type="button" class="admin-button-secondary" data-modal-cancel>Cancel</button>
+                <button type="button" class="admin-button admin-button-danger" data-modal-confirm>Confirm</button>
+            </div>
+        </div>
     </div>
 
     @await RenderSectionAsync("Scripts", required: false)

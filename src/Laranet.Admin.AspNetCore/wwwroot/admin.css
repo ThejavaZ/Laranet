@@ -466,6 +466,74 @@ a {
     transition: opacity .18s ease-out;
 }
 
+.admin-modal-overlay {
+    align-items: center;
+    background: rgba(0, 0, 0, .5);
+    display: none;
+    inset: 0;
+    justify-content: center;
+    position: fixed;
+    z-index: 100;
+}
+
+.admin-modal-overlay.is-visible {
+    display: flex;
+}
+
+.admin-modal {
+    background: var(--admin-surface);
+    border-radius: 16px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, .2);
+    max-width: 420px;
+    width: 90%;
+}
+
+.admin-modal-header {
+    align-items: center;
+    border-bottom: 1px solid var(--admin-border);
+    display: flex;
+    justify-content: space-between;
+    padding: 18px 22px;
+}
+
+.admin-modal-header h3 {
+    margin: 0;
+}
+
+.admin-modal-close {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-size: 1.5rem;
+    line-height: 1;
+    padding: 0;
+}
+
+.admin-modal-body {
+    padding: 22px;
+}
+
+.admin-modal-body p {
+    margin: 0;
+}
+
+.admin-modal-footer {
+    border-top: 1px solid var(--admin-border);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding: 16px 22px;
+}
+
+.admin-button-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.admin-button-danger:hover {
+    background: #b91c1c;
+}
+
 .is-loading {
     cursor: wait !important;
     opacity: .72;

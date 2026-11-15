@@ -57,6 +57,52 @@
         });
     });
 
+    // Modal confirmation
+    var modalOverlay = document.querySelector("[data-modal-overlay]");
+    var modalMessage = document.querySelector("[data-modal-message]");
+    var modalConfirm = document.querySelector("[data-modal-confirm]");
+    var modalCancel = document.querySelector("[data-modal-cancel]");
+    var modalClose = document.querySelector("[data-modal-close]");
+    var pendingForm = null;
+
+    function openModal(message) {
+        if (modalMessage) modalMessage.textContent = message;
+        if (modalOverlay) modalOverlay.classList.add("is-visible");
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+        if (modalOverlay) modalOverlay.classList.remove("is-visible");
+        document.body.style.overflow = "";
+        pendingForm = null;
+    }
+
+    if (modalCancel) modalCancel.addEventListener("click", closeModal);
+    if (modalClose) modalClose.addEventListener("click", closeModal);
+    if (modalOverlay) {
+        modalOverlay.addEventListener("click", function (e) {
+            if (e.target === modalOverlay) closeModal();
+        });
+    }
+
+    document.querySelectorAll("[data-modal-confirm]").forEach(function (form) {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            pendingForm = form;
+            openModal(form.dataset.modalConfirm);
+        });
+    });
+
+    if (modalConfirm) {
+        modalConfirm.addEventListener("click", function () {
+            if (pendingForm) {
+                pendingForm.dataset.confirmed = "true";
+                setLoading(pendingForm);
+                pendingForm.submit();
+            }
+        });
+    }
+
     // Loading states
     function setLoading(form) {
         if (form.dataset.loadingStarted === "true") {
@@ -75,16 +121,12 @@
             });
     }
 
-    document.querySelectorAll("[data-confirm]").forEach(function (form) {
-        form.addEventListener("submit", function (event) {
-            if (!window.confirm(form.dataset.confirm)) {
-                event.preventDefault();
-                return;
-            }
-
-            setLoading(form);
+    document.querySelectorAll("[data-loading-form]:not([data-modal-confirm])")
+        .forEach(function (form) {
+            form.addEventListener("submit", function () {
+                setLoading(form);
+            });
         });
-    });
 
     document.querySelectorAll("[data-loading-form]:not([data-confirm])")
         .forEach(function (form) {

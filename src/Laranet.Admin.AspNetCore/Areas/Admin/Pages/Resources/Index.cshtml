@@ -59,7 +59,12 @@
 @if (Model.Results.Items.Count == 0)
 {
     <div class="admin-empty-state">
-        <div class="admin-empty-icon">▦</div>
+        <div class="admin-empty-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </div>
         <h2>No records found</h2>
         <p>Try adjusting your search or filters, or create a new record.</p>
         <a class="admin-button" asp-page="/Resources/Create" asp-route-resource="@Model.Resource.Name">Create @Model.Resource.Name.TrimEnd('s')</a>
@@ -130,7 +135,7 @@ else
                asp-route-resource="@Model.Resource.Name"
                asp-route-key="@item.GetValueOrDefault(Model.Resource.KeyField.Name)">Edit</a>
             <form method="post"
-                  data-confirm="Delete this record?"
+                  data-modal-confirm="Delete this record?"
                   data-loading-form
                   asp-page-handler="Delete"
                   asp-route-resource="@Model.Resource.Name"
