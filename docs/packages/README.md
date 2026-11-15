@@ -16,7 +16,7 @@ application uses.
 | `Laranet.Admin.EntityFrameworkCore` | Experimental EF Core admin data adapter | Not published; prototype only | [README](../../src/Laranet.Admin.EntityFrameworkCore/README.md) |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` | [README](../../src/Laranet/README.md) |
 
-The seven production packages are prepared for the `0.3.1` release line.
+The ten production packages are prepared for the `0.4.0` release line.
 `Laranet.Admin` remains experimental and is not part of the release train.
 
 ## Dependency boundaries

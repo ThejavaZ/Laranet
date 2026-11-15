@@ -119,7 +119,7 @@ Before marking it complete, verify:
 
 ## Current project state
 
-**Current focus:** Version 4, [Sprint 22 — Admin architecture and ADR](v4.md).
+**Current focus:** Version 4 release `0.4.0` — admin pilot completed.
 Sprint 17 — EF Core conventions, Sprint 18.1 — `Laranet.Http` foundation,
 Sprint 18.2 — `Laranet.Http` resilience and release, and Sprint 18.3 — Validation are
 completed. Sprint 18.4 — CQRS generators, Sprint 18.5 — Database and configuration
@@ -127,7 +127,7 @@ generators, Sprint 19 — `laranet doctor`, and Sprint 21 — 1.0 readiness are 
 Sprint 20 remains in progress pending real-application validation. Version 2 remains open pending real
 external feedback.
 
-Seven production packages are prepared for the `0.3.1` release line. The previous
+Seven production packages are prepared for the `0.4.0` release line. The previous
 published line was `0.2.1`; the new line adds the optional FluentValidation
 integration, CLI generators, `laranet doctor`, and CRUD introspection, while retaining `Laranet.Http`,
 optional EF Core conventions,

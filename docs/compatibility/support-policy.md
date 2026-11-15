@@ -64,7 +64,7 @@ Compatibility guarantees apply to officially supported package versions and docu
 
 ### Published versions
 
-The current release line is `0.3.x`:
+The current release line is `0.4.x`:
 
 | Version | Packages | Status |
 | --- | --- | --- |

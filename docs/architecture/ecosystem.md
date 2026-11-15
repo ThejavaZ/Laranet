@@ -61,7 +61,7 @@ Status legend:
 | `Laranet.AspNetCore` | ASP.NET Core pagination integration | Published | `Laranet.Data`, ASP.NET Core |
 | `Laranet.Cli` | Project creation and code generation | Published | — |
 | `Laranet.Http` | Optional convenience layer over `HttpClient` | Published (V3; Sprints 18.1–18.2) | BCL, `Microsoft.Extensions.Http` |
-| `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs | Implemented for `0.3.0` (V3; Sprint 18.3) | `FluentValidation`, ASP.NET Core |
+| `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs | Implemented for `0.4.0` (V3; Sprint 18.3) | `FluentValidation`, ASP.NET Core |
 | `Laranet.Analyzers` | Optional Roslyn diagnostics | Candidate | Roslyn |
 | `Laranet.Admin` | Provider-neutral admin resource and adapter contracts | Prototype; ADR accepted (V4; Sprints 20–22) | — |
 | `Laranet.Admin.AspNetCore` | Optional Razor-based admin UI | Candidate after real-app review (V4) | `Laranet.Admin`, ASP.NET Core |
