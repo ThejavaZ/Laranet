@@ -141,6 +141,176 @@ builder.Services.AddAuthorizationBuilder()
 roles, tokens, cookies, or antiforgery. Razor Pages supplies native antiforgery
 protection for mutating forms.
 
+## Auto-discovery
+
+Resources can be auto-discovered from an assembly using the `AdminResourceAttribute`:
+
+```csharp
+[AdminResource(Name = "Products", PermissionPolicy = "Admin.Products")]
+public sealed class ProductAdminResource : AdminResource<Product>
+{
+    protected override void Configure(AdminResourceBuilder<Product> resource)
+    {
+        resource.Field(product => product.Name).Searchable().Orderable();
+        resource.Field(product => product.Price).FormatAs("currency");
+        resource.Field(product => product.IsActive).Filterable();
+        resource.Permission("Admin.Products");
+    }
+}
+```
+
+Register all discovered resources:
+
+```csharp
+builder.Services.AddSingleton<IAdminResourceRegistry>(services =>
+{
+    var registry = new AdminResourceRegistry();
+    AdminResourceDiscovery.RegisterAll(registry, typeof(Program).Assembly);
+    return registry;
+});
+```
+
+Auto-discovery is optional. Explicit registration remains the recommended approach
+for most applications.
+
+## Integration with ASP.NET Core Identity
+
+The admin panel integrates with native ASP.NET Core Identity:
+
+```csharp
+builder.Services
+    .AddDefaultIdentity<IdentityUser>(options =>
+        options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<AdminDbContext>();
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("Admin.Products", policy =>
+        policy.RequireAuthenticatedUser()
+              .RequireRole("Admin"));
+```
+
+The `IAdminAuthorization` implementation bridges to the native authorization
+service:
+
+```csharp
+public sealed class IdentityAdminAuthorization : IAdminAuthorization
+{
+    private readonly IAuthorizationService _authorization;
+
+    public IdentityAdminAuthorization(IAuthorizationService authorization)
+    {
+        _authorization = authorization;
+    }
+
+    public async Task<bool> AuthorizeAsync(
+        ClaimsPrincipal principal,
+        AdminResource resource,
+        AdminOperation operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(resource.PermissionPolicy))
+        {
+            return principal.Identity?.IsAuthenticated == true;
+        }
+
+        var result = await _authorization.AuthorizeAsync(
+            principal, resource.PermissionPolicy);
+
+        return result.Succeeded;
+    }
+}
+```
+
+## Complete examples
+
+### Product resource with all features
+
+```csharp
+public sealed class ProductAdminResource : AdminResource<Product>
+{
+    protected override void Configure(AdminResourceBuilder<Product> resource)
+    {
+        resource.Field(product => product.Id, "ID")
+            .Orderable();
+
+        resource.Field(product => product.Name)
+            .Searchable()
+            .Orderable()
+            .Required()
+            .MaxLength(100);
+
+        resource.Field(product => product.Description)
+            .AsTextArea(rows: 4);
+
+        resource.Field(product => product.Price)
+            .FormatAs("currency")
+            .Min("0");
+
+        resource.Field(product => product.IsActive)
+            .AsCheckbox()
+            .Filterable();
+
+        resource.Field(product => product.CategoryId)
+            .BelongsTo<Category, Guid>("Category", "Id", "Name");
+
+        resource.Field(product => product.CreatedAt)
+            .AsDate()
+            .ReadOnly();
+
+        resource.Field(product => product.UpdatedAt)
+            .AsDateTime()
+            .ReadOnly();
+
+        resource.Filter(product => product.IsActive, "Active");
+        resource.Filter(product => product.CategoryId, "Category");
+
+        resource.Action("Activate", "Activate", MutatesData: true);
+        resource.Action("Deactivate", "Deactivate", MutatesData: true);
+        resource.Action("Delete", "Delete", MutatesData: true);
+
+        resource.Permission("Admin.Products");
+        resource.OrderBy(product => product.Name);
+    }
+}
+```
+
+### Category resource with delete validation
+
+```csharp
+public sealed class CategoryAdminResource : AdminResource<Category>
+{
+    protected override void Configure(AdminResourceBuilder<Category> resource)
+    {
+        resource.Field(category => category.Name).Searchable().Required();
+        resource.Field(category => category.Description).AsTextArea();
+
+        resource.Permission("Admin.Categories");
+
+        resource.DeleteValidator(async (entity, cancellationToken) =>
+        {
+            // Check if any products reference this category
+            // Return an error message if deletion should be blocked
+            return null; // Allow deletion
+        });
+    }
+}
+```
+
+### Multi-tenant resource
+
+```csharp
+public sealed class ProductAdminResource : AdminResource<Product>
+{
+    protected override void Configure(AdminResourceBuilder<Product> resource)
+    {
+        resource.Field(product => product.CompanyId).AsHidden();
+        resource.Field(product => product.Name).Searchable().Required();
+
+        resource.Permission("Admin.Products");
+    }
+}
+```
+
 ## Current limits
 
 - Only the Product sample is validated.
