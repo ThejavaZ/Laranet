@@ -11,7 +11,7 @@ documented in the [changelog](../../CHANGELOG.md) and in this guide.
 
 ## Current release status
 
-The current release candidate is `0.4.0`. It adds the optional FluentValidation
+The current release candidate is `0.4.1`. It adds the optional FluentValidation
 Minimal API integration, CLI CQRS/database/configuration generators, and
 `laranet doctor`. The new APIs are additive; the experimental Admin prototype is
 not part of this release.

@@ -73,7 +73,9 @@ The current release line is `0.4.x`:
 | `0.2.0` | All five original production packages | Published |
 | `0.2.1` | All six production packages | Published |
 | `0.3.0` | Seven production packages, including `Laranet.AspNetCore.Validation` | Previous release candidate |
-| `0.3.1` | Seven production packages, including CRUD introspection | Release candidate |
+| `0.3.1` | Seven production packages, including CRUD introspection | Published |
+| `0.4.0` | Ten production packages, including Admin packages | Published |
+| `0.4.1` | Seven production packages, including CLI improvements | Release candidate |
 
 `Laranet.Http` was introduced in `0.2.1`. Within a version line, patch releases are
 backward compatible and keep package versions synchronized.
