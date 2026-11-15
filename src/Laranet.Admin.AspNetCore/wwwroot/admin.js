@@ -1,20 +1,25 @@
 (function () {
     "use strict";
+    console.log("[admin.js] loaded");
 
     // Dark mode toggle
     var themeToggle = document.querySelector("[data-theme-toggle]");
     var savedTheme = localStorage.getItem("admin-theme") || "light";
     document.body.setAttribute("data-theme", savedTheme);
+    console.log("[admin.js] theme:", savedTheme);
 
     function toggleTheme() {
         var current = document.body.getAttribute("data-theme");
         var next = current === "dark" ? "light" : "dark";
         document.body.setAttribute("data-theme", next);
         localStorage.setItem("admin-theme", next);
+        console.log("[admin.js] theme toggled to:", next);
     }
 
     if (themeToggle) {
         themeToggle.addEventListener("click", toggleTheme);
+    } else {
+        console.warn("[admin.js] themeToggle not found");
     }
 
     // Hamburger menu toggle
@@ -22,8 +27,10 @@
     var sidebar = document.querySelector("[data-sidebar]");
     var overlay = document.querySelector("[data-sidebar-overlay]");
 
+    console.log("[admin.js] hamburger:", hamburger, "sidebar:", sidebar, "overlay:", overlay);
+
     function openSidebar() {
-        if (!sidebar) return;
+        if (!sidebar) { console.warn("[admin.js] no sidebar"); return; }
         sidebar.classList.add("is-open");
         if (hamburger) hamburger.classList.add("is-active");
         if (overlay) {
@@ -31,6 +38,7 @@
             overlay.style.display = "block";
         }
         document.body.style.overflow = "hidden";
+        console.log("[admin.js] sidebar opened");
     }
 
     function closeSidebar() {
@@ -42,6 +50,7 @@
             overlay.style.display = "none";
         }
         document.body.style.overflow = "";
+        console.log("[admin.js] sidebar closed");
     }
 
     function toggleSidebar() {
@@ -54,10 +63,13 @@
 
     if (hamburger) {
         hamburger.addEventListener("click", function (e) {
+            console.log("[admin.js] hamburger clicked");
             e.preventDefault();
             e.stopPropagation();
             toggleSidebar();
         });
+    } else {
+        console.warn("[admin.js] hamburger not found");
     }
 
     if (overlay) {
@@ -82,6 +94,7 @@
     var pendingForm = null;
 
     function openModal(message) {
+        console.log("[admin.js] opening modal:", message);
         if (modalMessage) modalMessage.textContent = message;
         if (modalOverlay) modalOverlay.classList.add("is-visible");
         document.body.style.overflow = "hidden";
@@ -103,6 +116,7 @@
 
     document.querySelectorAll("[data-modal-confirm]").forEach(function (form) {
         form.addEventListener("submit", function (event) {
+            console.log("[admin.js] modal form submit intercepted");
             event.preventDefault();
             pendingForm = form;
             openModal(form.dataset.modalConfirm);
@@ -111,11 +125,14 @@
 
     if (modalConfirm) {
         modalConfirm.addEventListener("click", function () {
+            console.log("[admin.js] modal confirm clicked");
             if (pendingForm) {
                 pendingForm.dataset.confirmed = "true";
                 pendingForm.submit();
             }
         });
+    } else {
+        console.warn("[admin.js] modalConfirm not found");
     }
 
     // Loading states
@@ -184,4 +201,5 @@
     }
 
     setupResponsiveTables();
+    console.log("[admin.js] initialized");
 })();
