@@ -19,7 +19,7 @@
             }
         </div>
     }
-    @foreach (var field in Model.Resource.Form?.Fields ?? [])
+    @foreach (var field in Model.Resource.Form?.Fields ?? Model.Resource.Fields)
     {
         <div class="admin-form-field">
             <label>
