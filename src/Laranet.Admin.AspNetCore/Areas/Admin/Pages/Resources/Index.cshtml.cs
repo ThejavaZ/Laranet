@@ -7,11 +7,30 @@ namespace Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources;
 public sealed class IndexModel(
     IAdminResourceRegistry resources,
     IAdminDataAdapter adapter,
-    IAdminAuthorization authorization) : PageModel
+    IAdminAuthorization authorization,
+    Microsoft.Extensions.Localization.IStringLocalizerFactory localizerFactory) : PageModel
 {
+    private readonly Microsoft.Extensions.Localization.IStringLocalizer localizer =
+        localizerFactory.Create(typeof(IndexModel));
+
     public AdminResource Resource { get; private set; } = null!;
 
     public AdminPage Results { get; private set; } = new([], 1, 25, 0);
+
+    public string L(AdminField field) =>
+        field.LocalizationKey is not null
+            ? localizer[field.LocalizationKey]
+            : field.Label;
+
+    public string L(AdminFilter filter) =>
+        filter.LocalizationKey is not null
+            ? localizer[filter.LocalizationKey]
+            : filter.Label;
+
+    public string L(AdminAction action) =>
+        action.LocalizationKey is not null
+            ? localizer[action.LocalizationKey]
+            : action.Label;
 
     public bool SupportsBulk => adapter is IAdminEnhancementAdapter;
 

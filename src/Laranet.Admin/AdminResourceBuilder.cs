@@ -228,6 +228,12 @@ public sealed class AdminResourceBuilder<TModel>
         fields[index] = field with { Rows = rows };
     }
 
+    internal void SetLocalizationKey(int index, string? key)
+    {
+        var field = fields[index];
+        fields[index] = field with { LocalizationKey = key };
+    }
+
     /// <summary>
     /// Sets a validator that runs before deletion.
     /// </summary>
@@ -500,6 +506,16 @@ public sealed class AdminFieldBuilder<TModel, TValue>
     public AdminFieldBuilder<TModel, TValue> DefaultValue(string value)
     {
         owner.SetDefaultValue(index, value);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets a localization key for the field label.
+    /// </summary>
+    public AdminFieldBuilder<TModel, TValue> LocalizeAs(string key)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
+        owner.SetLocalizationKey(index, key);
         return this;
     }
 }

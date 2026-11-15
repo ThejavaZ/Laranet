@@ -7,11 +7,20 @@ namespace Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources;
 public sealed class CreateModel(
     IAdminResourceRegistry resources,
     IAdminDataAdapter adapter,
-    IAdminAuthorization authorization) : PageModel
+    IAdminAuthorization authorization,
+    Microsoft.Extensions.Localization.IStringLocalizerFactory localizerFactory) : PageModel
 {
+    private readonly Microsoft.Extensions.Localization.IStringLocalizer localizer =
+        localizerFactory.Create(typeof(CreateModel));
+
     public AdminResource Resource { get; private set; } = null!;
 
     public bool Allowed { get; private set; }
+
+    public string L(AdminField field) =>
+        field.LocalizationKey is not null
+            ? localizer[field.LocalizationKey]
+            : field.Label;
 
     public IReadOnlyDictionary<string, IReadOnlyList<AdminLookupOption>> Lookups { get; private set; } = new Dictionary<string, IReadOnlyList<AdminLookupOption>>();
 

@@ -53,17 +53,18 @@ public sealed record AdminField(
     string? Placeholder = null,
     string? HelpText = null,
     string? DefaultValue = null,
-    int? Rows = null);
+    int? Rows = null,
+    string? LocalizationKey = null);
 
 /// <summary>
 /// Describes a filter supported by an administrative resource.
 /// </summary>
-public sealed record AdminFilter(string Name, string Label, Type ValueType, bool IsRange = false);
+public sealed record AdminFilter(string Name, string Label, Type ValueType, bool IsRange = false, string? LocalizationKey = null);
 
 /// <summary>
 /// Describes an explicit action available on an administrative resource.
 /// </summary>
-public sealed record AdminAction(string Name, string Label, bool MutatesData);
+public sealed record AdminAction(string Name, string Label, bool MutatesData, string? LocalizationKey = null);
 
 /// <summary>
 /// Describes a selectable relationship used by an administrative form.

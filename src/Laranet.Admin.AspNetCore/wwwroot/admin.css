@@ -399,6 +399,24 @@ a {
     border-bottom: 0;
 }
 
+/* RTL support */
+[dir="rtl"] .admin-layout {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .admin-sidebar {
+    text-align: right;
+}
+
+[dir="rtl"] .admin-table th,
+[dir="rtl"] .admin-table td {
+    text-align: right;
+}
+
+[dir="rtl"] .admin-detail {
+    grid-template-columns: 1fr 180px;
+}
+
 @media (max-width: 760px) {
     .admin-topbar {
         padding: 0 18px;

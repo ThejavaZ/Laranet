@@ -61,6 +61,7 @@
         @foreach (var field in Model.Resource.Fields)
         {
             <th>
+            @(Model.L(field))
             @if (field.IsOrderable)
             {
                 var descending = Model.SortBy == field.Name && !Model.SortDescending;
