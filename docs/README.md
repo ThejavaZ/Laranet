@@ -50,6 +50,7 @@ them.
 - [Validation](guides/validation.md)
 - [Error Handling](guides/error-handling.md)
 - [CLI](guides/cli.md)
+- [Admin prototype](guides/admin.md)
 
 ## API Reference
 
@@ -74,6 +75,7 @@ Understand what each package provides and when to use it.
 - [`Laranet.AspNetCore`](../src/Laranet.AspNetCore/README.md)
 - [`Laranet.AspNetCore.Validation`](../src/Laranet.AspNetCore.Validation/README.md)
 - [`Laranet.Http`](../src/Laranet.Http/README.md)
+- [`Laranet.Admin`](../src/Laranet.Admin/README.md) (experimental prototype)
 - [`Laranet.Cli`](../src/Laranet.Cli/README.md)
 
 ## Samples

@@ -34,6 +34,7 @@ conventions, query utilities, integrations, and code generation on top of them.
 | `Laranet.AspNetCore` | Pagination HTTP headers and Minimal API results. |
 | `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs (0.3.0). |
 | `Laranet.Cli` | Project creation and code generation. |
+| `Laranet.Admin` | Experimental provider-neutral administrative contracts and prototype. |
 | [`Laranet.Http`](https://www.nuget.org/packages/Laranet.Http/0.2.1) | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` (0.2.1). |
 | `Laranet` | Core package, intentionally empty until a shared abstraction is justified. |
 
@@ -48,6 +49,7 @@ dotnet tool install --global Laranet.Cli
 ## Documentation
 
 - [Documentation index](docs/README.md)
+- [Admin prototype](samples/Laranet.Samples.Admin/README.md)
 - [Installation](docs/getting-started/installation.md)
 - [Quick start](docs/getting-started/quick-start.md)
 - [Core concepts](docs/concepts/core-concepts.md)

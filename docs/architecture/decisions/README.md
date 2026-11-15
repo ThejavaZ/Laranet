@@ -21,6 +21,7 @@ Their purpose is to preserve architectural knowledge and provide transparency in
 | [0009](0009-optional-ef-core-conventions.md) | Keep EF Core Conventions Optional and Close to the Framework | Accepted |
 | [0010](0010-optional-http-convenience-layer.md) | Add an Optional HTTP Convenience Layer | Accepted |
 | [0011](0011-optional-fluentvalidation-integration.md) | Add an Optional FluentValidation Integration | Accepted |
+| [0012](0012-admin-boundary-and-prototype.md) | Keep the Admin Core Provider-Neutral | Accepted for prototype |
 
 ## ADR Status
 

@@ -63,7 +63,7 @@ Status legend:
 | `Laranet.Http` | Optional convenience layer over `HttpClient` | Published (V3; Sprints 18.1–18.2) | BCL, `Microsoft.Extensions.Http` |
 | `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs | Implemented for `0.3.0` (V3; Sprint 18.3) | `FluentValidation`, ASP.NET Core |
 | `Laranet.Analyzers` | Optional Roslyn diagnostics | Candidate | Roslyn |
-| `Laranet.Admin` | Admin resource abstractions | Candidate (V4) | `Laranet.Data` |
+| `Laranet.Admin` | Provider-neutral admin resource and adapter contracts | Prototype (V4; Sprint 20) | — |
 | `Laranet.Admin.AspNetCore` | Razor-based admin UI | Candidate (V4) | `Laranet.Admin`, `Laranet.AspNetCore` |
 | `Laranet.Data.Dapper` | Dapper adapter | Candidate | `Laranet.Data`, Dapper |
 | `Laranet.Data.AdoNet` | ADO.NET adapter | Candidate | `Laranet.Data` |

@@ -35,6 +35,9 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 - `laranet doctor` now reports deterministic project-reference, framework/version,
   duplicate-type, and opt-in source heuristic diagnostics with text or JSON output,
   strict warning handling, and documented exit codes.
+- Experimental `Laranet.Admin` provider-neutral contracts and a Razor Pages prototype
+  for Products using SQLite, EF Core, and ASP.NET Core Identity. The prototype is not
+  a stable admin UI package and remains gated on real-application validation.
 
 ## [0.2.1] - 2026-11-14
 

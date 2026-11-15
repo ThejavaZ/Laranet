@@ -11,6 +11,7 @@ application uses.
 | `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs | `dotnet add package Laranet.AspNetCore.Validation` | [README](../../src/Laranet.AspNetCore.Validation/README.md) |
 | `Laranet.Cli` | Project creation and code generation | `dotnet tool install --global Laranet.Cli` | [README](../../src/Laranet.Cli/README.md) |
 | `Laranet.Http` | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` | `dotnet add package Laranet.Http` | [README](../../src/Laranet.Http/README.md) |
+| `Laranet.Admin` | Experimental provider-neutral admin metadata and adapter contracts | Not published; prototype only | [README](../../src/Laranet.Admin/README.md) |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` | [README](../../src/Laranet/README.md) |
 
 `Laranet.AspNetCore.Validation` is implemented for the `0.3.0` release line. The other
@@ -35,6 +36,9 @@ Laranet.AspNetCore.Validation  (independent: ASP.NET Core + FluentValidation,
 - `Laranet.Http` references `Microsoft.Extensions.Http` and does not depend on
   `Laranet.Data`, ASP.NET Core, or a specific API client.
 - `Laranet.Cli` is a .NET tool with no runtime dependency on the other packages.
+- `Laranet.Admin` is experimental and has no dependency on EF Core, ASP.NET Core, or
+  any database provider. Its prototype is validated in
+  [`Laranet.Samples.Admin`](../../samples/Laranet.Samples.Admin).
 - `Laranet` remains small and is not required by the other packages.
 
 ## Which package do I need?
@@ -65,6 +69,7 @@ Laranet.AspNetCore.Validation  (independent: ASP.NET Core + FluentValidation,
 - [Integrations](../api/integrations.md)
 - [HTTP (`Laranet.Http`)](../api/http.md)
 - [Validation (`Laranet.AspNetCore.Validation`)](../api/validation.md)
+- [Admin prototype (`Laranet.Admin`)](../../src/Laranet.Admin/README.md)
 
 ## Installation details
 
