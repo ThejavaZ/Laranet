@@ -20,6 +20,7 @@ public static class AdminAspNetCoreExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddAuthorization();
+        services.AddLocalization();
         services.TryAddSingleton<IAdminResourceRegistry, AdminResourceRegistry>();
         services.TryAddScoped<IAdminAuthorization, AspNetCoreAdminAuthorization>();
 
