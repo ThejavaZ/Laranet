@@ -1,16 +1,27 @@
 @page "/admin/{resource}/create"
 @model Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources.CreateModel
 
-<h1>Create @Model.Resource.Name</h1>
+<div class="admin-page-heading">
+    <div>
+        <h1>Create @Model.Resource.Name.TrimEnd('s')</h1>
+        <p>Add a new record to @Model.Resource.Name.</p>
+    </div>
+</div>
 
-<form method="post">
+<div class="admin-card admin-form-card">
+<form class="admin-form" method="post">
     @foreach (var field in Model.Resource.Form?.Fields ?? [])
     {
-        <label>
+        <div class="admin-form-field">
+            <label>
             @field.Label
             <input name="@field.Name" type="@(field.Type == typeof(bool) ? "checkbox" : "text")" />
-        </label>
+            </label>
+        </div>
     }
-    <button type="submit">Create</button>
-    <a asp-page="/Resources/Index" asp-route-resource="@Model.Resource.Name">Cancel</a>
+    <div class="admin-form-actions">
+        <button class="admin-button" type="submit">Create</button>
+        <a class="admin-button-secondary" asp-page="/Resources/Index" asp-route-resource="@Model.Resource.Name">Cancel</a>
+    </div>
 </form>
+</div>

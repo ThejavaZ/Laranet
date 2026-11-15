@@ -1,12 +1,21 @@
 @page "/admin/{resource}"
 @model Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources.IndexModel
 
-<h1>@Model.Resource.Name</h1>
+<div class="admin-page-heading">
+    <div>
+        <h1>@Model.Resource.Name</h1>
+        <p>Manage your @Model.Resource.Name.ToLowerInvariant() from one place.</p>
+    </div>
+    <a class="admin-button" asp-page="/Resources/Create" asp-route-resource="@Model.Resource.Name">
+        Create @Model.Resource.Name.TrimEnd('s')
+    </a>
+</div>
 
-<form method="get">
-    <input type="hidden" name="resource" value="@Model.Resource.Name" />
+<div class="admin-card">
+<div class="admin-toolbar">
+<form class="admin-search" method="get">
     <label>
-        Search
+        <span class="sr-only">Search</span>
         <input name="Search" value="@Model.Search" />
     </label>
     @foreach (var filter in Model.Resource.Filters)
@@ -16,11 +25,13 @@
             <input name="@filter.Name" value="@Request.Query[filter.Name]" />
         </label>
     }
-    <button type="submit">Search</button>
-    <a asp-page="/Resources/Create" asp-route-resource="@Model.Resource.Name">Create</a>
+    <button class="admin-button-secondary" type="submit">Search</button>
 </form>
 
-<table>
+<span class="admin-muted">@Model.Results.TotalCount results</span>
+</div>
+
+<table class="admin-table">
     <thead>
         <tr>
         @foreach (var field in Model.Resource.Fields)
@@ -38,7 +49,7 @@
         {
             <td>@item.GetValueOrDefault(field.Name)</td>
         }
-        <td>
+        <td class="admin-actions">
             <a asp-page="/Resources/Edit"
                asp-route-resource="@Model.Resource.Name"
                asp-route-key="@item.GetValueOrDefault(Model.Resource.KeyField.Name)">Edit</a>
@@ -46,7 +57,7 @@
                   asp-page-handler="Delete"
                   asp-route-resource="@Model.Resource.Name"
                   asp-route-key="@item.GetValueOrDefault(Model.Resource.KeyField.Name)">
-                <button type="submit">Delete</button>
+                <button class="admin-danger" type="submit">Delete</button>
             </form>
         </td>
         </tr>
@@ -54,4 +65,8 @@
     </tbody>
 </table>
 
-<p>Page @Model.Results.Page of @Model.Results.TotalPages (@Model.Results.TotalCount items)</p>
+<div class="admin-footer">
+    <span>Page @Model.Results.Page of @Model.Results.TotalPages</span>
+    <span>@Model.Results.TotalCount items</span>
+</div>
+</div>

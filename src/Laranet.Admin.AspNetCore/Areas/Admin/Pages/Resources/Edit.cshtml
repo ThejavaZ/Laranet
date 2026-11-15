@@ -1,16 +1,27 @@
 @page "/admin/{resource}/{key}/edit"
 @model Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources.EditModel
 
-<h1>Edit @Model.Resource.Name</h1>
+<div class="admin-page-heading">
+    <div>
+        <h1>Edit @Model.Resource.Name.TrimEnd('s')</h1>
+        <p>Update this record.</p>
+    </div>
+</div>
 
-<form method="post">
+<div class="admin-card admin-form-card">
+<form class="admin-form" method="post">
     @foreach (var field in Model.Resource.Form?.Fields ?? [])
     {
-        <label>
+        <div class="admin-form-field">
+            <label>
             @field.Label
             <input name="@field.Name" value="@Model.Values.GetValueOrDefault(field.Name)" />
-        </label>
+            </label>
+        </div>
     }
-    <button type="submit">Save</button>
-    <a asp-page="/Resources/Index" asp-route-resource="@Model.Resource.Name">Cancel</a>
+    <div class="admin-form-actions">
+        <button class="admin-button" type="submit">Save</button>
+        <a class="admin-button-secondary" asp-page="/Resources/Index" asp-route-resource="@Model.Resource.Name">Cancel</a>
+    </div>
 </form>
+</div>

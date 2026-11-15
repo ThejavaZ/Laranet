@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] · Laranet Admin</title>
+    <link rel="stylesheet" href="~/_content/Laranet.Admin.AspNetCore/admin.css" />
+</head>
+<body class="admin-shell">
+    <header class="admin-topbar">
+        <a class="admin-brand" asp-page="/Resources/Index" asp-route-resource="Products">
+            <span class="admin-brand-mark">L</span>
+            <span>Laranet Admin</span>
+        </a>
+        <span class="admin-environment">Development</span>
+    </header>
+
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <p class="admin-sidebar-label">Workspace</p>
+            <a class="admin-nav-link" asp-page="/Resources/Index" asp-route-resource="Products">
+                <span>▦</span>
+                Products
+            </a>
+        </aside>
+
+        <main class="admin-content">
+            @RenderBody()
+        </main>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
