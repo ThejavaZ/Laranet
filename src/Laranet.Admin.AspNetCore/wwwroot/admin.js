@@ -1,6 +1,22 @@
 (function () {
     "use strict";
 
+    // Dark mode toggle
+    var themeToggle = document.querySelector("[data-theme-toggle]");
+    var savedTheme = localStorage.getItem("admin-theme") || "light";
+    document.body.setAttribute("data-theme", savedTheme);
+
+    function toggleTheme() {
+        var current = document.body.getAttribute("data-theme");
+        var next = current === "dark" ? "light" : "dark";
+        document.body.setAttribute("data-theme", next);
+        localStorage.setItem("admin-theme", next);
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener("click", toggleTheme);
+    }
+
     // Hamburger menu toggle
     var hamburger = document.querySelector("[data-hamburger]");
     var sidebar = document.querySelector("[data-sidebar]");
