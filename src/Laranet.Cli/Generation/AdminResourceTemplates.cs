@@ -14,9 +14,26 @@ internal static class AdminResourceTemplates
             : string.Join(
                 "\n",
                 fields.Select(field =>
-                    $"        resource.Field(model => model.{field.Name})" +
-                    (field.IsString ? ".Searchable()" : string.Empty) +
-                    ";"));
+                {
+                    var chain = $"        resource.Field(model => model.{field.Name})";
+
+                    if (field.IsString)
+                    {
+                        chain += ".Searchable()";
+                    }
+
+                    if (field.IsRequired)
+                    {
+                        chain += ".Required()";
+                    }
+
+                    if (field.MaxLength is > 0)
+                    {
+                        chain += $".MaxLength({field.MaxLength})";
+                    }
+
+                    return chain + ";";
+                }));
 
         return $$"""
             using Laranet.Admin;

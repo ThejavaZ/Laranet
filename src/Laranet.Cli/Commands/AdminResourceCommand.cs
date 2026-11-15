@@ -54,8 +54,10 @@ internal static class AdminResourceCommand
             });
 
         var command = new Command(
-            "make:admin-resource",
+            "admin:resource",
             "Generates a Laranet.Admin resource class for an entity.");
+
+        command.Aliases.Add("make:admin-resource");
 
         command.Arguments.Add(arguments.Name);
         command.Options.Add(arguments.Output);

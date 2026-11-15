@@ -34,6 +34,18 @@ internal static class AdminResourceRunner
             var fields = CrudFieldParser.Parse(parseResult.GetValue(arguments.Fields), allowId: true);
             var policy = parseResult.GetValue(arguments.Policy);
 
+            // Auto-detect existing entity
+            var metadata = EntityIntrospector.TryRead(outputDirectory, name);
+            if (metadata is not null && string.IsNullOrWhiteSpace(parseResult.GetValue(arguments.Fields)))
+            {
+                fields = metadata.ResponseFields
+                    .Where(field => field.Name is not ("Id" or "CreatedAt" or "UpdatedAt"
+                        or "IsDeleted" or "DeletedAt"))
+                    .ToArray();
+                output.WriteLine(
+                    $"info: detected existing entity '{name}'; generating Admin resource from its source.");
+            }
+
             var context = new GenerationContext(
                 name,
                 baseNamespace,

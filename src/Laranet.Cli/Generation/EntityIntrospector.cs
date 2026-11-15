@@ -136,8 +136,7 @@ internal static partial class EntityIntrospector
             .Matches(source)
             .Select(match =>
             {
-                var propertyAttributes = match.Groups["attributes"].Value
-                    + AttributesBefore(source, match.Index);
+                var propertyAttributes = match.Groups["attributes"].Value;
                 var type = match.Groups["type"].Value;
                 var name = match.Groups["name"].Value;
                 var isNullable = type.EndsWith('?')

@@ -61,6 +61,7 @@ internal static class CliApplication
             "make:handler",
             "make:dbcontext",
             "make:config",
+            "admin:resource",
             "make:admin-resource",
         };
 
