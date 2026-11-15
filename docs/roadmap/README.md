@@ -119,11 +119,12 @@ Before marking it complete, verify:
 
 ## Current project state
 
-**Current focus:** Version 3, [Sprint 19 — `laranet doctor`](v3.md).
+**Current focus:** Version 3, [Sprint 20 — Admin foundations](v3.md).
 Sprint 17 — EF Core conventions, Sprint 18.1 — `Laranet.Http` foundation,
 Sprint 18.2 — `Laranet.Http` resilience and release, and Sprint 18.3 — Validation are
 completed. Sprint 18.4 — CQRS generators is completed. Sprint 18.5 plans generators
-Sprint 18.5 — Database and configuration generators is completed. Version 2 remains open pending real
+Sprint 18.5 — Database and configuration generators and Sprint 19 — `laranet doctor`
+are completed. Version 2 remains open pending real
 external feedback.
 
 Six production packages are implemented and published on NuGet.org as `0.2.1`. The

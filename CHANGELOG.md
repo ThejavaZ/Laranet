@@ -32,6 +32,9 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
   `make:dbcontext` and `make:config`, including provider selection, entity
   configurations, design-time factories, options binding, validation on start,
   and repeatable named configuration sections.
+- `laranet doctor` now reports deterministic project-reference, framework/version,
+  duplicate-type, and opt-in source heuristic diagnostics with text or JSON output,
+  strict warning handling, and documented exit codes.
 
 ## [0.2.1] - 2026-11-14
 

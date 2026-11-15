@@ -86,6 +86,39 @@ laranet make:query FindOrder --mediator mediatr
 | `make:dbcontext <name>` | EF Core context, configurations, and design-time factory |
 | `make:config <name>` | Options class and native registration extension |
 
+## Doctor
+
+Run deterministic diagnostics from the project or repository root:
+
+```bash
+laranet doctor
+laranet doctor --path src/MyApp --json
+```
+
+The command checks project-reference cycles, missing project references,
+unsupported `net10.0`/Laranet/EF Core versions, and duplicate top-level type
+declarations that can indicate generated-file conflicts. It never edits the
+inspected project.
+
+Source heuristics are opt-in:
+
+```bash
+laranet doctor \
+  --check-pagination \
+  --check-controller-dbcontext \
+  --check-dto-entities \
+  --strict
+```
+
+These checks report warnings for likely unbounded endpoint queries, direct
+`DbContext` use in controllers, and DTO properties exposing model entities.
+Warnings return exit code `0` unless `--strict` is used. Errors return `1`;
+invalid paths or unreadable project files return `2`.
+
+`--json` returns a stable report with `diagnostics`, `errorCount`,
+`warningCount`, and `exitCode`. The CLI does not claim to measure SOLID
+compliance or overall architectural quality.
+
 Names are normalized to PascalCase and suffixes are applied only when missing.
 
 ## Generate CQRS code
