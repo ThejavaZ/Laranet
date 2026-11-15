@@ -26,7 +26,9 @@ public sealed record AdminQuery(
     int Page = 1,
     int PageSize = 25,
     string? Search = null,
-    IReadOnlyDictionary<string, string?>? Filters = null)
+    IReadOnlyDictionary<string, string?>? Filters = null,
+    string? SortBy = null,
+    bool SortDescending = false)
 {
     /// <summary>
     /// Validates and normalizes the query values.

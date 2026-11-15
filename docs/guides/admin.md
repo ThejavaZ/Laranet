@@ -64,6 +64,29 @@ public static AdminResource Definition { get; } = new(
     "Admin.Products");
 ```
 
+For typed resource configuration, the experimental builder provides conventions for
+search, filtering, ordering, forms, formatting, and permissions:
+
+```csharp
+public sealed class ProductResource : AdminResource<Product>
+{
+    protected override void Configure(AdminResourceBuilder<Product> resource)
+    {
+        resource.Field(product => product.Name)
+            .Searchable()
+            .Orderable();
+        resource.Field(product => product.Price)
+            .FormatAs("currency");
+        resource.Filter(product => product.IsActive);
+        resource.Action("Delete", "Delete product", mutatesData: true);
+        resource.Permission("Admin.Products");
+    }
+}
+```
+
+The builder produces provider-neutral metadata. It does not execute queries or render
+pages, and its exact API remains experimental until a real application validates it.
+
 ## Adapter boundary
 
 Implement `IAdminDataAdapter` in the application or an integration package. The
