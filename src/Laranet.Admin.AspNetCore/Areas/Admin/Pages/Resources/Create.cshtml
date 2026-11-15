@@ -1,0 +1,16 @@
+@page "/admin/{resource}/create"
+@model Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources.CreateModel
+
+<h1>Create @Model.Resource.Name</h1>
+
+<form method="post">
+    @foreach (var field in Model.Resource.Form?.Fields ?? [])
+    {
+        <label>
+            @field.Label
+            <input name="@field.Name" type="@(field.Type == typeof(bool) ? "checkbox" : "text")" />
+        </label>
+    }
+    <button type="submit">Create</button>
+    <a asp-page="/Resources/Index" asp-route-resource="@Model.Resource.Name">Cancel</a>
+</form>

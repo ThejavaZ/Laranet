@@ -1,0 +1,16 @@
+@page "/admin/{resource}/{key}/edit"
+@model Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources.EditModel
+
+<h1>Edit @Model.Resource.Name</h1>
+
+<form method="post">
+    @foreach (var field in Model.Resource.Form?.Fields ?? [])
+    {
+        <label>
+            @field.Label
+            <input name="@field.Name" value="@Model.Values.GetValueOrDefault(field.Name)" />
+        </label>
+    }
+    <button type="submit">Save</button>
+    <a asp-page="/Resources/Index" asp-route-resource="@Model.Resource.Name">Cancel</a>
+</form>

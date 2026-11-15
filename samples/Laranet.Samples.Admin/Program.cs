@@ -1,4 +1,5 @@
 using Laranet.Admin;
+using Laranet.Admin.AspNetCore;
 using Laranet.Samples.Admin.Data;
 using Laranet.Samples.Admin.Models;
 using Laranet.Samples.Admin.Security;
@@ -13,6 +14,7 @@ builder.Services
     .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<AdminDbContext>();
 builder.Services.AddRazorPages();
+builder.Services.AddLaranetAdmin();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("Admin.Products", policy => policy.RequireAuthenticatedUser());
 builder.Services.AddScoped<IAdminDataAdapter, ProductAdminAdapter>();

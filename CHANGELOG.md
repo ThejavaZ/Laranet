@@ -11,6 +11,9 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 - Experimental typed Admin resource metadata builder for fields, forms, search,
   filters, ordering, formatting, actions, permissions, and key discovery. The core
   remains provider-neutral and is not part of the published release train.
+- Experimental `Laranet.Admin.AspNetCore` Razor Pages integration with conventional
+  list, search, filter, pagination, create, edit, and delete pages. It uses native
+  authorization and antiforgery and remains outside the release train.
 
 ## [0.3.1] - 2026-11-15
 

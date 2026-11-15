@@ -35,6 +35,20 @@ Application
 database provider. The application owns mapping, query composition, persistence,
 authentication, authorization, and page rendering.
 
+The experimental `Laranet.Admin.AspNetCore` package can provide the conventional
+Razor Pages surface:
+
+```csharp
+builder.Services.AddLaranetAdmin();
+builder.Services.AddRazorPages();
+
+app.MapRazorPages();
+```
+
+It exposes `/admin/{resource}` plus conventional create and edit routes. The
+application still provides `IAdminDataAdapter`, resources, authentication, and
+authorization policies. The package does not include EF Core or Identity.
+
 ## Resource registration
 
 Register resources explicitly:

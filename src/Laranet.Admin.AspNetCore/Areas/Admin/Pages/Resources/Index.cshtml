@@ -1,0 +1,57 @@
+@page "/admin/{resource}"
+@model Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources.IndexModel
+
+<h1>@Model.Resource.Name</h1>
+
+<form method="get">
+    <input type="hidden" name="resource" value="@Model.Resource.Name" />
+    <label>
+        Search
+        <input name="Search" value="@Model.Search" />
+    </label>
+    @foreach (var filter in Model.Resource.Filters)
+    {
+        <label>
+            @filter.Label
+            <input name="@filter.Name" value="@Request.Query[filter.Name]" />
+        </label>
+    }
+    <button type="submit">Search</button>
+    <a asp-page="/Resources/Create" asp-route-resource="@Model.Resource.Name">Create</a>
+</form>
+
+<table>
+    <thead>
+        <tr>
+        @foreach (var field in Model.Resource.Fields)
+        {
+            <th>@field.Label</th>
+        }
+        <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Results.Items)
+    {
+        <tr>
+        @foreach (var field in Model.Resource.Fields)
+        {
+            <td>@item.GetValueOrDefault(field.Name)</td>
+        }
+        <td>
+            <a asp-page="/Resources/Edit"
+               asp-route-resource="@Model.Resource.Name"
+               asp-route-key="@item.GetValueOrDefault(Model.Resource.KeyField.Name)">Edit</a>
+            <form method="post"
+                  asp-page-handler="Delete"
+                  asp-route-resource="@Model.Resource.Name"
+                  asp-route-key="@item.GetValueOrDefault(Model.Resource.KeyField.Name)">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<p>Page @Model.Results.Page of @Model.Results.TotalPages (@Model.Results.TotalCount items)</p>
