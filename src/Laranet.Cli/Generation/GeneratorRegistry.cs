@@ -20,6 +20,7 @@ internal static class GeneratorRegistry
             [GeneratorKind.DbContext] = new DatabaseGenerator(),
             [GeneratorKind.Config] = new ConfigurationGenerator(),
             [GeneratorKind.ApiResource] = new ApiResourceGenerator(),
+            [GeneratorKind.AdminResource] = new AdminResourceGenerator(string.Empty),
         };
 
     /// <summary>

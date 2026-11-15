@@ -61,6 +61,7 @@ internal static class CliApplication
             "make:handler",
             "make:dbcontext",
             "make:config",
+            "make:admin-resource",
         };
 
         if (args.Length > 0 && !args[0].StartsWith("-", StringComparison.Ordinal)

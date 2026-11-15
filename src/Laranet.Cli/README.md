@@ -234,6 +234,7 @@ other properties that require human judgment.
 | `laranet make:handler <name>` | A handler for an existing command or query |
 | `laranet make:dbcontext <name>` | A native EF Core context, configurations, and design-time factory |
 | `laranet make:config <name>` | Native options and dependency-injection registration |
+| `laranet make:admin-resource <name>` | Admin resource class with typed metadata |
 
 Names are normalized to PascalCase. For example, `product-category`,
 `product_category`, and `productCategory` all generate `ProductCategory`.

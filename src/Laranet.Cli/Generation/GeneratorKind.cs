@@ -17,4 +17,5 @@ internal enum GeneratorKind
     DbContext,
     Config,
     ApiResource,
+    AdminResource,
 }

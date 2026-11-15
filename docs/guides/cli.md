@@ -87,6 +87,7 @@ laranet make:query FindOrder --mediator mediatr
 | `make:handler <name>` | `Handlers/<Name>Handler.cs` for a command or query |
 | `make:dbcontext <name>` | EF Core context, configurations, and design-time factory |
 | `make:config <name>` | Options class and native registration extension |
+| `make:admin-resource <name>` | Admin resource class with typed metadata |
 
 ## Doctor
 

@@ -25,6 +25,7 @@ internal static class ListCommand
             "make:query",
             "make:handler",
             "make:config",
+            "make:admin-resource",
         }),
         ("Base de datos", new[]
         {
@@ -57,6 +58,7 @@ internal static class ListCommand
         ["make:query"] = "Genera una consulta, opcionalmente con handler.",
         ["make:handler"] = "Genera un handler para un comando o consulta.",
         ["make:config"] = "Genera opciones y registro de configuración.",
+        ["make:admin-resource"] = "Genera una clase AdminResource para una entidad.",
         ["make:dbcontext"] = "Genera un DbContext, configuraciones y factory.",
         ["doctor"] = "Verifica dependencias, versiones y riesgos del proyecto.",
         ["list"] = "Muestra los comandos disponibles.",
