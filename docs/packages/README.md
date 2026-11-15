@@ -11,9 +11,9 @@ application uses.
 | `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs | `dotnet add package Laranet.AspNetCore.Validation` | [README](../../src/Laranet.AspNetCore.Validation/README.md) |
 | `Laranet.Cli` | Project creation and code generation | `dotnet tool install --global Laranet.Cli` | [README](../../src/Laranet.Cli/README.md) |
 | `Laranet.Http` | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` | `dotnet add package Laranet.Http` | [README](../../src/Laranet.Http/README.md) |
-| `Laranet.Admin` | Experimental provider-neutral admin metadata and adapter contracts | Not published; prototype only | [README](../../src/Laranet.Admin/README.md) |
-| `Laranet.Admin.AspNetCore` | Experimental Razor Pages admin integration | Not published; prototype only | [README](../../src/Laranet.Admin.AspNetCore/README.md) |
-| `Laranet.Admin.EntityFrameworkCore` | Experimental EF Core admin data adapter | Not published; prototype only | [README](../../src/Laranet.Admin.EntityFrameworkCore/README.md) |
+| `Laranet.Admin` | Provider-neutral admin metadata and adapter contracts | `dotnet add package Laranet.Admin` | [README](../../src/Laranet.Admin/README.md) |
+| `Laranet.Admin.AspNetCore` | Razor Pages admin integration | `dotnet add package Laranet.Admin.AspNetCore` | [README](../../src/Laranet.Admin.AspNetCore/README.md) |
+| `Laranet.Admin.EntityFrameworkCore` | EF Core admin data adapter | `dotnet add package Laranet.Admin.EntityFrameworkCore` | [README](../../src/Laranet.Admin.EntityFrameworkCore/README.md) |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` | [README](../../src/Laranet/README.md) |
 
 The seven production packages are prepared for the `0.4.1` release line. The experimental Admin packages remain outside the release train.

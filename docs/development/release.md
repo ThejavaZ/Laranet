@@ -15,6 +15,9 @@ Packages in a release:
 - `Laranet.EntityFrameworkCore`
 - `Laranet.AspNetCore`
 - `Laranet.AspNetCore.Validation`
+- `Laranet.Admin`
+- `Laranet.Admin.AspNetCore`
+- `Laranet.Admin.EntityFrameworkCore`
 - `Laranet.Http`
 - `Laranet.Cli`
 
@@ -102,8 +105,8 @@ The workflow:
 1. Resolves the version from the tag (`v0.4.1` becomes `0.4.1`).
 2. Verifies that every production project declares the same version.
 3. Restores, builds, and runs the full test suite.
-4. Packs the seven packages.
-5. Verifies that exactly seven `.nupkg` files were produced with the expected
+4. Packs the ten packages.
+5. Verifies that exactly ten `.nupkg` files were produced with the expected
    version and valid metadata.
 6. Requests a short-lived NuGet API key through GitHub OIDC.
 7. Pushes the packages to NuGet.org with `--skip-duplicate`.
@@ -150,7 +153,7 @@ dotnet nuget push artifacts/packages/Laranet.0.4.1.nupkg \
   --api-key "$NUGET_API_KEY" \
   --source https://api.nuget.org/v3/index.json
 
-# Repeat for the other six packages.
+# Repeat for the other nine packages.
 ```
 
 `--skip-duplicate` makes retries safe when a package version already exists.

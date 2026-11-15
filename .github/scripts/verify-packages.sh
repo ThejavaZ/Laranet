@@ -24,8 +24,8 @@ mapfile -t packages < <(
     | sort
 )
 
-if [ "${#packages[@]}" -ne 7 ]; then
-  echo "::error::Expected exactly seven production packages, found ${#packages[@]}."
+if [ "${#packages[@]}" -ne 10 ]; then
+  echo "::error::Expected exactly ten production packages, found ${#packages[@]}."
   exit 1
 fi
 
@@ -36,6 +36,9 @@ aspnet_package="$(find "$package_dir" -maxdepth 1 -name 'Laranet.AspNetCore.[0-9
 validation_package="$(find "$package_dir" -maxdepth 1 -name 'Laranet.AspNetCore.Validation.[0-9]*.nupkg')"
 cli_package="$(find "$package_dir" -maxdepth 1 -name 'Laranet.Cli.[0-9]*.nupkg')"
 http_package="$(find "$package_dir" -maxdepth 1 -name 'Laranet.Http.[0-9]*.nupkg')"
+admin_package="$(find "$package_dir" -maxdepth 1 -name 'Laranet.Admin.[0-9]*.nupkg')"
+admin_aspnet_package="$(find "$package_dir" -maxdepth 1 -name 'Laranet.Admin.AspNetCore.[0-9]*.nupkg')"
+admin_ef_package="$(find "$package_dir" -maxdepth 1 -name 'Laranet.Admin.EntityFrameworkCore.[0-9]*.nupkg')"
 
 core_nuspec="$(unzip -p "$core_package" '*.nuspec')"
 data_nuspec="$(unzip -p "$data_package" '*.nuspec')"
@@ -44,6 +47,9 @@ aspnet_nuspec="$(unzip -p "$aspnet_package" '*.nuspec')"
 validation_nuspec="$(unzip -p "$validation_package" '*.nuspec')"
 cli_nuspec="$(unzip -p "$cli_package" '*.nuspec')"
 http_nuspec="$(unzip -p "$http_package" '*.nuspec')"
+admin_nuspec="$(unzip -p "$admin_package" '*.nuspec')"
+admin_aspnet_nuspec="$(unzip -p "$admin_aspnet_package" '*.nuspec')"
+admin_ef_nuspec="$(unzip -p "$admin_ef_package" '*.nuspec')"
 
 for package in "$core_package" "$data_package"; do
   nuspec="$(unzip -p "$package" '*.nuspec')"
@@ -89,6 +95,34 @@ if grep -Eq '<dependency id="Laranet' <<< "$validation_nuspec"; then
   exit 1
 fi
 
+# Admin package must not depend on EF Core or ASP.NET Core
+if grep -Eq 'Microsoft\.EntityFrameworkCore|Microsoft\.AspNetCore' <<< "$admin_nuspec"; then
+  echo "::error::Forbidden dependency found in $admin_package."
+  exit 1
+fi
+
+# Admin.AspNetCore must reference ASP.NET Core and depend on Laranet.Admin
+if ! grep -q '<frameworkReference name="Microsoft.AspNetCore.App" />' <<< "$admin_aspnet_nuspec"; then
+  echo "::error::$admin_aspnet_package must reference the Microsoft.AspNetCore.App framework."
+  exit 1
+fi
+
+if ! grep -q '<dependency id="Laranet.Admin" version=' <<< "$admin_aspnet_nuspec"; then
+  echo "::error::$admin_aspnet_package must depend on Laranet.Admin."
+  exit 1
+fi
+
+# Admin.EntityFrameworkCore must depend on Laranet.Admin and EF Core
+if ! grep -q '<dependency id="Laranet.Admin" version=' <<< "$admin_ef_nuspec"; then
+  echo "::error::$admin_ef_package must depend on Laranet.Admin."
+  exit 1
+fi
+
+if ! grep -q '<dependency id="Microsoft.EntityFrameworkCore" version=' <<< "$admin_ef_nuspec"; then
+  echo "::error::$admin_ef_package must depend on Microsoft.EntityFrameworkCore."
+  exit 1
+fi
+
 
 if grep -Eq 'Microsoft\.EntityFrameworkCore|Microsoft\.AspNetCore' <<< "$cli_nuspec"; then
   echo "::error::Forbidden dependency found in $cli_package."
@@ -130,6 +164,7 @@ if ! grep -q '<Command Name="laranet"' <<< "$cli_tool_settings"; then
 fi
 
 core_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$core_nuspec" | head -n 1)"
+admin_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$admin_nuspec" | head -n 1)"
 data_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$data_nuspec" | head -n 1)"
 ef_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$ef_nuspec" | head -n 1)"
 aspnet_version="$(grep -oP '(?<=<version>)[^<]+' <<< "$aspnet_nuspec" | head -n 1)"
@@ -161,12 +196,13 @@ if [ "$core_version" != "$data_version" ] \
   || [ "$core_version" != "$aspnet_version" ] \
   || [ "$core_version" != "$validation_version" ] \
   || [ "$core_version" != "$cli_version" ] \
-  || [ "$core_version" != "$http_version" ]; then
+  || [ "$core_version" != "$http_version" ] \
+  || [ "$core_version" != "$admin_version" ]; then
   echo "::error::Package versions are not synchronized: Laranet=$core_version, Laranet.Data=$data_version, Laranet.EntityFrameworkCore=$ef_version, Laranet.AspNetCore=$aspnet_version, Laranet.AspNetCore.Validation=$validation_version, Laranet.Cli=$cli_version, Laranet.Http=$http_version."
   exit 1
 fi
 
-for nuspec in "$core_nuspec" "$data_nuspec" "$ef_nuspec" "$aspnet_nuspec" "$validation_nuspec" "$cli_nuspec" "$http_nuspec"; do
+for nuspec in "$core_nuspec" "$data_nuspec" "$ef_nuspec" "$aspnet_nuspec" "$validation_nuspec" "$cli_nuspec" "$http_nuspec" "$admin_nuspec" "$admin_aspnet_nuspec" "$admin_ef_nuspec"; do
   grep -q '<readme>README.md</readme>' <<< "$nuspec"
   grep -q '<license type="expression">MIT</license>' <<< "$nuspec"
   grep -q '<authors>TheJavaZ</authors>' <<< "$nuspec"
@@ -176,7 +212,7 @@ for nuspec in "$core_nuspec" "$data_nuspec" "$ef_nuspec" "$aspnet_nuspec" "$vali
   grep -q '<icon>laranet_icon_out_wallpaper.png</icon>' <<< "$nuspec"
 done
 
-for package in "$core_package" "$data_package" "$ef_package" "$aspnet_package" "$validation_package" "$cli_package" "$http_package"; do
+for package in "$core_package" "$data_package" "$ef_package" "$aspnet_package" "$validation_package" "$cli_package" "$http_package" "$admin_package" "$admin_aspnet_package" "$admin_ef_package"; do
   if ! unzip -Z1 "$package" | grep 'laranet_icon_out_wallpaper.png' >/dev/null; then
     echo "::error::$package does not contain the Laranet package icon."
     exit 1

@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <PackageId>Laranet.Admin.EntityFrameworkCore</PackageId>
-    <Version>0.4.0</Version>
+    <Version>0.4.1</Version>
     <Description>Experimental EF Core adapter for Laranet administrative resources.</Description>
     <Authors>TheJavaZ</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

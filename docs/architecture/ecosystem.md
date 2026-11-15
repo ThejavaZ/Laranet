@@ -63,9 +63,9 @@ Status legend:
 | `Laranet.Http` | Optional convenience layer over `HttpClient` | Published (V3; Sprints 18.1–18.2) | BCL, `Microsoft.Extensions.Http` |
 | `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs | Implemented for `0.4.0` (V3; Sprint 18.3) | `FluentValidation`, ASP.NET Core |
 | `Laranet.Analyzers` | Optional Roslyn diagnostics | Candidate | Roslyn |
-| `Laranet.Admin` | Provider-neutral admin resource and adapter contracts | Prototype; ADR accepted (V4; Sprints 20–22) | — |
-| `Laranet.Admin.AspNetCore` | Optional Razor-based admin UI | Candidate after real-app review (V4) | `Laranet.Admin`, ASP.NET Core |
-| `Laranet.Admin.EntityFrameworkCore` | Optional EF Core data adapter | Prototype after real-app review (V4) | `Laranet.Admin`, EF Core |
+| `Laranet.Admin` | Provider-neutral admin resource and adapter contracts | Published (V4; Sprint 25) | — |
+| `Laranet.Admin.AspNetCore` | Optional Razor-based admin UI | Published (V4; Sprint 25) | `Laranet.Admin`, ASP.NET Core |
+| `Laranet.Admin.EntityFrameworkCore` | Optional EF Core data adapter | Published (V4; Sprint 25) | `Laranet.Admin`, EF Core |
 | `Laranet.Data.Dapper` | Dapper adapter | Candidate | `Laranet.Data`, Dapper |
 | `Laranet.Data.AdoNet` | ADO.NET adapter | Candidate | `Laranet.Data` |
 | `Laranet.Testing` | Test fixtures and helpers | Candidate | Test frameworks |
