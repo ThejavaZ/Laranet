@@ -57,6 +57,7 @@ public sealed class AdminResourceRegistry : IAdminResourceRegistry
                 nameof(resource));
         }
 
+        resource.Validate();
         resources.Add(resource);
     }
 

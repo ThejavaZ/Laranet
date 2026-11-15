@@ -69,6 +69,50 @@ public sealed record AdminResource(
     public AdminField KeyField => Fields.First(item => item.IsKey);
 
     /// <summary>
+    /// Validates the metadata before it is registered.
+    /// </summary>
+    /// <exception cref="ArgumentException">
+    /// The resource is invalid.
+    /// </exception>
+    public void Validate()
+    {
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            throw new ArgumentException("Resource name is required.", nameof(Name));
+        }
+
+        if (Fields.Count == 0)
+        {
+            throw new ArgumentException(
+                $"Resource '{Name}' must define at least one field.",
+                nameof(Fields));
+        }
+
+        if (Fields.Count(field => field.IsKey) != 1)
+        {
+            throw new ArgumentException(
+                $"Resource '{Name}' must define exactly one key field.",
+                nameof(Fields));
+        }
+
+        if (Filters.Any(filter =>
+                !Fields.Any(field => field.Name == filter.Name)))
+        {
+            throw new ArgumentException(
+                $"Resource '{Name}' defines a filter for an unknown field.",
+                nameof(Filters));
+        }
+
+        if ((Relations ?? []).Any(relation =>
+                !Fields.Any(field => field.Name == relation.Name)))
+        {
+            throw new ArgumentException(
+                $"Resource '{Name}' defines a relation for an unknown field.",
+                nameof(Relations));
+        }
+    }
+
+    /// <summary>
     /// Gets the fields enabled for text search.
     /// </summary>
     public IReadOnlyList<AdminField> SearchFields => Fields
