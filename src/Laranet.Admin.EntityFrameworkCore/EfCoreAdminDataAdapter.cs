@@ -407,14 +407,161 @@ public sealed class EfCoreAdminDataAdapter : IAdminDataAdapter, IAdminEnhancemen
             return value;
         }
 
-        if (type == typeof(Guid) && value is string stringValue)
+        var stringValue = value.ToString();
+
+        if (string.IsNullOrWhiteSpace(stringValue))
         {
-            return Guid.Parse(stringValue);
+            if (nullable is not null)
+            {
+                return null;
+            }
+
+            throw new FormatException(
+                $"A value is required for type '{type.Name}'.");
+        }
+
+        if (type == typeof(Guid))
+        {
+            if (!Guid.TryParse(stringValue, out var guid))
+            {
+                throw new FormatException(
+                    $"'{stringValue}' is not a valid GUID.");
+            }
+
+            return guid;
+        }
+
+        if (type == typeof(int))
+        {
+            if (!int.TryParse(stringValue, out var intValue))
+            {
+                throw new FormatException(
+                    $"'{stringValue}' is not a valid integer.");
+            }
+
+            return intValue;
+        }
+
+        if (type == typeof(long))
+        {
+            if (!long.TryParse(stringValue, out var longValue))
+            {
+                throw new FormatException(
+                    $"'{stringValue}' is not a valid integer.");
+            }
+
+            return longValue;
+        }
+
+        if (type == typeof(decimal))
+        {
+            if (!decimal.TryParse(
+                    stringValue,
+                    System.Globalization.NumberStyles.Number,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out var decimalValue))
+            {
+                throw new FormatException(
+                    $"'{stringValue}' is not a valid decimal number.");
+            }
+
+            return decimalValue;
+        }
+
+        if (type == typeof(double))
+        {
+            if (!double.TryParse(
+                    stringValue,
+                    System.Globalization.NumberStyles.Number,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out var doubleValue))
+            {
+                throw new FormatException(
+                    $"'{stringValue}' is not a valid number.");
+            }
+
+            return doubleValue;
+        }
+
+        if (type == typeof(float))
+        {
+            if (!float.TryParse(
+                    stringValue,
+                    System.Globalization.NumberStyles.Number,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out var floatValue))
+            {
+                throw new FormatException(
+                    $"'{stringValue}' is not a valid number.");
+            }
+
+            return floatValue;
+        }
+
+        if (type == typeof(DateTime))
+        {
+            if (!DateTime.TryParse(stringValue, out var dateTimeValue))
+            {
+                throw new FormatException(
+                    $"'{stringValue}' is not a valid date.");
+            }
+
+            return dateTimeValue;
+        }
+
+        if (type == typeof(DateTimeOffset))
+        {
+            if (!DateTimeOffset.TryParse(stringValue, out var dateTimeOffsetValue))
+            {
+                throw new FormatException(
+                    $"'{stringValue}' is not a valid date.");
+            }
+
+            return dateTimeOffsetValue;
+        }
+
+        if (type == typeof(DateOnly))
+        {
+            if (!DateOnly.TryParse(stringValue, out var dateOnlyValue))
+            {
+                throw new FormatException(
+                    $"'{stringValue}' is not a valid date.");
+            }
+
+            return dateOnlyValue;
+        }
+
+        if (type == typeof(TimeOnly))
+        {
+            if (!TimeOnly.TryParse(stringValue, out var timeOnlyValue))
+            {
+                throw new FormatException(
+                    $"'{stringValue}' is not a valid time.");
+            }
+
+            return timeOnlyValue;
+        }
+
+        if (type == typeof(bool))
+        {
+            if (bool.TryParse(stringValue, out var boolValue))
+            {
+                return boolValue;
+            }
+
+            // Handle "on" from checkbox
+            if (string.Equals(stringValue, "on", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            throw new FormatException(
+                $"'{stringValue}' is not a valid boolean.");
         }
 
         if (type.IsEnum)
         {
-            return Enum.Parse(type, value.ToString()!, ignoreCase: true);
+            return Enum.Parse(type, stringValue, ignoreCase: true);
         }
 
         return Convert.ChangeType(value, type);
