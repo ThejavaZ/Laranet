@@ -38,6 +38,9 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 - Experimental `Laranet.Admin` provider-neutral contracts and a Razor Pages prototype
   for Products using SQLite, EF Core, and ASP.NET Core Identity. The prototype is not
   a stable admin UI package and remains gated on real-application validation.
+- Sprint 21 readiness review froze the published `0.2.1` surface, confirmed the .NET 10
+  and EF Core 10 compatibility baseline, audited package boundaries and metadata, and
+  selected another `0.x` release line before `1.0.0`.
 
 ## [0.2.1] - 2026-11-14
 

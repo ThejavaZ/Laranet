@@ -96,6 +96,8 @@ For example:
 | Laranet.Cli                 | 0.2.1   |
 
 Packages that are not part of a particular release do not need to be published.
+`Laranet.AspNetCore.Validation` is implemented for the planned `0.3.0` line, and
+the experimental `Laranet.Admin` prototype is not part of a release train.
 
 Independent package versioning may be considered in the future if it provides a meaningful benefit and can be managed without creating unnecessary compatibility complexity. The exception process, including the triggers that justify independent runtime and tooling lanes, is defined in [ADR-0008](../architecture/decisions/0008-runtime-and-tooling-versioning.md).
 

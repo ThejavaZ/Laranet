@@ -57,7 +57,7 @@ Laranet is a **toolkit, not an opinionated application framework**.
 | `Laranet.Http`                | Optional convenience layer over `HttpClient` with safe retries | Published `0.2.1` |
 | `Laranet.AspNetCore.Validation` | Optional FluentValidation endpoint filter for Minimal APIs | Implemented for `0.3.0` |
 | `Laranet.Analyzers`           | Optional Roslyn diagnostics                      | Planned for Version 5     |
-| `Laranet.Admin`               | Admin resource abstractions                      | Candidate for Version 4   |
+| `Laranet.Admin`               | Experimental provider-neutral admin contracts   | Prototype; V4 candidate |
 | `Laranet.Admin.AspNetCore`    | Razor-based admin UI                             | Candidate for Version 4   |
 | `Laranet.Modules`             | Modular monolith composition                     | Version 6 candidate; not scheduled |
 | `Laranet.Application`         | Application-level utilities, only if justified   | Not scheduled             |
@@ -122,9 +122,9 @@ Before marking it complete, verify:
 **Current focus:** Version 3, [Sprint 20 — Admin foundations](v3.md).
 Sprint 17 — EF Core conventions, Sprint 18.1 — `Laranet.Http` foundation,
 Sprint 18.2 — `Laranet.Http` resilience and release, and Sprint 18.3 — Validation are
-completed. Sprint 18.4 — CQRS generators is completed. Sprint 18.5 plans generators
-Sprint 18.5 — Database and configuration generators and Sprint 19 — `laranet doctor`
-are completed. Version 2 remains open pending real
+completed. Sprint 18.4 — CQRS generators, Sprint 18.5 — Database and configuration
+generators, Sprint 19 — `laranet doctor`, and Sprint 21 — 1.0 readiness are completed.
+Sprint 20 remains in progress pending real-application validation. Version 2 remains open pending real
 external feedback.
 
 Six production packages are implemented and published on NuGet.org as `0.2.1`. The

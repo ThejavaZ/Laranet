@@ -55,6 +55,10 @@ CI validates the generated `.nuspec` files for every release package:
   ASP.NET Core.
 - `Laranet.Cli` is a `DotnetTool` package with the `laranet` command.
 
+`Laranet.Admin` is an experimental prototype and is intentionally excluded from the
+release train, CI package count, and NuGet publication until its real-application
+validation and API review are complete.
+
 ## Preparing a release
 
 1. Confirm the scope in the [roadmap](../roadmap/README.md).

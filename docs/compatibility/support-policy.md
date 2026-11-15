@@ -44,6 +44,7 @@ For example:
 
 - Laranet.EntityFrameworkCore must document compatible Entity Framework Core versions.
 - Laranet.AspNetCore must document compatible ASP.NET Core and .NET versions.
+- The current release train supports .NET 10, ASP.NET Core 10, and EF Core 10.
 
 Integrations should use compatible dependency versions and avoid introducing unnecessary framework dependencies.
 
