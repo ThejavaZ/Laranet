@@ -576,6 +576,210 @@ public class CliGenerationTests
     }
 
     [Fact]
+    public void MakeDbContext_ShouldGenerateContextConfigurationsAndFactory()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:dbcontext",
+            "catalog",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App",
+            "--provider",
+            "sqlite",
+            "--entities",
+            "product,order");
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.True(
+            File.Exists(directory.GetPath("DbContexts", "CatalogContext.cs")));
+        Assert.True(
+            File.Exists(directory.GetPath("Configurations", "ProductConfiguration.cs")));
+        Assert.True(
+            File.Exists(directory.GetPath("Configurations", "OrderConfiguration.cs")));
+        Assert.True(
+            File.Exists(directory.GetPath("Factories", "CatalogContextFactory.cs")));
+
+        var context = File.ReadAllText(
+            directory.GetPath("DbContexts", "CatalogContext.cs"));
+        var factory = File.ReadAllText(
+            directory.GetPath("Factories", "CatalogContextFactory.cs"));
+
+        Assert.Contains("DbSet<Product> Products", context);
+        Assert.Contains("ApplyConfigurationsFromAssembly", context);
+        Assert.Contains("IDesignTimeDbContextFactory<CatalogContext>", factory);
+        Assert.Contains("UseSqlite", factory);
+    }
+
+    [Theory]
+    [InlineData("sqlserver", "UseSqlServer")]
+    [InlineData("postgres", "UseNpgsql")]
+    [InlineData("mysql", "UseMySql")]
+    [InlineData("sqlite", "UseSqlite")]
+    public void MakeDbContext_ShouldEmitSelectedProvider(
+        string provider,
+        string expectedMethod)
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:dbcontext",
+            "catalog",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App",
+            "--provider",
+            provider);
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains(
+            expectedMethod,
+            File.ReadAllText(directory.GetPath("Factories", "CatalogContextFactory.cs")));
+    }
+
+    [Fact]
+    public void MakeDbContext_ShouldRejectUnknownProvider()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:dbcontext",
+            "catalog",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App",
+            "--provider",
+            "oracle");
+
+        Assert.Equal(1, result.ExitCode);
+        Assert.Contains("provider must be one of", result.Error);
+    }
+
+    [Fact]
+    public void MakeConfig_ShouldGenerateOptionsAndNativeRegistration()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:config",
+            "database",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App");
+
+        Assert.Equal(0, result.ExitCode);
+
+        var options = File.ReadAllText(
+            directory.GetPath("Configuration", "DatabaseOptions.cs"));
+        var registration = File.ReadAllText(
+            directory.GetPath(
+                "Configuration",
+                "DatabaseServiceCollectionExtensions.cs"));
+
+        Assert.Contains("public const string SectionName = \"Database\";", options);
+        Assert.Contains("init;", options);
+        Assert.Contains("AddOptions<DatabaseOptions>()", registration);
+        Assert.Contains("Bind(configuration.GetSection(DatabaseOptions.SectionName))", registration);
+        Assert.Contains("ValidateDataAnnotations()", registration);
+        Assert.Contains("ValidateOnStart()", registration);
+    }
+
+    [Fact]
+    public void MakeConfig_ShouldBindRepeatedSections()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:config",
+            "database",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App",
+            "--section",
+            "Database",
+            "--section",
+            "Database:ReadOnly");
+
+        Assert.Equal(0, result.ExitCode);
+
+        var options = File.ReadAllText(
+            directory.GetPath("Configuration", "DatabaseOptions.cs"));
+        var registration = File.ReadAllText(
+            directory.GetPath(
+                "Configuration",
+                "DatabaseServiceCollectionExtensions.cs"));
+
+        Assert.Contains(
+            "DatabaseReadOnlySectionName = \"Database:ReadOnly\"",
+            options);
+        Assert.Contains(
+            "AddOptions<DatabaseOptions>(\"Database:ReadOnly\")",
+            registration);
+        Assert.Contains(
+            "configuration.GetSection(DatabaseOptions.DatabaseReadOnlySectionName)",
+            registration);
+    }
+
+    [Fact]
+    public void MakeDbContext_ShouldSupportFlatAndDryRun()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:dbcontext",
+            "catalog",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App",
+            "--flat",
+            "--dry-run");
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("would create CatalogContext.cs", result.Output);
+        Assert.False(File.Exists(directory.GetPath("CatalogContext.cs")));
+        Assert.False(Directory.Exists(directory.GetPath("DbContexts")));
+    }
+
+    [Fact]
+    public void MakeConfig_ShouldRefuseConflictsAndSupportForce()
+    {
+        using var directory = new TemporaryDirectory();
+        var path = directory.GetPath("Configuration", "DatabaseOptions.cs");
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, "custom content");
+
+        var conflict = Run(
+            "make:config",
+            "database",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App");
+
+        Assert.Equal(1, conflict.ExitCode);
+        Assert.Equal("custom content", File.ReadAllText(path));
+
+        var forced = Run(
+            "make:config",
+            "database",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App",
+            "--force");
+
+        Assert.Equal(0, forced.ExitCode);
+        Assert.Contains("SectionName", File.ReadAllText(path));
+    }
+
+    [Fact]
     public void MakeResource_ShouldNotGenerateOptionalFiles()
     {
         using var directory = new TemporaryDirectory();

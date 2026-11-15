@@ -183,6 +183,8 @@ together.
 | `laranet make:command <name>` | A command record, optionally with a handler |
 | `laranet make:query <name>` | A query record, optionally with a handler |
 | `laranet make:handler <name>` | A handler for an existing command or query |
+| `laranet make:dbcontext <name>` | A native EF Core context, configurations, and design-time factory |
+| `laranet make:config <name>` | Native options and dependency-injection registration |
 
 Names are normalized to PascalCase. For example, `product-category`,
 `product_category`, and `productCategory` all generate `ProductCategory`.
@@ -308,6 +310,60 @@ CQRS generators support `--output`, `--namespace`, `--profile`, `--mediator`,
 `--with-tests`, `--force`, `--dry-run`, `--flat`, and `--interactive`.
 `make:handler` infers whether the request is a command or query from the `Command`
 or `Query` suffix.
+
+## Generate a DbContext
+
+`make:dbcontext` generates native EF Core code. It does not introduce a
+`LaranetDbContext` base class or a persistence abstraction:
+
+```bash
+laranet make:dbcontext Catalog \
+  --provider sqlite \
+  --entities "Product,Order"
+```
+
+The generated files are:
+
+```text
+DbContexts/CatalogContext.cs
+Configurations/ProductConfiguration.cs
+Configurations/OrderConfiguration.cs
+Factories/CatalogContextFactory.cs
+```
+
+The context has `DbSet<T>` properties and calls
+`ApplyConfigurationsFromAssembly`. The factory implements
+`IDesignTimeDbContextFactory<T>` and uses the selected provider:
+`sqlserver`, `postgres`, `mysql`, or `sqlite` (default: `sqlserver`). Add the
+corresponding EF Core provider package to the generated application; the CLI
+does not install it.
+
+Options:
+
+| Option | Description |
+| --- | --- |
+| `--provider` | `sqlserver` (default), `postgres`, `mysql`, or `sqlite`. |
+| `--entities` | Comma-separated entity type names used for `DbSet<T>` and configurations. |
+| `--output`, `--namespace`, `--force`, `--dry-run`, `--flat`, `--interactive` | Common generation options. |
+
+## Generate configuration
+
+`make:config` generates a native options class and an extension method using
+`Microsoft.Extensions.Options`:
+
+```bash
+laranet make:config Database --section Database --section Database:ReadOnly
+```
+
+This creates `Configuration/DatabaseOptions.cs` and
+`Configuration/DatabaseServiceCollectionExtensions.cs`. The generated options
+class has a `SectionName` constant and `init` properties. The registration uses
+`AddOptions<T>().Bind(...).ValidateDataAnnotations().ValidateOnStart()`. The
+first section is the default options registration; additional sections are
+registered as named options.
+
+The generated configuration code is ordinary application code. It does not add
+`LaranetOptions<T>` or a custom configuration system.
 
 ## Generate CRUD
 

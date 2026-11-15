@@ -14,4 +14,6 @@ internal enum GeneratorKind
     Command,
     Query,
     Handler,
+    DbContext,
+    Config,
 }

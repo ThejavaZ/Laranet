@@ -15,6 +15,8 @@ internal sealed class TemplateCatalog
         [GeneratorKind.Command] = "command.tpl",
         [GeneratorKind.Query] = "query.tpl",
         [GeneratorKind.Handler] = "handler.tpl",
+        [GeneratorKind.DbContext] = "dbcontext.tpl",
+        [GeneratorKind.Config] = "config.tpl",
     };
 
     private readonly string? directory;

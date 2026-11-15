@@ -17,6 +17,8 @@ internal static class GeneratorRegistry
             [GeneratorKind.Command] = new CqrsGenerator(GeneratorKind.Command),
             [GeneratorKind.Query] = new CqrsGenerator(GeneratorKind.Query),
             [GeneratorKind.Handler] = new CqrsGenerator(GeneratorKind.Handler),
+            [GeneratorKind.DbContext] = new DatabaseGenerator(),
+            [GeneratorKind.Config] = new ConfigurationGenerator(),
         };
 
     /// <summary>

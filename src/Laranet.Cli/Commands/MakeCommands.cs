@@ -67,6 +67,11 @@ internal static class MakeCommands
         {
             yield return command;
         }
+
+        foreach (var command in DatabaseCommands.Create(output, error, input))
+        {
+            yield return command;
+        }
     }
 
     private static Command Create(
