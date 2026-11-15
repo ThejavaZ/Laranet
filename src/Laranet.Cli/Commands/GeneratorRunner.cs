@@ -14,7 +14,8 @@ internal static class GeneratorRunner
         GeneratorArguments arguments,
         TextReader input,
         TextWriter output,
-        TextWriter error)
+        TextWriter error,
+        Func<ParseResult, GenerationSettings?>? settingsFactory = null)
     {
         try
         {
@@ -37,7 +38,8 @@ internal static class GeneratorRunner
                 baseNamespace,
                 outputDirectory,
                 parseResult.GetValue(arguments.Flat),
-                TemplateCatalog.Discover(outputDirectory));
+                TemplateCatalog.Discover(outputDirectory),
+                settingsFactory?.Invoke(parseResult));
 
             var plan = GeneratorRegistry.Create(kind, context);
 
@@ -101,7 +103,7 @@ internal static class GeneratorRunner
 /// <summary>
 /// Holds the command-line symbols used by a generator command.
 /// </summary>
-internal sealed record GeneratorArguments(
+internal record GeneratorArguments(
     Argument<string?> Name,
     Option<string> Output,
     Option<string?> Namespace,

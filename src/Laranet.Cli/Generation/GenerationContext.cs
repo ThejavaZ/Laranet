@@ -8,9 +8,11 @@ namespace Laranet.Cli.Generation;
 /// <param name="OutputDirectory">The absolute output directory.</param>
 /// <param name="Flat">Whether files go directly into the output directory.</param>
 /// <param name="Templates">The templates that may override the built-in content.</param>
+/// <param name="Settings">Optional settings for specialized generators.</param>
 internal sealed record GenerationContext(
     string Name,
     string BaseNamespace,
     string OutputDirectory,
     bool Flat,
-    TemplateCatalog Templates);
+    TemplateCatalog Templates,
+    GenerationSettings? Settings = null);

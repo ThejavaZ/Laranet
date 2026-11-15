@@ -11,4 +11,7 @@ internal enum GeneratorKind
     Middleware,
     Resource,
     Repository,
+    Command,
+    Query,
+    Handler,
 }

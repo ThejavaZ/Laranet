@@ -180,6 +180,9 @@ together.
 | `laranet make:resource <name>` | A model, a service, and a controller together |
 | `laranet make:crud <entity>` | An entity, DTOs, and CRUD endpoints |
 | `laranet make:repository <name>` | An optional repository scaffold in `Repositories/` |
+| `laranet make:command <name>` | A command record, optionally with a handler |
+| `laranet make:query <name>` | A query record, optionally with a handler |
+| `laranet make:handler <name>` | A handler for an existing command or query |
 
 Names are normalized to PascalCase. For example, `product-category`,
 `product_category`, and `productCategory` all generate `ProductCategory`.
@@ -261,6 +264,50 @@ laranet make:repository Product
 This creates an empty `Repositories/ProductRepository.cs` scaffold. Complete it
 only when the abstraction solves a real problem in your application. It is never
 included in `make:resource`.
+
+## Generate CQRS code
+
+The CQRS commands generate ordinary, editable C# files. They are code generators,
+not a CQRS runtime, and they do not add `Laranet.CQRS`, `ICommand<T>`, `IQuery<T>`,
+or handler contracts to any Laranet package.
+
+```bash
+laranet make:command CreateOrder
+laranet make:query FindOrder
+laranet make:handler CreateOrderCommand
+```
+
+Names receive the appropriate suffix when it is missing. The default `none`
+mediator emits a plain record and a simple handler with no external dependency.
+Optional contracts can be generated for applications that already reference the
+corresponding library:
+
+```bash
+laranet make:command CreateOrder --mediator mediatr --with-handler
+laranet make:query FindOrder --mediator wolverine --with-handler
+```
+
+`mediatr` emits `IRequest<T>` and `IRequestHandler<,>` contracts. `wolverine`
+emits Wolverine's `ICommand` and `IQuery<T>` contracts. The CLI does not install
+or reference either mediator package; add the package to the generated application
+when using those options.
+
+### CQRS profiles and files
+
+| Profile | Request files | Handler files |
+| --- | --- | --- |
+| `simple` (default) | `Commands/` or `Queries/` | `Handlers/` |
+| `standard` | `Application/Commands/` or `Application/Queries/` | `Application/Handlers/` |
+| `clean` | `Application/Features/Commands/` or `Queries/` | `Application/Features/Handlers/` |
+
+Use `--with-handler` with `make:command` or `make:query` to generate both files.
+Use `--with-tests` to generate an xUnit scaffold for the request. The test scaffold
+expects the target project to reference xUnit; it is opt-in.
+
+CQRS generators support `--output`, `--namespace`, `--profile`, `--mediator`,
+`--with-tests`, `--force`, `--dry-run`, `--flat`, and `--interactive`.
+`make:handler` infers whether the request is a command or query from the `Command`
+or `Query` suffix.
 
 ## Generate CRUD
 

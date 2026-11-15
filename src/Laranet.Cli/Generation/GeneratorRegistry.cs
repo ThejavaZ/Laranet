@@ -14,6 +14,9 @@ internal static class GeneratorRegistry
             [GeneratorKind.Middleware] = new MiddlewareGenerator(),
             [GeneratorKind.Repository] = new RepositoryGenerator(),
             [GeneratorKind.Resource] = new ResourceGenerator(),
+            [GeneratorKind.Command] = new CqrsGenerator(GeneratorKind.Command),
+            [GeneratorKind.Query] = new CqrsGenerator(GeneratorKind.Query),
+            [GeneratorKind.Handler] = new CqrsGenerator(GeneratorKind.Handler),
         };
 
     /// <summary>

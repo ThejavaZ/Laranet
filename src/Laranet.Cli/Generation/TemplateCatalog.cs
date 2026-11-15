@@ -12,6 +12,9 @@ internal sealed class TemplateCatalog
         [GeneratorKind.Controller] = "controller.tpl",
         [GeneratorKind.Middleware] = "middleware.tpl",
         [GeneratorKind.Repository] = "repository.tpl",
+        [GeneratorKind.Command] = "command.tpl",
+        [GeneratorKind.Query] = "query.tpl",
+        [GeneratorKind.Handler] = "handler.tpl",
     };
 
     private readonly string? directory;

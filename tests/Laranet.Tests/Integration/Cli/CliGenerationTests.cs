@@ -391,6 +391,191 @@ public class CliGenerationTests
     }
 
     [Fact]
+    public void MakeCommand_ShouldGeneratePlainRecordAndOptionalHandler()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:command",
+            "create-order",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App",
+            "--with-handler");
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains(
+            "public sealed record CreateOrderCommand;",
+            File.ReadAllText(directory.GetPath("Commands", "CreateOrderCommand.cs")));
+        Assert.Contains(
+            "public sealed class CreateOrderCommandHandler",
+            File.ReadAllText(directory.GetPath("Handlers", "CreateOrderCommandHandler.cs")));
+        Assert.DoesNotContain("MediatR", result.Output);
+    }
+
+    [Fact]
+    public void MakeQuery_ShouldGenerateMediatRContracts()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:query",
+            "find-order",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App",
+            "--mediator",
+            "mediatr",
+            "--with-handler");
+
+        Assert.Equal(0, result.ExitCode);
+
+        var query = File.ReadAllText(directory.GetPath("Queries", "FindOrderQuery.cs"));
+        var handler = File.ReadAllText(
+            directory.GetPath("Handlers", "FindOrderQueryHandler.cs"));
+
+        Assert.Contains("using MediatR;", query);
+        Assert.Contains("IRequest<object?>", query);
+        Assert.Contains("IRequestHandler<FindOrderQuery, object?>", handler);
+    }
+
+    [Fact]
+    public void MakeQuery_ShouldGenerateWolverineContracts()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:query",
+            "find-order",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App",
+            "--mediator",
+            "wolverine");
+
+        Assert.Equal(0, result.ExitCode);
+
+        var query = File.ReadAllText(directory.GetPath("Queries", "FindOrderQuery.cs"));
+
+        Assert.Contains("using Wolverine;", query);
+        Assert.Contains("IQuery<object?>", query);
+    }
+
+    [Fact]
+    public void MakeCommand_ShouldUseStandardProfileAndGenerateTests()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:command",
+            "create-order",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App",
+            "--profile",
+            "standard",
+            "--with-tests");
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.True(
+            File.Exists(directory.GetPath(
+                "Application",
+                "Commands",
+                "CreateOrderCommand.cs")));
+        Assert.True(
+            File.Exists(directory.GetPath(
+                "Application",
+                "Tests",
+                "Commands",
+                "CreateOrderCommandTests.cs")));
+
+        var test = File.ReadAllText(
+            directory.GetPath(
+                "Application",
+                "Tests",
+                "Commands",
+                "CreateOrderCommandTests.cs"));
+        Assert.Contains("using Test.App.Application.Commands;", test);
+    }
+
+    [Fact]
+    public void MakeHandler_ShouldInferCommandFromName()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:handler",
+            "CreateOrderCommand",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App",
+            "--profile",
+            "clean");
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.True(
+            File.Exists(directory.GetPath(
+                "Application",
+                "Features",
+                "Handlers",
+                "CreateOrderCommandHandler.cs")));
+    }
+
+    [Fact]
+    public void MakeHandler_ShouldRejectNameWithoutCommandOrQuerySuffix()
+    {
+        using var directory = new TemporaryDirectory();
+
+        var result = Run(
+            "make:handler",
+            "CreateOrder",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App");
+
+        Assert.Equal(1, result.ExitCode);
+        Assert.Contains("must end with Command", result.Error);
+    }
+
+    [Fact]
+    public void MakeCommand_ShouldRefuseConflictsAndSupportForce()
+    {
+        using var directory = new TemporaryDirectory();
+        var path = directory.GetPath("Commands", "CreateOrderCommand.cs");
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, "custom content");
+
+        var conflict = Run(
+            "make:command",
+            "create-order",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App");
+
+        Assert.Equal(1, conflict.ExitCode);
+        Assert.Equal("custom content", File.ReadAllText(path));
+
+        var forced = Run(
+            "make:command",
+            "create-order",
+            "--output",
+            directory.Root,
+            "--namespace",
+            "Test.App",
+            "--force");
+
+        Assert.Equal(0, forced.ExitCode);
+        Assert.Contains("CreateOrderCommand", File.ReadAllText(path));
+    }
+
+    [Fact]
     public void MakeResource_ShouldNotGenerateOptionalFiles()
     {
         using var directory = new TemporaryDirectory();

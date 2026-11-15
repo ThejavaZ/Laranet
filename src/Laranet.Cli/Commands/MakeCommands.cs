@@ -62,6 +62,11 @@ internal static class MakeCommands
             output,
             error,
             input);
+
+        foreach (var command in CqrsCommands.Create(output, error, input))
+        {
+            yield return command;
+        }
     }
 
     private static Command Create(
