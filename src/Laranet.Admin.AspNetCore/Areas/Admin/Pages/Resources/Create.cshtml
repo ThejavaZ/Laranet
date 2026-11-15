@@ -36,7 +36,13 @@
             }
             else if (field.Type == typeof(bool))
             {
-                <input name="@field.Name" type="checkbox" value="true" />
+                <label class="admin-toggle">
+                    <input name="@field.Name" type="checkbox" value="true" />
+                    <span class="admin-toggle-track">
+                        <span class="admin-toggle-thumb"></span>
+                    </span>
+                    <span class="admin-toggle-label">@(field.DefaultValue == "true" ? "Enabled" : "Disabled")</span>
+                </label>
                 <input type="hidden" name="@field.Name" value="false" />
             }
             else if (field.FieldType == AdminFieldType.TextArea)

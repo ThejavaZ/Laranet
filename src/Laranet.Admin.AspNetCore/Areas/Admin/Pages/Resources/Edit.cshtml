@@ -43,10 +43,13 @@
             else if (field.Type == typeof(bool))
             {
                 var isChecked = Convert.ToBoolean(Model.Values.GetValueOrDefault(field.Name));
-                <input name="@field.Name"
-                       type="checkbox"
-                       value="true"
-                       checked="@(isChecked ? "checked" : null)" />
+                <label class="admin-toggle">
+                    <input name="@field.Name" type="checkbox" value="true" checked="@(isChecked ? "checked" : null)" />
+                    <span class="admin-toggle-track">
+                        <span class="admin-toggle-thumb"></span>
+                    </span>
+                    <span class="admin-toggle-label">@(isChecked ? "Enabled" : "Disabled")</span>
+                </label>
                 <input type="hidden" name="@field.Name" value="false" />
             }
             else if (field.FieldType == AdminFieldType.TextArea)
