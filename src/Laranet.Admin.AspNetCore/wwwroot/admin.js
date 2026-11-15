@@ -1,7 +1,6 @@
 (function () {
     "use strict";
 
-    function init() {
     // Dark mode toggle
     var themeToggle = document.querySelector("[data-theme-toggle]");
     var savedTheme = localStorage.getItem("admin-theme") || "light";
@@ -114,7 +113,6 @@
         modalConfirm.addEventListener("click", function () {
             if (pendingForm) {
                 pendingForm.dataset.confirmed = "true";
-                setLoading(pendingForm);
                 pendingForm.submit();
             }
         });
@@ -139,13 +137,6 @@
     }
 
     document.querySelectorAll("[data-loading-form]:not([data-modal-confirm])")
-        .forEach(function (form) {
-            form.addEventListener("submit", function () {
-                setLoading(form);
-            });
-        });
-
-    document.querySelectorAll("[data-loading-form]:not([data-confirm])")
         .forEach(function (form) {
             form.addEventListener("submit", function () {
                 setLoading(form);
@@ -193,11 +184,4 @@
     }
 
     setupResponsiveTables();
-    }
-
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", init);
-    } else {
-        init();
-    }
 })();
