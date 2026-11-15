@@ -1,6 +1,7 @@
 using Laranet.Admin;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 
 namespace Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources;
 
@@ -8,21 +9,24 @@ public sealed class EditModel(
     IAdminResourceRegistry resources,
     IAdminDataAdapter adapter,
     IAdminAuthorization authorization,
-    Microsoft.Extensions.Localization.IStringLocalizerFactory localizerFactory) : PageModel
+    IStringLocalizerFactory localizerFactory) : PageModel
 {
-    private readonly Microsoft.Extensions.Localization.IStringLocalizer localizer =
+    private readonly IStringLocalizer localizer =
         localizerFactory.Create(typeof(EditModel));
 
     public AdminResource Resource { get; private set; } = null!;
 
-    public IReadOnlyDictionary<string, object?> Values { get; private set; } = null!;
+    public IReadOnlyDictionary<string, object?> Values { get; private set; } =
+        new Dictionary<string, object?>();
+
+    public IReadOnlyDictionary<string, IReadOnlyList<AdminLookupOption>> Lookups { get; private set; } =
+        new Dictionary<string, IReadOnlyList<AdminLookupOption>>();
 
     public string L(AdminField field) =>
-        field.LocalizationKey is not null
-            ? localizer[field.LocalizationKey]
-            : field.Label;
+        AdminPageModelHelper.L(localizer, field);
 
-    public IReadOnlyDictionary<string, IReadOnlyList<AdminLookupOption>> Lookups { get; private set; } = new Dictionary<string, IReadOnlyList<AdminLookupOption>>();
+    public string FormatValue(AdminField field, object? value) =>
+        AdminPageModelHelper.FormatValue(field, value);
 
     public async Task<IActionResult> OnGetAsync(
         string resource,
@@ -31,7 +35,7 @@ public sealed class EditModel(
     {
         if (!TryGetResource(resource, AdminOperation.Read))
         {
-            return NotFound();
+            return ChallengeOrForbid();
         }
 
         Values = await adapter.ReadAsync(Resource, key, cancellationToken)
@@ -55,10 +59,25 @@ public sealed class EditModel(
     {
         if (!TryGetResource(resource, AdminOperation.Update))
         {
-            return NotFound();
+            return ChallengeOrForbid();
         }
 
-        await adapter.UpdateAsync(Resource, key, ReadValues(), cancellationToken);
+        if (!ModelState.IsValid)
+        {
+            await LoadLookupsAsync(cancellationToken);
+            return Page();
+        }
+
+        try
+        {
+            await adapter.UpdateAsync(Resource, key, ReadValues(), cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            await LoadLookupsAsync(cancellationToken);
+            return Page();
+        }
 
         return RedirectToPage(
             "/Resources/Index",
@@ -86,12 +105,13 @@ public sealed class EditModel(
             .GetResult();
     }
 
-    private Dictionary<string, object?> ReadValues()
+    private IActionResult ChallengeOrForbid()
     {
-        return Resource.Form?.Fields.ToDictionary(
-                   field => field.Name,
-                   field => (object?)Request.Form[field.Name].FirstOrDefault())
-               ?? [];
+        if (User.Identity?.IsAuthenticated != true)
+        {
+            return Challenge();
+        }
+        return Forbid();
     }
 
     private async Task LoadLookupsAsync(CancellationToken cancellationToken)
@@ -110,5 +130,13 @@ public sealed class EditModel(
                         cancellationToken))))
             .ConfigureAwait(false))
             .ToDictionary(item => item.Name, item => item.Values);
+    }
+
+    private Dictionary<string, object?> ReadValues()
+    {
+        return Resource.Form?.Fields.ToDictionary(
+                   field => field.Name,
+                   field => (object?)Request.Form[field.Name].FirstOrDefault())
+               ?? [];
     }
 }

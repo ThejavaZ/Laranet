@@ -1,6 +1,7 @@
 using Laranet.Admin;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 
 namespace Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources;
 
@@ -8,9 +9,9 @@ public sealed class DetailsModel(
     IAdminResourceRegistry resources,
     IAdminDataAdapter adapter,
     IAdminAuthorization authorization,
-    Microsoft.Extensions.Localization.IStringLocalizerFactory localizerFactory) : PageModel
+    IStringLocalizerFactory localizerFactory) : PageModel
 {
-    private readonly Microsoft.Extensions.Localization.IStringLocalizer localizer =
+    private readonly IStringLocalizer localizer =
         localizerFactory.Create(typeof(DetailsModel));
 
     public AdminResource Resource { get; private set; } = null!;
@@ -19,36 +20,10 @@ public sealed class DetailsModel(
         new Dictionary<string, object?>();
 
     public string L(AdminField field) =>
-        field.LocalizationKey is not null
-            ? localizer[field.LocalizationKey]
-            : field.Label;
+        AdminPageModelHelper.L(localizer, field);
 
-    public string FormatValue(AdminField field, object? value)
-    {
-        if (value is null)
-        {
-            return string.Empty;
-        }
-
-        return field.Format switch
-        {
-            "currency" => string.Format(
-                System.Globalization.CultureInfo.CurrentCulture,
-                "{0:C}",
-                value),
-            "date" => value is DateTime dt
-                ? dt.ToString("d", System.Globalization.CultureInfo.CurrentCulture)
-                : value.ToString() ?? string.Empty,
-            "datetime" => value is DateTime dt2
-                ? dt2.ToString("g", System.Globalization.CultureInfo.CurrentCulture)
-                : value.ToString() ?? string.Empty,
-            "number" => string.Format(
-                System.Globalization.CultureInfo.CurrentCulture,
-                "{0:N}",
-                value),
-            _ => value.ToString() ?? string.Empty,
-        };
-    }
+    public string FormatValue(AdminField field, object? value) =>
+        AdminPageModelHelper.FormatValue(field, value);
 
     public async Task<IActionResult> OnGetAsync(
         string resource,
@@ -57,13 +32,18 @@ public sealed class DetailsModel(
     {
         if (!TryGetResource(resource, AdminOperation.Read))
         {
-            return NotFound();
+            return ChallengeOrForbid();
         }
 
         Values = await adapter.ReadAsync(Resource, key, cancellationToken)
             ?? new Dictionary<string, object?>();
 
-        return Values.Count == 0 ? NotFound() : Page();
+        if (Values.Count == 0)
+        {
+            return NotFound();
+        }
+
+        return Page();
     }
 
     private bool TryGetResource(string name, AdminOperation operation)
@@ -81,5 +61,14 @@ public sealed class DetailsModel(
             .AuthorizeAsync(User, Resource, operation)
             .GetAwaiter()
             .GetResult();
+    }
+
+    private IActionResult ChallengeOrForbid()
+    {
+        if (User.Identity?.IsAuthenticated != true)
+        {
+            return Challenge();
+        }
+        return Forbid();
     }
 }

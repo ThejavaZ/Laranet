@@ -10,6 +10,15 @@
 
 <div class="admin-card admin-form-card">
 <form class="admin-form" method="post" data-loading-form>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="admin-alert admin-alert-error" role="alert">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        </div>
+    }
     @foreach (var field in Model.Resource.Form?.Fields ?? [])
     {
         <div class="admin-form-field">
@@ -26,6 +35,19 @@
                         </option>
                     }
                 </select>
+            }
+            else if (field.FieldType == AdminFieldType.TextArea)
+            {
+                <textarea name="@field.Name" rows="@(field.Rows ?? 4)">@Model.Values.GetValueOrDefault(field.Name)</textarea>
+            }
+            else if (field.Type == typeof(bool))
+            {
+                var isChecked = Convert.ToBoolean(Model.Values.GetValueOrDefault(field.Name));
+                <input name="@field.Name"
+                       type="checkbox"
+                       value="true"
+                       checked="@(isChecked ? "checked" : null)" />
+                <input type="hidden" name="@field.Name" value="false" />
             }
             else if (field.FieldType == AdminFieldType.TextArea)
             {

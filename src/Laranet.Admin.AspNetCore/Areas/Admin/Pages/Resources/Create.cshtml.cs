@@ -1,6 +1,7 @@
 using Laranet.Admin;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 
 namespace Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources;
 
@@ -8,21 +9,23 @@ public sealed class CreateModel(
     IAdminResourceRegistry resources,
     IAdminDataAdapter adapter,
     IAdminAuthorization authorization,
-    Microsoft.Extensions.Localization.IStringLocalizerFactory localizerFactory) : PageModel
+    IStringLocalizerFactory localizerFactory) : PageModel
 {
-    private readonly Microsoft.Extensions.Localization.IStringLocalizer localizer =
+    private readonly IStringLocalizer localizer =
         localizerFactory.Create(typeof(CreateModel));
 
     public AdminResource Resource { get; private set; } = null!;
 
     public bool Allowed { get; private set; }
 
-    public string L(AdminField field) =>
-        field.LocalizationKey is not null
-            ? localizer[field.LocalizationKey]
-            : field.Label;
+    public IReadOnlyDictionary<string, IReadOnlyList<AdminLookupOption>> Lookups { get; private set; } =
+        new Dictionary<string, IReadOnlyList<AdminLookupOption>>();
 
-    public IReadOnlyDictionary<string, IReadOnlyList<AdminLookupOption>> Lookups { get; private set; } = new Dictionary<string, IReadOnlyList<AdminLookupOption>>();
+    public string L(AdminField field) =>
+        AdminPageModelHelper.L(localizer, field);
+
+    public IReadOnlyDictionary<string, string> Errors { get; private set; } =
+        new Dictionary<string, string>();
 
     public async Task<IActionResult> OnGetAsync(
         string resource,
@@ -30,7 +33,7 @@ public sealed class CreateModel(
     {
         if (!TryGetResource(resource, AdminOperation.Create))
         {
-            return NotFound();
+            return ChallengeOrForbid();
         }
 
         await LoadLookupsAsync(cancellationToken);
@@ -45,10 +48,25 @@ public sealed class CreateModel(
     {
         if (!TryGetResource(resource, AdminOperation.Create))
         {
-            return NotFound();
+            return ChallengeOrForbid();
         }
 
-        await adapter.CreateAsync(Resource, ReadValues(), cancellationToken);
+        if (!ModelState.IsValid)
+        {
+            await LoadLookupsAsync(cancellationToken);
+            return Page();
+        }
+
+        try
+        {
+            await adapter.CreateAsync(Resource, ReadValues(), cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            await LoadLookupsAsync(cancellationToken);
+            return Page();
+        }
 
         return RedirectToPage(
             "/Resources/Index",
@@ -57,6 +75,32 @@ public sealed class CreateModel(
                 resource,
                 adminMessage = "Record created successfully.",
             });
+    }
+
+    private bool TryGetResource(string name, AdminOperation operation)
+    {
+        try
+        {
+            Resource = resources.Get(name);
+        }
+        catch (KeyNotFoundException)
+        {
+            return false;
+        }
+
+        return authorization
+            .AuthorizeAsync(User, Resource, operation)
+            .GetAwaiter()
+            .GetResult();
+    }
+
+    private IActionResult ChallengeOrForbid()
+    {
+        if (User.Identity?.IsAuthenticated != true)
+        {
+            return Challenge();
+        }
+        return Forbid();
     }
 
     private async Task LoadLookupsAsync(CancellationToken cancellationToken)
@@ -75,25 +119,6 @@ public sealed class CreateModel(
                         cancellationToken))))
             .ConfigureAwait(false))
             .ToDictionary(item => item.Name, item => item.Values);
-    }
-
-    private bool TryGetResource(string name, AdminOperation operation)
-    {
-        try
-        {
-            Resource = resources.Get(name);
-        }
-        catch (KeyNotFoundException)
-        {
-            return false;
-        }
-
-        Allowed = authorization
-            .AuthorizeAsync(User, Resource, operation)
-            .GetAwaiter()
-            .GetResult();
-
-        return Allowed;
     }
 
     private Dictionary<string, object?> ReadValues()

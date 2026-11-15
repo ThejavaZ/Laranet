@@ -78,7 +78,6 @@ else
         @foreach (var field in Model.Resource.Fields)
         {
             <th>
-            @(Model.L(field))
             @if (field.IsOrderable)
             {
                 var descending = Model.SortBy == field.Name && !Model.SortDescending;
@@ -86,10 +85,11 @@ else
                    asp-page="/Resources/Index"
                    asp-route-resource="@Model.Resource.Name"
                    asp-route-Search="@Model.Search"
+                   asp-route-PageSize="@Model.PageSize"
                    asp-route-PageNumber="1"
                    asp-route-SortBy="@field.Name"
                    asp-route-SortDescending="@descending">
-                    @field.Label
+                    @(Model.L(field))
                     @if (Model.SortBy == field.Name)
                     {
                         <span aria-hidden="true">@(Model.SortDescending ? "↓" : "↑")</span>
@@ -98,7 +98,7 @@ else
             }
             else
             {
-                @field.Label
+                @(Model.L(field))
             }
             </th>
         }
@@ -153,6 +153,10 @@ else
     <form method="get" class="admin-page-size">
         <input type="hidden" name="resource" value="@Model.Resource.Name" />
         <input type="hidden" name="Search" value="@Model.Search" />
+        @foreach (var filter in Model.Resource.Filters)
+        {
+            <input type="hidden" name="@filter.Name" value="@Request.Query[filter.Name]" />
+        }
         <input type="hidden" name="SortBy" value="@Model.SortBy" />
         <input type="hidden" name="SortDescending" value="@Model.SortDescending" />
         <label>
@@ -165,7 +169,52 @@ else
             </select>
         </label>
     </form>
-    <span>Page @Model.Results.Page of @Model.Results.TotalPages</span>
+    <nav class="admin-pagination" aria-label="Pagination">
+        @if (Model.Results.Page > 1)
+        {
+            <a class="admin-page-link" asp-page="/Resources/Index"
+               asp-route-resource="@Model.Resource.Name"
+               asp-route-Search="@Model.Search"
+               asp-route-PageSize="@Model.PageSize"
+               asp-route-SortBy="@Model.SortBy"
+               asp-route-SortDescending="@Model.SortDescending"
+               asp-route-PageNumber="1">First</a>
+            <a class="admin-page-link" asp-page="/Resources/Index"
+               asp-route-resource="@Model.Resource.Name"
+               asp-route-Search="@Model.Search"
+               asp-route-PageSize="@Model.PageSize"
+               asp-route-SortBy="@Model.SortBy"
+               asp-route-SortDescending="@Model.SortDescending"
+               asp-route-PageNumber="@(Model.Results.Page - 1)">Prev</a>
+        }
+        @for (var i = Math.Max(1, Model.Results.Page - 2); i <= Math.Min(Model.Results.TotalPages, Model.Results.Page + 2); i++)
+        {
+            <a class="admin-page-link @(i == Model.Results.Page ? "is-active" : "")" asp-page="/Resources/Index"
+               asp-route-resource="@Model.Resource.Name"
+               asp-route-Search="@Model.Search"
+               asp-route-PageSize="@Model.PageSize"
+               asp-route-SortBy="@Model.SortBy"
+               asp-route-SortDescending="@Model.SortDescending"
+               asp-route-PageNumber="@i">@i</a>
+        }
+        @if (Model.Results.Page < Model.Results.TotalPages)
+        {
+            <a class="admin-page-link" asp-page="/Resources/Index"
+               asp-route-resource="@Model.Resource.Name"
+               asp-route-Search="@Model.Search"
+               asp-route-PageSize="@Model.PageSize"
+               asp-route-SortBy="@Model.SortBy"
+               asp-route-SortDescending="@Model.SortDescending"
+               asp-route-PageNumber="@(Model.Results.Page + 1)">Next</a>
+            <a class="admin-page-link" asp-page="/Resources/Index"
+               asp-route-resource="@Model.Resource.Name"
+               asp-route-Search="@Model.Search"
+               asp-route-PageSize="@Model.PageSize"
+               asp-route-SortBy="@Model.SortBy"
+               asp-route-SortDescending="@Model.SortDescending"
+               asp-route-PageNumber="@Model.Results.TotalPages">Last</a>
+        }
+    </nav>
     <span>@Model.Results.TotalCount items</span>
 </div>
 </div>

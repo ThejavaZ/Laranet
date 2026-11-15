@@ -1,6 +1,7 @@
 using Laranet.Admin;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 
 namespace Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources;
 
@@ -8,9 +9,9 @@ public sealed class IndexModel(
     IAdminResourceRegistry resources,
     IAdminDataAdapter adapter,
     IAdminAuthorization authorization,
-    Microsoft.Extensions.Localization.IStringLocalizerFactory localizerFactory) : PageModel
+    IStringLocalizerFactory localizerFactory) : PageModel
 {
-    private readonly Microsoft.Extensions.Localization.IStringLocalizer localizer =
+    private readonly IStringLocalizer localizer =
         localizerFactory.Create(typeof(IndexModel));
 
     public AdminResource Resource { get; private set; } = null!;
@@ -18,46 +19,16 @@ public sealed class IndexModel(
     public AdminPage Results { get; private set; } = new([], 1, 25, 0);
 
     public string L(AdminField field) =>
-        field.LocalizationKey is not null
-            ? localizer[field.LocalizationKey]
-            : field.Label;
-
-    public string FormatValue(AdminField field, object? value)
-    {
-        if (value is null)
-        {
-            return string.Empty;
-        }
-
-        return field.Format switch
-        {
-            "currency" => string.Format(
-                System.Globalization.CultureInfo.CurrentCulture,
-                "{0:C}",
-                value),
-            "date" => value is DateTime dt
-                ? dt.ToString("d", System.Globalization.CultureInfo.CurrentCulture)
-                : value.ToString() ?? string.Empty,
-            "datetime" => value is DateTime dt2
-                ? dt2.ToString("g", System.Globalization.CultureInfo.CurrentCulture)
-                : value.ToString() ?? string.Empty,
-            "number" => string.Format(
-                System.Globalization.CultureInfo.CurrentCulture,
-                "{0:N}",
-                value),
-            _ => value.ToString() ?? string.Empty,
-        };
-    }
+        AdminPageModelHelper.L(localizer, field);
 
     public string L(AdminFilter filter) =>
-        filter.LocalizationKey is not null
-            ? localizer[filter.LocalizationKey]
-            : filter.Label;
+        AdminPageModelHelper.L(localizer, filter);
 
     public string L(AdminAction action) =>
-        action.LocalizationKey is not null
-            ? localizer[action.LocalizationKey]
-            : action.Label;
+        AdminPageModelHelper.L(localizer, action);
+
+    public string FormatValue(AdminField field, object? value) =>
+        AdminPageModelHelper.FormatValue(field, value);
 
     public bool SupportsBulk => adapter is IAdminEnhancementAdapter;
 
@@ -76,23 +47,39 @@ public sealed class IndexModel(
     [BindProperty(SupportsGet = true)]
     public bool SortDescending { get; set; }
 
+    public IReadOnlyDictionary<string, string?> Filters { get; private set; } =
+        new Dictionary<string, string?>();
+
     public async Task<IActionResult> OnGetAsync(
         string resource,
         CancellationToken cancellationToken)
     {
-        if (!TryGetResource(resource, AdminOperation.List, out var definition))
+        if (!TryGetResource(resource, AdminOperation.List))
         {
-            return NotFound();
+            return ChallengeOrForbid();
         }
 
-        Resource = definition;
+        Resource = resources.Get(resource);
+        Filters = AdminPageModelHelper.ReadFilters(Resource, Request);
+
+        // Validate SortBy against known fields
+        if (!string.IsNullOrWhiteSpace(SortBy) &&
+            !Resource.OrderableFields.Any(f => f.Name == SortBy))
+        {
+            SortBy = null;
+        }
+
+        // Clamp pagination
+        PageNumber = Math.Max(1, PageNumber);
+        PageSize = Math.Clamp(PageSize, 1, 100);
+
         Results = await adapter.ListAsync(
-            definition,
+            Resource,
             new AdminQuery(
                 PageNumber,
                 PageSize,
                 Search,
-                ReadFilters(),
+                Filters,
                 SortBy,
                 SortDescending),
             cancellationToken);
@@ -104,16 +91,27 @@ public sealed class IndexModel(
     public async Task<IActionResult> OnPostBulkAsync(
         string resource,
         string action,
-        string[] keys,
+        string[]? keys,
         CancellationToken cancellationToken)
     {
-        if (!TryGetResource(resource, AdminOperation.BulkAction, out var definition)
-            || adapter is not IAdminEnhancementAdapter enhancements)
+        if (!TryGetResource(resource, AdminOperation.BulkAction))
+        {
+            return ChallengeOrForbid();
+        }
+
+        if (keys is null || keys.Length == 0)
+        {
+            TempData["AdminError"] = "No records selected.";
+            return RedirectToPage(new { resource, adminMessage = "No records selected." });
+        }
+
+        if (adapter is not IAdminEnhancementAdapter enhancements)
         {
             return NotFound();
         }
 
-        await enhancements.ExecuteBulkActionAsync(
+        var definition = resources.Get(resource);
+        var count = await enhancements.ExecuteBulkActionAsync(
             definition,
             action,
             keys.Cast<object>().ToArray(),
@@ -122,7 +120,7 @@ public sealed class IndexModel(
         return RedirectToPage(new
         {
             resource,
-            adminMessage = "Selected records updated successfully.",
+            adminMessage = $"{count} record(s) updated successfully.",
         });
     }
 
@@ -130,14 +128,15 @@ public sealed class IndexModel(
         string resource,
         CancellationToken cancellationToken)
     {
-        if (!TryGetResource(resource, AdminOperation.List, out var definition))
+        if (!TryGetResource(resource, AdminOperation.List))
         {
-            return NotFound();
+            return ChallengeOrForbid();
         }
 
+        var definition = resources.Get(resource);
         var all = await adapter.ListAsync(
             definition,
-            new AdminQuery(1, 10000, Search, ReadFilters(), SortBy, SortDescending),
+            new AdminQuery(1, 10000, Search, Filters, SortBy, SortDescending),
             cancellationToken);
 
         var sb = new System.Text.StringBuilder();
@@ -153,7 +152,7 @@ public sealed class IndexModel(
             sb.AppendLine(string.Join(",", values));
         }
 
-        var bytes = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
+        var bytes = new System.Text.UTF8Encoding(true).GetBytes(sb.ToString());
         return File(bytes, "text/csv", $"{definition.Name}.csv");
     }
 
@@ -163,11 +162,12 @@ public sealed class IndexModel(
         string key,
         CancellationToken cancellationToken)
     {
-        if (!TryGetResource(resource, AdminOperation.Delete, out var definition))
+        if (!TryGetResource(resource, AdminOperation.Delete))
         {
-            return NotFound();
+            return ChallengeOrForbid();
         }
 
+        var definition = resources.Get(resource);
         await adapter.DeleteAsync(definition, key, cancellationToken);
 
         return RedirectToPage(new
@@ -179,34 +179,43 @@ public sealed class IndexModel(
 
     private bool TryGetResource(
         string name,
-        AdminOperation operation,
-        out AdminResource definition)
+        AdminOperation operation)
     {
+        AdminResource? definition;
         try
         {
             definition = resources.Get(name);
         }
         catch (KeyNotFoundException)
         {
-            definition = null!;
             return false;
         }
 
-        return authorization
+        var result = authorization
             .AuthorizeAsync(User, definition, operation)
             .GetAwaiter()
             .GetResult();
+
+        if (!result)
+        {
+            return false;
+        }
+
+        Resource = definition;
+        return true;
+    }
+
+    private IActionResult ChallengeOrForbid()
+    {
+        if (User.Identity?.IsAuthenticated != true)
+        {
+            return Challenge();
+        }
+        return Forbid();
     }
 
     private IReadOnlyDictionary<string, string?> ReadFilters()
     {
-        return Resource.Filters
-            .Select(filter => new
-            {
-                filter.Name,
-                Value = Request.Query[filter.Name].FirstOrDefault(),
-            })
-            .Where(item => item.Value is not null)
-            .ToDictionary(item => item.Name, item => item.Value);
+        return AdminPageModelHelper.ReadFilters(Resource, Request);
     }
 }
