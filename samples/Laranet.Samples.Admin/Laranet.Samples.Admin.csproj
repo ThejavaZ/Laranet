@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="../../src/Laranet.Admin/Laranet.Admin.csproj" />
     <ProjectReference Include="../../src/Laranet.Admin.AspNetCore/Laranet.Admin.AspNetCore.csproj" />
+    <ProjectReference Include="../../src/Laranet.Admin.EntityFrameworkCore/Laranet.Admin.EntityFrameworkCore.csproj" />
   </ItemGroup>
 
 </Project>

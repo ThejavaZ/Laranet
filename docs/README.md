@@ -77,6 +77,7 @@ Understand what each package provides and when to use it.
 - [`Laranet.Http`](../src/Laranet.Http/README.md)
 - [`Laranet.Admin`](../src/Laranet.Admin/README.md) (experimental prototype)
 - [`Laranet.Admin.AspNetCore`](../src/Laranet.Admin.AspNetCore/README.md) (experimental prototype)
+- [`Laranet.Admin.EntityFrameworkCore`](../src/Laranet.Admin.EntityFrameworkCore/README.md) (experimental prototype)
 - [`Laranet.Cli`](../src/Laranet.Cli/README.md)
 
 ## Samples

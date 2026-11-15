@@ -4,6 +4,7 @@
     <Project Path="src/Laranet.AspNetCore.Validation/Laranet.AspNetCore.Validation.csproj" />
     <Project Path="src/Laranet.Admin/Laranet.Admin.csproj" />
     <Project Path="src/Laranet.Admin.AspNetCore/Laranet.Admin.AspNetCore.csproj" />
+    <Project Path="src/Laranet.Admin.EntityFrameworkCore/Laranet.Admin.EntityFrameworkCore.csproj" />
     <Project Path="src/Laranet.Cli/Laranet.Cli.csproj" />
     <Project Path="src/Laranet.Data/Laranet.Data.csproj" />
     <Project Path="src/Laranet.EntityFrameworkCore/Laranet.EntityFrameworkCore.csproj" />

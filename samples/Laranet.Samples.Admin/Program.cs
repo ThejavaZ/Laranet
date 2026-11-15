@@ -1,5 +1,6 @@
 using Laranet.Admin;
 using Laranet.Admin.AspNetCore;
+using Laranet.Admin.EntityFrameworkCore;
 using Laranet.Samples.Admin.Data;
 using Laranet.Samples.Admin.Models;
 using Laranet.Samples.Admin.Security;
@@ -17,7 +18,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddLaranetAdmin();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("Admin.Products", policy => policy.RequireAuthenticatedUser());
-builder.Services.AddScoped<IAdminDataAdapter, ProductAdminAdapter>();
+builder.Services.AddScoped<IAdminDataAdapter, EfCoreAdminDataAdapter>();
 builder.Services.AddScoped<IAdminAuthorization, IdentityAdminAuthorization>();
 builder.Services.AddSingleton<IAdminResourceRegistry>(services =>
 {

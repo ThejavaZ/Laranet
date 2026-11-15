@@ -13,6 +13,7 @@ application uses.
 | `Laranet.Http` | Typed, cancellation-aware convenience layer with safe retries over `HttpClient` | `dotnet add package Laranet.Http` | [README](../../src/Laranet.Http/README.md) |
 | `Laranet.Admin` | Experimental provider-neutral admin metadata and adapter contracts | Not published; prototype only | [README](../../src/Laranet.Admin/README.md) |
 | `Laranet.Admin.AspNetCore` | Experimental Razor Pages admin integration | Not published; prototype only | [README](../../src/Laranet.Admin.AspNetCore/README.md) |
+| `Laranet.Admin.EntityFrameworkCore` | Experimental EF Core admin data adapter | Not published; prototype only | [README](../../src/Laranet.Admin.EntityFrameworkCore/README.md) |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` | [README](../../src/Laranet/README.md) |
 
 The seven production packages are prepared for the `0.3.1` release line.
@@ -42,6 +43,8 @@ Laranet.AspNetCore.Validation  (independent: ASP.NET Core + FluentValidation,
   [`Laranet.Samples.Admin`](../../samples/Laranet.Samples.Admin).
 - `Laranet.Admin.AspNetCore` is experimental and depends on `Laranet.Admin` plus the
   ASP.NET Core shared framework. It does not include EF Core or Identity.
+- `Laranet.Admin.EntityFrameworkCore` is experimental and depends on `Laranet.Admin`
+  and EF Core. It is not required by the provider-neutral core or the Razor package.
 - `Laranet` remains small and is not required by the other packages.
 
 ## Which package do I need?
