@@ -23,6 +23,11 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 - CI and release workflows now pack and verify seven production packages, including
   the FluentValidation dependency and the absence of dependencies on other Laranet
   packages.
+- `Laranet.Cli` now generates commands, queries, and handlers through
+  `make:command`, `make:query`, and `make:handler`. Generation supports plain C#
+  output, optional MediatR or Wolverine contracts, `simple`/`standard`/`clean`
+  profiles, optional handlers and xUnit scaffolds, and the existing safe writer
+  options.
 
 ## [0.2.1] - 2026-11-14
 

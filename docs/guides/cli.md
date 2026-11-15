@@ -67,6 +67,8 @@ laranet make:controller Product
 laranet make:middleware RequestLogging
 laranet make:resource Product
 laranet make:crud Product --fields "Name:string,Price:decimal"
+laranet make:command CreateOrder --with-handler
+laranet make:query FindOrder --mediator mediatr
 ```
 
 | Command | Output |
@@ -78,8 +80,37 @@ laranet make:crud Product --fields "Name:string,Price:decimal"
 | `make:resource <name>` | Model, service, and controller |
 | `make:crud <entity>` | Entity, DTOs, and CRUD endpoints |
 | `make:repository <name>` | Optional `Repositories/<Name>Repository.cs` scaffold |
+| `make:command <name>` | `Commands/<Name>Command.cs`, optionally a handler |
+| `make:query <name>` | `Queries/<Name>Query.cs`, optionally a handler |
+| `make:handler <name>` | `Handlers/<Name>Handler.cs` for a command or query |
 
 Names are normalized to PascalCase and suffixes are applied only when missing.
+
+## Generate CQRS code
+
+CQRS generation is CLI-only. It produces ordinary C# and does not add a
+`Laranet.CQRS` package or runtime contracts. The default command and query output
+has no external dependencies:
+
+```bash
+laranet make:command CreateOrder --with-handler
+laranet make:query FindOrder
+laranet make:handler CreateOrderCommand
+```
+
+Use `--mediator mediatr` to generate `IRequest<T>` and `IRequestHandler<,>`, or
+`--mediator wolverine` to generate Wolverine's `ICommand` and `IQuery<T>` contracts.
+The CLI does not install those packages; add them to the generated project yourself.
+
+| Profile | Requests | Handlers |
+| --- | --- | --- |
+| `simple` (default) | `Commands/` or `Queries/` | `Handlers/` |
+| `standard` | `Application/Commands/` or `Application/Queries/` | `Application/Handlers/` |
+| `clean` | `Application/Features/Commands/` or `Queries/` | `Application/Features/Handlers/` |
+
+`--with-handler` is available on `make:command` and `make:query`. `--with-tests`
+adds an xUnit request scaffold. `make:handler` requires a name ending in
+`Command`, `Query`, `CommandHandler`, or `QueryHandler`.
 
 ## Generate CRUD
 
@@ -151,11 +182,15 @@ Override built-in generators through `.laranet/templates`:
     ├── service.tpl
     ├── controller.tpl
     ├── middleware.tpl
-    └── repository.tpl
+    ├── repository.tpl
+    ├── command.tpl
+    ├── query.tpl
+    └── handler.tpl
 ```
 
 Templates support `{{Name}}` and `{{Namespace}}`. The nearest `.laranet/templates`
-directory wins. Folder, file name, and namespace remain convention-based.
+directory wins. CQRS templates also support `{{Request}}`, `{{Handler}}`, and
+`{{Mediator}}`. Folder, file name, and namespace remain convention-based.
 
 Example `.laranet/templates/model.tpl`:
 
