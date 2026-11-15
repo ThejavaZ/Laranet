@@ -135,7 +135,7 @@ else
                asp-route-resource="@Model.Resource.Name"
                asp-route-key="@item.GetValueOrDefault(Model.Resource.KeyField.Name)">Edit</a>
             <form method="post"
-                  data-modal-confirm="Delete this record?"
+                  data-confirm-form="Delete this record?"
                   data-loading-form
                   asp-page-handler="Delete"
                   asp-route-resource="@Model.Resource.Name"

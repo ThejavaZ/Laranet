@@ -114,12 +114,12 @@
         });
     }
 
-    document.querySelectorAll("[data-modal-confirm]").forEach(function (form) {
+    document.querySelectorAll("[data-confirm-form]").forEach(function (form) {
         form.addEventListener("submit", function (event) {
             console.log("[admin.js] modal form submit intercepted");
             event.preventDefault();
             pendingForm = form;
-            openModal(form.dataset.modalConfirm);
+            openModal(form.dataset.confirmForm);
         });
     });
 
@@ -153,7 +153,7 @@
             });
     }
 
-    document.querySelectorAll("[data-loading-form]:not([data-modal-confirm])")
+    document.querySelectorAll("[data-loading-form]:not([data-confirm-form])")
         .forEach(function (form) {
             form.addEventListener("submit", function () {
                 setLoading(form);
