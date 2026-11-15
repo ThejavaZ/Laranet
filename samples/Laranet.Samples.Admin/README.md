@@ -17,3 +17,6 @@ dotnet run --project samples/Laranet.Samples.Admin
 The sample is intentionally explicit. It demonstrates the provider-neutral
 `Laranet.Admin` contracts without hiding EF Core, Razor Pages, or Identity behind
 a new framework.
+
+The admin UI assets are served from the `Laranet.Admin.AspNetCore` package. The
+consuming application only needs the standard `app.UseStaticFiles()` middleware.
