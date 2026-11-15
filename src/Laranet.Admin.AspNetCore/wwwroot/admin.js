@@ -1,6 +1,7 @@
 (function () {
     "use strict";
 
+    function init() {
     // Dark mode toggle
     var themeToggle = document.querySelector("[data-theme-toggle]");
     var savedTheme = localStorage.getItem("admin-theme") || "light";
@@ -192,4 +193,11 @@
     }
 
     setupResponsiveTables();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+    } else {
+        init();
+    }
 })();
