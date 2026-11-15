@@ -14,8 +14,8 @@ application uses.
 | `Laranet.Admin` | Experimental provider-neutral admin metadata and adapter contracts | Not published; prototype only | [README](../../src/Laranet.Admin/README.md) |
 | `Laranet` | Core package reserved for shared abstractions | `dotnet add package Laranet` | [README](../../src/Laranet/README.md) |
 
-`Laranet.AspNetCore.Validation` is implemented for the `0.3.0` release line. The other
-packages describe the published `0.2.1` line.
+The seven production packages are prepared for the `0.3.0` release line.
+`Laranet.Admin` remains experimental and is not part of the release train.
 
 ## Dependency boundaries
 

@@ -11,9 +11,10 @@ documented in the [changelog](../../CHANGELOG.md) and in this guide.
 
 ## Current release status
 
-The current published release is `0.2.1`. It adds `Laranet.Http`, the optional EF
-Core conventions, project templates, and `make:crud`. There are no breaking changes
-between `0.1.1` and `0.2.1`; the new public APIs are additive.
+The current release candidate is `0.3.0`. It adds the optional FluentValidation
+Minimal API integration, CLI CQRS/database/configuration generators, and
+`laranet doctor`. The new APIs are additive; the experimental Admin prototype is
+not part of this release.
 
 This page is the place where each published migration will be recorded.
 
@@ -54,6 +55,17 @@ versions from different releases is not supported.
 - **Migration:** update every Laranet package to `0.2.1` and add `Laranet.Http` only
   when the application calls external HTTP APIs.
 
+### 0.3.0
+
+- **Affected packages:** all seven production packages. `Laranet.AspNetCore.Validation`
+  is new.
+- **What changed:** added the opt-in FluentValidation Minimal API endpoint filter,
+  CLI generators for CQRS, DbContext, and configuration, and `laranet doctor`.
+- **Impact:** existing APIs remain additive and native ASP.NET Core/DataAnnotations
+  validation remains the default.
+- **Migration:** update every production package and the CLI tool to `0.3.0`.
+  Install `Laranet.AspNetCore.Validation` only when using FluentValidation.
+
 ### 0.1.1
 
 - **Affected packages:** all five production packages.
@@ -71,10 +83,11 @@ packages:
 
 ```xml
 <ItemGroup>
-  <PackageReference Include="Laranet.Data" Version="0.2.1" />
-  <PackageReference Include="Laranet.EntityFrameworkCore" Version="0.2.1" />
-  <PackageReference Include="Laranet.AspNetCore" Version="0.2.1" />
-  <PackageReference Include="Laranet.Http" Version="0.2.1" />
+  <PackageReference Include="Laranet.Data" Version="0.3.0" />
+  <PackageReference Include="Laranet.EntityFrameworkCore" Version="0.3.0" />
+  <PackageReference Include="Laranet.AspNetCore" Version="0.3.0" />
+  <PackageReference Include="Laranet.AspNetCore.Validation" Version="0.3.0" />
+  <PackageReference Include="Laranet.Http" Version="0.3.0" />
 </ItemGroup>
 ```
 

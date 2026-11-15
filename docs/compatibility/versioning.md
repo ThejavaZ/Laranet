@@ -70,7 +70,7 @@ Breaking changes must be explicitly documented and reflected in the version numb
 
 ## 4. Initial Release
 
-The initial public release was `0.1.0`. The current `0.2.x` line contains the
+The initial public release was `0.1.0`. The current `0.3.x` line contains the
 published implementation of Laranet's functionality, including `Laranet.Http`.
 
 Each release's scope is defined by the features included in it and documented in the
@@ -88,12 +88,13 @@ For example:
 
 | Package                     | Version |
 | --------------------------- | ------- |
-| Laranet                     | 0.2.1   |
-| Laranet.Data                | 0.2.1   |
-| Laranet.EntityFrameworkCore | 0.2.1   |
-| Laranet.AspNetCore          | 0.2.1   |
-| Laranet.Http                | 0.2.1   |
-| Laranet.Cli                 | 0.2.1   |
+| Laranet                     | 0.3.0   |
+| Laranet.Data                | 0.3.0   |
+| Laranet.EntityFrameworkCore | 0.3.0   |
+| Laranet.AspNetCore          | 0.3.0   |
+| Laranet.AspNetCore.Validation | 0.3.0 |
+| Laranet.Http                | 0.3.0   |
+| Laranet.Cli                 | 0.3.0   |
 
 Packages that are not part of a particular release do not need to be published.
 `Laranet.AspNetCore.Validation` is implemented for the planned `0.3.0` line, and

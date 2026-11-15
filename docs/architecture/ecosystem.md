@@ -225,7 +225,7 @@ A new module enters the ecosystem only when it satisfies all of these:
 | `0.1.1` | Version 2, Sprint 9 | Multi-column search, release bookkeeping | Published |
 | `0.2.0` | Version 3, Sprints 14–17 | Standards, project templates, `make:crud`, EF Core conventions | Published |
 | `0.2.1` | Version 3, Sprints 18.1–18.2 | `Laranet.Http` foundation and resilience | Published |
-| `0.3.0` | Version 3, Sprints 18.3–19 | Validation, CLI generators for CQRS/DbContext/configuration, and `laranet doctor` | Planned |
+| `0.3.0` | Version 3, Sprints 18.3–19 | Validation, CLI generators for CQRS/DbContext/configuration, and `laranet doctor` | Release candidate |
 | `0.4.0` | Version 4, Sprints 22–25 | Admin ADR, core, Razor UI, and pilot | Candidate |
 | `0.5.0` | Version 4, Sprints 26–28 | Web/Blazor templates, optional adapters, ecosystem hardening | Candidate |
 | `1.0.0` | Version 5 | API freeze, release integrity, data experience, diagnostics, enterprise template | Planned (gated by Version 4) |

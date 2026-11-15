@@ -81,13 +81,13 @@ dotnet nuget add source "$(pwd)/artifacts/packages" --name laranet-local
 Then install packages with the version produced by the build:
 
 ```bash
-dotnet add package Laranet.Data --version 0.2.1
+dotnet add package Laranet.Data --version 0.3.0
 ```
 
 Install the locally built CLI:
 
 ```bash
-dotnet tool install --global Laranet.Cli --version 0.2.1 --add-source artifacts/packages
+dotnet tool install --global Laranet.Cli --version 0.3.0 --add-source artifacts/packages
 ```
 
 Alternatively, add project references directly to `src/` while working inside the
@@ -96,7 +96,7 @@ repository. The projects in [`samples/`](../../samples) use this approach.
 ## Documentation status
 
 Laranet is in initial development. The package identifiers and installation commands
-above describe the `0.2.1` release. If a package is not available from NuGet yet, use
+above describe the `0.3.0` release. If a package is not available from NuGet yet, use
 the from-source workflow.
 
 ## Next steps
