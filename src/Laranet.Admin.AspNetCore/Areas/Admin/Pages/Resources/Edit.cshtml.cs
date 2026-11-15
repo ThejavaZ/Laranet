@@ -97,6 +97,7 @@ public sealed class EditModel(
                     (relation.Name, Values: await enhancements.GetLookupAsync(
                         Resource,
                         relation,
+                        null,
                         cancellationToken))))
             .ConfigureAwait(false))
             .ToDictionary(item => item.Name, item => item.Values);

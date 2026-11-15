@@ -15,6 +15,7 @@ public sealed class AdminResourceBuilder<TModel>
     private string? permissionPolicy;
     private string? defaultOrder;
     private bool orderDescending;
+    private Func<object, CancellationToken, Task<string?>>? deleteValidator;
 
     /// <summary>
     /// Adds a model field to the resource.
@@ -133,7 +134,8 @@ public sealed class AdminResourceBuilder<TModel>
             new AdminForm(formFields),
             defaultOrder,
             orderDescending,
-            relations);
+            relations,
+            deleteValidator);
     }
 
     internal void MarkSearchable(int index)
@@ -224,6 +226,15 @@ public sealed class AdminResourceBuilder<TModel>
     {
         var field = fields[index];
         fields[index] = field with { Rows = rows };
+    }
+
+    /// <summary>
+    /// Sets a validator that runs before deletion.
+    /// </summary>
+    public void DeleteValidator(Func<object, CancellationToken, Task<string?>> validator)
+    {
+        ArgumentNullException.ThrowIfNull(validator);
+        deleteValidator = validator;
     }
 
     private void EnsureField(string name, string? label)

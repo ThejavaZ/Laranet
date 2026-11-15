@@ -98,7 +98,8 @@ public sealed record AdminResource(
     AdminForm? Form = null,
     string? DefaultOrderField = null,
     bool DefaultOrderDescending = false,
-    IReadOnlyList<AdminRelation>? Relations = null)
+    IReadOnlyList<AdminRelation>? Relations = null,
+    Func<object, CancellationToken, Task<string?>>? DeleteValidator = null)
 {
     /// <summary>
     /// Gets the field used as the resource key.
@@ -117,6 +118,13 @@ public sealed record AdminResource(
     /// </summary>
     public IReadOnlyList<AdminField> OrderableFields => Fields
         .Where(item => item.IsOrderable)
+        .ToArray();
+
+    /// <summary>
+    /// Gets the fields that should be projected in list queries.
+    /// </summary>
+    public IReadOnlyList<string> ProjectedFields => Fields
+        .Select(item => item.Name)
         .ToArray();
 
     /// <summary>

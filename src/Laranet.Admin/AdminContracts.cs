@@ -103,6 +103,7 @@ public interface IAdminEnhancementAdapter
     Task<IReadOnlyList<AdminLookupOption>> GetLookupAsync(
         AdminResource resource,
         AdminRelation relation,
+        string? search = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>Executes a bulk action for selected keys.</summary>

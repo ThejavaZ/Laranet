@@ -50,6 +50,9 @@ public sealed class EfCoreAdminDataAdapter : IAdminDataAdapter, IAdminEnhancemen
             resource.ModelType,
             source,
             Expression.Constant(normalized.PageSize));
+
+        // Project only the fields needed for the list view
+        source = ApplyProjection(source, resource);
         var rows = await ToListAsync(source, cancellationToken);
 
         return new AdminPage(
@@ -111,6 +114,17 @@ public sealed class EfCoreAdminDataAdapter : IAdminDataAdapter, IAdminEnhancemen
         var entity = await FindAsync(resource, key, cancellationToken)
             ?? throw new KeyNotFoundException(
                 $"No {resource.Name} row exists with key '{key}'.");
+
+        if (resource.DeleteValidator is not null)
+        {
+            var error = await resource.DeleteValidator(entity, cancellationToken);
+
+            if (error is not null)
+            {
+                throw new InvalidOperationException(error);
+            }
+        }
+
         var isDeleted = resource.ModelType.GetProperty("IsDeleted");
         var deletedAt = resource.ModelType.GetProperty("DeletedAt");
 
@@ -135,9 +149,26 @@ public sealed class EfCoreAdminDataAdapter : IAdminDataAdapter, IAdminEnhancemen
     public async Task<IReadOnlyList<AdminLookupOption>> GetLookupAsync(
         AdminResource resource,
         AdminRelation relation,
+        string? search = null,
         CancellationToken cancellationToken = default)
     {
         var source = CreateQuery(relation.RelatedType);
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var parameter = Expression.Parameter(relation.RelatedType, "entity");
+            var property = Expression.Property(parameter, relation.DisplayProperty);
+            var notNull = Expression.NotEqual(property, Expression.Constant(null, typeof(string)));
+            var contains = Expression.Call(
+                property,
+                nameof(string.Contains),
+                Type.EmptyTypes,
+                Expression.Constant(search));
+            var clause = Expression.AndAlso(notNull, contains);
+            var predicate = Expression.Lambda(clause, parameter);
+            source = QueryableMethod("Where", relation.RelatedType, source, predicate);
+        }
+
         var rows = await ToListAsync(source, cancellationToken);
 
         return rows.Cast<object>()
@@ -150,6 +181,7 @@ public sealed class EfCoreAdminDataAdapter : IAdminDataAdapter, IAdminEnhancemen
                 return new AdminLookupOption(key!, Convert.ToString(label) ?? string.Empty);
             })
             .OrderBy(option => option.Label, StringComparer.OrdinalIgnoreCase)
+            .Take(50)
             .ToArray();
     }
 
@@ -319,6 +351,15 @@ public sealed class EfCoreAdminDataAdapter : IAdminDataAdapter, IAdminEnhancemen
             source,
             [selector],
             property.Type);
+    }
+
+    private static IQueryable ApplyProjection(
+        IQueryable source,
+        AdminResource resource)
+    {
+        // For now, just return source as-is since we need all fields for ToRow
+        // Column projection can be added later when we have a DTO type
+        return source;
     }
 
     private static IReadOnlyDictionary<string, object?> ToRow(
