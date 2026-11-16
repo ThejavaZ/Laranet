@@ -234,6 +234,27 @@
         });
     });
 
+    // Password visibility toggles
+    document.querySelectorAll("[data-password-toggle]").forEach(function (toggle) {
+        var inputId = toggle.getAttribute("aria-controls");
+        var input = inputId ? document.getElementById(inputId) : null;
+        var hiddenIcon = toggle.querySelector("[data-password-visible='false']");
+        var visibleIcon = toggle.querySelector("[data-password-visible='true']");
+
+        if (!input) return;
+
+        toggle.addEventListener("click", function () {
+            var isVisible = input.type === "text";
+            input.type = isVisible ? "password" : "text";
+            toggle.setAttribute("aria-pressed", String(!isVisible));
+            toggle.setAttribute(
+                "aria-label",
+                isVisible ? "Show password" : "Hide password");
+            if (hiddenIcon) hiddenIcon.hidden = !isVisible;
+            if (visibleIcon) visibleIcon.hidden = isVisible;
+        });
+    });
+
     // Table skeleton: show while a list navigation is in flight
     var tableSkeleton = document.querySelector("[data-table-skeleton]");
     var tableWrap = document.querySelector(".admin-table-wrap");

@@ -314,6 +314,30 @@ button, input, select, textarea {
     box-shadow: none;
 }
 
+.admin-password-toggle {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    border-radius: var(--admin-radius-sm);
+    color: var(--admin-muted);
+    cursor: pointer;
+    display: inline-flex;
+    flex-shrink: 0;
+    justify-content: center;
+    min-height: 32px;
+    min-width: 32px;
+    padding: 0;
+}
+
+.admin-password-toggle:hover {
+    color: var(--admin-text);
+}
+
+.admin-password-toggle:focus-visible {
+    outline: 2px solid var(--admin-primary);
+    outline-offset: 2px;
+}
+
 .admin-login-submit {
     align-items: center;
     background: var(--admin-primary);
