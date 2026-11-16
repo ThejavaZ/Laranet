@@ -76,6 +76,7 @@ The current release line is `0.4.x`:
 | `0.3.1` | Seven production packages, including CRUD introspection | Published |
 | `0.4.0` | Ten production packages, including Admin packages | Published |
 | `0.4.4` | Seven production packages, including CLI improvements | Release candidate |
+| `0.4.5` | Seven production packages, including standalone Admin authentication | Published |
 
 `Laranet.Http` was introduced in `0.2.1`. Within a version line, patch releases are
 backward compatible and keep package versions synchronized.

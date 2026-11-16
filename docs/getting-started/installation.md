@@ -81,13 +81,13 @@ dotnet nuget add source "$(pwd)/artifacts/packages" --name laranet-local
 Then install packages with the version produced by the build:
 
 ```bash
-dotnet add package Laranet.Data --version 0.4.4
+dotnet add package Laranet.Data --version 0.4.5
 ```
 
 Install the locally built CLI:
 
 ```bash
-dotnet tool install --global Laranet.Cli --version 0.4.4 --add-source artifacts/packages
+dotnet tool install --global Laranet.Cli --version 0.4.5 --add-source artifacts/packages
 ```
 
 Alternatively, add project references directly to `src/` while working inside the

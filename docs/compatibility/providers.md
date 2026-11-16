@@ -4,7 +4,7 @@
 
 This document describes the current provider compatibility of `Laranet.Data` and the
 EF Core integration, and the expectations for `IQueryable` providers. The matrix
-applies to the current `0.2.x` release line.
+applies to the current `0.4.x` release line.
 
 `Laranet.Data` is provider-neutral. It builds standard `Queryable` expression trees
 and does not reference Entity Framework Core, ASP.NET Core, or any database provider.

@@ -70,7 +70,7 @@ Breaking changes must be explicitly documented and reflected in the version numb
 
 ## 4. Initial Release
 
-The initial public release was `0.1.0`. The current `0.3.x` line contains the
+The initial public release was `0.1.0`. The current `0.4.x` line contains the
 published implementation of Laranet's functionality, including `Laranet.Http`.
 
 Each release's scope is defined by the features included in it and documented in the
@@ -108,8 +108,8 @@ Laranet versions do not correspond directly to .NET versions.
 
 For example:
 
-- Laranet `0.2.x` may target .NET 10.
-- A future Laranet `0.3.x` may continue targeting .NET 10.
+- Laranet `0.4.x` may target .NET 10.
+- A future Laranet `0.5.x` may continue targeting .NET 10.
 - A future Laranet release may support multiple .NET target frameworks.
 
 A new .NET release does not automatically require a new Laranet major or minor version.
