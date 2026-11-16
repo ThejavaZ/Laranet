@@ -53,6 +53,13 @@ them.
 - [CLI command map](development/cli-command-map.md)
 - [Admin prototype](guides/admin.md)
 
+## FAQ
+
+Answers to common questions about installation, packages, queries, versioning,
+and the admin prototype.
+
+- [FAQ](faq.md)
+
 ## API Reference
 
 Reference for the public API of every published package and the packages in
