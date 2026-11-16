@@ -10,9 +10,9 @@ public static class ProductAdminResource
         typeof(Product),
         [
             new AdminField("Id", "ID", typeof(int), IsKey: true, IsReadOnly: true),
-            new AdminField("Name", "Name", typeof(string)),
-            new AdminField("Price", "Price", typeof(decimal)),
-            new AdminField("IsActive", "Active", typeof(bool)),
+            new AdminField("Name", "Name", typeof(string), IsSearchable: true, IsOrderable: true),
+            new AdminField("Price", "Price", typeof(decimal), IsOrderable: true),
+            new AdminField("IsActive", "Active", typeof(bool), IsOrderable: true),
         ],
         [
             new AdminFilter("Name", "Name", typeof(string)),
