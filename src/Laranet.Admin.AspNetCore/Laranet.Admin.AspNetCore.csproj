@@ -8,7 +8,7 @@
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 
     <PackageId>Laranet.Admin.AspNetCore</PackageId>
-    <Version>0.4.4</Version>
+    <Version>0.4.5</Version>
     <Description>Experimental Razor Pages integration for Laranet administrative resources.</Description>
     <Authors>TheJavaZ</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
