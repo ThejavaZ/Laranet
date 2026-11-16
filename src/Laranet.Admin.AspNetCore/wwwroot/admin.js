@@ -87,23 +87,57 @@
 
     // Modal confirmation
     var modalOverlay = document.querySelector("[data-modal-overlay]");
+    var modalDialog = document.querySelector("[data-modal-dialog]");
     var modalMessage = document.querySelector("[data-modal-message]");
     var modalConfirm = document.querySelector("[data-modal-confirm]");
     var modalCancel = document.querySelector("[data-modal-cancel]");
     var modalClose = document.querySelector("[data-modal-close]");
     var pendingForm = null;
+    var lastFocusedElement = null;
+
+    function isModalOpen() {
+        return modalOverlay !== null &&
+            modalOverlay.classList.contains("is-visible");
+    }
+
+    function getFocusableElements() {
+        if (!modalDialog) return [];
+
+        return Array.from(modalDialog.querySelectorAll(
+            'a[href], button:not([disabled]), input:not([disabled]), ' +
+            'select:not([disabled]), textarea:not([disabled]), ' +
+            '[tabindex]:not([tabindex="-1"])'
+        )).filter(function (element) {
+            return element.getClientRects().length > 0;
+        });
+    }
 
     function openModal(message) {
         console.log("[admin.js] opening modal:", message);
+        lastFocusedElement = document.activeElement;
         if (modalMessage) modalMessage.textContent = message;
-        if (modalOverlay) modalOverlay.classList.add("is-visible");
+        if (modalOverlay) {
+            modalOverlay.classList.add("is-visible");
+            modalOverlay.setAttribute("aria-hidden", "false");
+        }
         document.body.style.overflow = "hidden";
+
+        var focusTarget = modalConfirm || getFocusableElements()[0] || modalDialog;
+        if (focusTarget) focusTarget.focus();
     }
 
     function closeModal() {
-        if (modalOverlay) modalOverlay.classList.remove("is-visible");
+        if (modalOverlay) {
+            modalOverlay.classList.remove("is-visible");
+            modalOverlay.setAttribute("aria-hidden", "true");
+        }
         document.body.style.overflow = "";
         pendingForm = null;
+
+        if (lastFocusedElement && document.contains(lastFocusedElement)) {
+            lastFocusedElement.focus();
+        }
+        lastFocusedElement = null;
     }
 
     if (modalCancel) modalCancel.addEventListener("click", closeModal);
@@ -113,6 +147,37 @@
             if (e.target === modalOverlay) closeModal();
         });
     }
+
+    document.addEventListener("keydown", function (event) {
+        if (!isModalOpen()) return;
+
+        if (event.key === "Escape") {
+            event.preventDefault();
+            closeModal();
+            return;
+        }
+
+        if (event.key !== "Tab") return;
+
+        var focusable = getFocusableElements();
+        if (focusable.length === 0) {
+            event.preventDefault();
+            if (modalDialog) modalDialog.focus();
+            return;
+        }
+
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        var active = document.activeElement;
+
+        if (event.shiftKey && (active === first || active === modalDialog)) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && active === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    });
 
     document.querySelectorAll("[data-confirm-form]").forEach(function (form) {
         form.addEventListener("submit", function (event) {

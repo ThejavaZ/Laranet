@@ -45,7 +45,7 @@ admin panel. Each item should be implemented and verified independently.
 ## Feedback visual
 
 - [x] **Toasts con tipos.** Success, error, warning, info con colores distintos.
-- [ ] **Modal con Escape y foco atrapado.** Cerrar con Escape, trap de foco.
+- [x] **Modal con Escape y foco atrapado.** Cerrar con Escape, trap de foco.
 - [x] **Loading skeletons.** Para tablas y cards.
 
 ## Seguridad
