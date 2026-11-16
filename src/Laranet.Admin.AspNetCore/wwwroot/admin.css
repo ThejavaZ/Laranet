@@ -721,6 +721,29 @@ body[data-theme="dark"] .admin-sidebar {
     padding: var(--admin-space-6);
 }
 
+.admin-fieldset {
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    display: grid;
+    gap: var(--admin-space-4);
+    margin: 0;
+    min-width: 0;
+    padding: var(--admin-space-4) var(--admin-space-5) var(--admin-space-5);
+}
+
+.admin-fieldset-legend {
+    color: var(--admin-text);
+    font-size: var(--admin-text-sm);
+    font-weight: 700;
+    padding: 0 var(--admin-space-2);
+}
+
+.admin-fieldset-body {
+    display: grid;
+    gap: var(--admin-space-4);
+    min-width: 0;
+}
+
 .admin-form-field {
     display: grid;
     gap: var(--admin-space-2);

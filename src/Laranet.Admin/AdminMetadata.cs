@@ -54,7 +54,8 @@ public sealed record AdminField(
     string? HelpText = null,
     string? DefaultValue = null,
     int? Rows = null,
-    string? LocalizationKey = null);
+    string? LocalizationKey = null,
+    string? Section = null);
 
 /// <summary>
 /// Describes a filter supported by an administrative resource.

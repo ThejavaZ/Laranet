@@ -15,6 +15,7 @@ public class AdminResourceBuilderTests
         Assert.Equal("Products", definition.Name);
         Assert.True(name.IsSearchable);
         Assert.True(name.IsOrderable);
+        Assert.Equal("General", name.Section);
         Assert.Equal("currency", price.Format);
         Assert.Contains(definition.Filters, filter => filter.Name == "IsActive");
         Assert.Equal("Name", definition.DefaultOrderField);
@@ -38,7 +39,7 @@ public class AdminResourceBuilderTests
         protected override void Configure(AdminResourceBuilder<Product> resource)
         {
             resource.Field(product => product.Id, "ID").Orderable();
-            resource.Field(product => product.Name).Searchable().Orderable();
+            resource.Field(product => product.Name).Searchable().Orderable().Section("General");
             resource.Field(product => product.Price).FormatAs("currency");
             resource.Filter(product => product.IsActive, "Active");
             resource.Action("Delete", "Delete product", mutatesData: true);

@@ -19,16 +19,16 @@
             }
         </div>
     }
-    @foreach (var field in Model.Resource.Form?.Fields ?? Model.Resource.Fields)
-    {
-        @await Html.PartialAsync(
-            "~/Areas/Admin/Pages/Components/_Field.cshtml",
-            new AdminFieldView(
-                field,
-                Model.L(field),
-                Model.Values.GetValueOrDefault(field.Name),
-                Model.Lookups.GetValueOrDefault(field.Name)))
+    @{
+        var fields = Model.Resource.Form?.Fields ?? Model.Resource.Fields;
     }
+    @await Html.PartialAsync(
+        "~/Areas/Admin/Pages/Components/_FormFields.cshtml",
+        new AdminFormView(
+            fields,
+            Model.L,
+            field => Model.Values.GetValueOrDefault(field.Name),
+            field => Model.Lookups.GetValueOrDefault(field.Name)))
     <div class="admin-form-actions">
         @await Html.PartialAsync(
             "~/Areas/Admin/Pages/Components/_Button.cshtml",

@@ -1,0 +1,40 @@
+@model AdminFormView
+@{
+    var groups = Model.Fields
+        .GroupBy(field => string.IsNullOrWhiteSpace(field.Section) ? null : field.Section)
+        .ToArray();
+}
+@foreach (var group in groups)
+{
+    @if (group.Key is null)
+    {
+        foreach (var field in group)
+        {
+            @await Html.PartialAsync(
+                "~/Areas/Admin/Pages/Components/_Field.cshtml",
+                new AdminFieldView(
+                    field,
+                    Model.Label(field),
+                    Model.Value(field),
+                    Model.Options(field)))
+        }
+    }
+    else
+    {
+        <fieldset class="admin-fieldset">
+            <legend class="admin-fieldset-legend">@group.Key</legend>
+            <div class="admin-fieldset-body">
+                @foreach (var field in group)
+                {
+                    @await Html.PartialAsync(
+                        "~/Areas/Admin/Pages/Components/_Field.cshtml",
+                        new AdminFieldView(
+                            field,
+                            Model.Label(field),
+                            Model.Value(field),
+                            Model.Options(field)))
+                }
+            </div>
+        </fieldset>
+    }
+}

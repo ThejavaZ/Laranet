@@ -234,6 +234,12 @@ public sealed class AdminResourceBuilder<TModel>
         fields[index] = field with { LocalizationKey = key };
     }
 
+    internal void SetSection(int index, string? section)
+    {
+        var field = fields[index];
+        fields[index] = field with { Section = section };
+    }
+
     /// <summary>
     /// Sets a validator that runs before deletion.
     /// </summary>
@@ -351,6 +357,16 @@ public sealed class AdminFieldBuilder<TModel, TValue>
     public AdminFieldBuilder<TModel, TValue> Orderable()
     {
         owner.MarkOrderable(index);
+        return this;
+    }
+
+    /// <summary>
+    /// Groups the field under a named form section.
+    /// </summary>
+    public AdminFieldBuilder<TModel, TValue> Section(string section)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(section);
+        owner.SetSection(index, section);
         return this;
     }
 

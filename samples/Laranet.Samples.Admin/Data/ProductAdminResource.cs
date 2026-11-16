@@ -9,10 +9,10 @@ public static class ProductAdminResource
         "Products",
         typeof(Product),
         [
-            new AdminField("Id", "ID", typeof(int), IsKey: true, IsReadOnly: true),
-            new AdminField("Name", "Name", typeof(string), IsSearchable: true, IsOrderable: true),
-            new AdminField("Price", "Price", typeof(decimal), IsOrderable: true),
-            new AdminField("IsActive", "Active", typeof(bool), IsOrderable: true),
+            new AdminField("Id", "ID", typeof(int), IsKey: true, IsReadOnly: true, Section: "Product"),
+            new AdminField("Name", "Name", typeof(string), IsSearchable: true, IsOrderable: true, Section: "Product"),
+            new AdminField("Price", "Price", typeof(decimal), IsOrderable: true, Section: "Pricing"),
+            new AdminField("IsActive", "Active", typeof(bool), IsOrderable: true, Section: "Pricing"),
         ],
         [
             new AdminFilter("Name", "Name", typeof(string)),

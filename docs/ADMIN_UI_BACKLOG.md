@@ -32,7 +32,7 @@ admin panel. Each item should be implemented and verified independently.
 - [x] **Validación en cliente.** `type="number"` con `step`, `required`, `min`, `max`, `maxlength`. Estados de error visibles (borde rojo y mensaje).
 - [x] **Checkbox booleano refleja valor actual.** `checked` attribute en Edit.
 - [x] **Estados de error visibles.** Borde rojo y mensaje debajo del campo.
-- [ ] **Secciones/fieldsets** en formularios largos.
+- [x] **Secciones/fieldsets** en formularios largos.
 - [x] **Indicador de campo requerido** (`*`).
 
 ## Paginación y navegación

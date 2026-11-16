@@ -93,3 +93,16 @@ public sealed record AdminEmptyStateView(
     string? ActionLabel = null,
     string? ActionHref = null,
     string? Icon = null);
+
+/// <summary>
+/// Describes the fields rendered for an admin resource form.
+/// </summary>
+/// <param name="Fields">The fields to render.</param>
+/// <param name="Label">Resolves a localized field label.</param>
+/// <param name="Value">Resolves the current field value.</param>
+/// <param name="Options">Resolves the optional relationship options.</param>
+public sealed record AdminFormView(
+    IReadOnlyList<AdminField> Fields,
+    Func<AdminField, string> Label,
+    Func<AdminField, object?> Value,
+    Func<AdminField, IReadOnlyList<AdminLookupOption>?> Options);
