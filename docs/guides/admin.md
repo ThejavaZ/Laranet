@@ -163,7 +163,7 @@ panel does not ship its own identity store: it authenticates through the
 services registered by `AddLaranetAdminAuthentication(...)`, where users are
 provided by configuration (`options.AddUser(...)`) or by an application-provided
 `IAdminUserStore`. The complete wiring is validated in
-[`Laranet.Samples.Admin`](../samples/Laranet.Samples.Admin).
+[`Laranet.Samples.Admin`](../../samples/Laranet.Samples.Admin).
 
 ## Auto-discovery
 
