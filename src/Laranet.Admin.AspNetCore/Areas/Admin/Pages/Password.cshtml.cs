@@ -56,7 +56,11 @@ public sealed class PasswordModel(
         }
 
         await users.SaveAsync(
-            user with { PasswordHash = passwordHasher.Hash(NewPassword) },
+            user with
+            {
+                PasswordHash = passwordHasher.Hash(NewPassword),
+                SecurityStamp = Guid.NewGuid().ToString("N"),
+            },
             cancellationToken);
 
         await HttpContext.SignOutAsync(AdminAuthenticationDefaults.Scheme);

@@ -49,11 +49,24 @@ public sealed class LoginModel(
         }
 
         rateLimiter.Reset(key);
+        var authenticatedUser = user!;
+        if (string.IsNullOrWhiteSpace(authenticatedUser.SecurityStamp))
+        {
+            authenticatedUser = authenticatedUser with
+            {
+                SecurityStamp = Guid.NewGuid().ToString("N"),
+            };
+            await users.SaveAsync(authenticatedUser, cancellationToken);
+        }
+
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, user!.UserName),
-            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.NameIdentifier, authenticatedUser.UserName),
+            new Claim(ClaimTypes.Name, authenticatedUser.UserName),
             new Claim(ClaimTypes.Role, "Admin"),
+            new Claim(
+                AdminAuthenticationClaimTypes.SecurityStamp,
+                authenticatedUser.SecurityStamp!),
         };
 
         await HttpContext.SignInAsync(

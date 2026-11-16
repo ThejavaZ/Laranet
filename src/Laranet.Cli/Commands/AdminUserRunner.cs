@@ -77,7 +77,8 @@ internal static class AdminUserRunner
                         await store.SaveAsync(
                             new AdminUser(
                                 userName,
-                                passwordHasher.Hash(password)),
+                                passwordHasher.Hash(password),
+                                SecurityStamp: Guid.NewGuid().ToString("N")),
                             cancellationToken);
                     }
                 }

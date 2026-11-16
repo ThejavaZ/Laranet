@@ -25,7 +25,19 @@ public static class AdminAuthenticationDefaults
 public sealed record AdminUser(
     string UserName,
     string PasswordHash,
-    bool IsActive = true);
+    bool IsActive = true,
+    string? SecurityStamp = null);
+
+/// <summary>
+/// Contains claims used by the standalone Admin authentication cookie.
+/// </summary>
+public static class AdminAuthenticationClaimTypes
+{
+    /// <summary>
+    /// Gets the claim containing the user's session security stamp.
+    /// </summary>
+    public const string SecurityStamp = "laranet_admin_security_stamp";
+}
 
 /// <summary>
 /// Looks up users for the standalone Admin login.
@@ -167,7 +179,10 @@ public static class AdminAuthenticationServiceCollectionExtensions
 
         var hasher = new Pbkdf2AdminPasswordHasher();
         var users = options.Users
-            .Select(user => new AdminUser(user.UserName, hasher.Hash(user.Password)))
+            .Select(user => new AdminUser(
+                user.UserName,
+                hasher.Hash(user.Password),
+                SecurityStamp: Guid.NewGuid().ToString("N")))
             .ToArray();
 
         services.AddSingleton(options);
@@ -178,6 +193,7 @@ public static class AdminAuthenticationServiceCollectionExtensions
             new InMemoryAdminLoginRateLimiter(
                 options.MaxFailedAttempts,
                 options.LockoutDuration));
+        services.AddScoped<AdminCookieEvents>();
         services.AddAuthentication(authentication =>
             {
                 authentication.DefaultAuthenticateScheme = AdminAuthenticationDefaults.Scheme;
@@ -194,10 +210,44 @@ public static class AdminAuthenticationServiceCollectionExtensions
                 cookie.SlidingExpiration = true;
                 cookie.LoginPath = options.LoginPath;
                 cookie.ReturnUrlParameter = "returnUrl";
+                cookie.EventsType = typeof(AdminCookieEvents);
             });
 
         services.AddAuthorization();
         return services;
+    }
+}
+
+internal sealed class AdminCookieEvents(IAdminUserStore users)
+    : CookieAuthenticationEvents
+{
+    public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
+    {
+        var userName = context.Principal?.Identity?.Name;
+        var stamp = context.Principal?
+            .FindFirst(AdminAuthenticationClaimTypes.SecurityStamp)?
+            .Value;
+
+        if (string.IsNullOrWhiteSpace(userName) ||
+            string.IsNullOrWhiteSpace(stamp))
+        {
+            await RejectAsync(context);
+            return;
+        }
+
+        var user = await users.FindByUserNameAsync(userName, context.HttpContext.RequestAborted);
+        if (user is null ||
+            !user.IsActive ||
+            !string.Equals(user.SecurityStamp, stamp, StringComparison.Ordinal))
+        {
+            await RejectAsync(context);
+        }
+    }
+
+    private static async Task RejectAsync(CookieValidatePrincipalContext context)
+    {
+        context.RejectPrincipal();
+        await context.HttpContext.SignOutAsync(AdminAuthenticationDefaults.Scheme);
     }
 }
 

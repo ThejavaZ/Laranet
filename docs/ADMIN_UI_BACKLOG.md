@@ -67,7 +67,7 @@ admin panel. Each item should be implemented and verified independently.
 - [x] **Comando `admin:user` independiente de Identity.** Crear o actualizar el administrador inicial desde configuración o variables de entorno.
 - [x] **Cambio de contraseña.** Requerir la contraseña actual y aplicar las mismas reglas de hashing.
 - [x] **Bloqueo y rate limiting del login.** Limitar intentos y aplicar bloqueo temporal sin revelar si el usuario existe.
-- [ ] **Expiración y revocación de sesiones.** Cierre por inactividad, logout efectivo e invalidación de sesiones.
+- [x] **Expiración y revocación de sesiones.** Cookie con expiración deslizante, logout efectivo y `SecurityStamp` validado para invalidar sesiones tras cambio de contraseña.
 
 ### Autorización granular
 
