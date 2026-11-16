@@ -9,7 +9,8 @@ namespace Laranet.Admin.AspNetCore.Areas.Admin.Pages;
 [AllowAnonymous]
 public sealed class LoginModel(
     IAdminUserStore users,
-    IAdminPasswordHasher passwordHasher) : PageModel
+    IAdminPasswordHasher passwordHasher,
+    IAdminLoginRateLimiter rateLimiter) : PageModel
 {
     [BindProperty]
     public string UserName { get; set; } = string.Empty;
@@ -33,17 +34,21 @@ public sealed class LoginModel(
             return Page();
         }
 
+        var key = $"{HttpContext.Connection.RemoteIpAddress}|{UserName.Trim()}";
         var user = await users.FindByUserNameAsync(UserName, cancellationToken);
-        var valid = user is not null &&
+        var valid = rateLimiter.IsAllowed(key) &&
+            user is not null &&
             user.IsActive &&
             passwordHasher.Verify(Password, user.PasswordHash);
 
         if (!valid)
         {
+            rateLimiter.RegisterFailure(key);
             ModelState.AddModelError(string.Empty, "Invalid username or password.");
             return Page();
         }
 
+        rateLimiter.Reset(key);
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user!.UserName),

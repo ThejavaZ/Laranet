@@ -101,14 +101,16 @@ internal static class AdminCheckRunner
                             Path.AltDirectorySeparatorChar).Any(segment => segment is "bin" or "obj"))
                         .Select(File.ReadAllText));
 
-                // 2. Check Identity
+                // 2. Check authentication
                 if (!allSource.Contains("AddDefaultIdentity", StringComparison.Ordinal)
-                    && !allSource.Contains("AddIdentity", StringComparison.Ordinal))
+                    && !allSource.Contains("AddIdentity", StringComparison.Ordinal)
+                    && !allSource.Contains("AddLaranetAdminAuthentication", StringComparison.Ordinal)
+                    && !allSource.Contains("AddAuthentication", StringComparison.Ordinal))
                 {
                     diagnostics.Add(new AdminCheckDiagnostic(
                         "ADMIN003",
                         "warning",
-                        "ASP.NET Core Identity is not configured. Admin requires authentication.",
+                        "No authentication is configured. AddLaranetAdminAuthentication or another ASP.NET Core authentication scheme.",
                         projectFile));
                 }
 

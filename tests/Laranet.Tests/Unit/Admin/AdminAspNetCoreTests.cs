@@ -40,5 +40,31 @@ public class AdminAspNetCoreTests
         Assert.False(hasher.Verify("wrong password", user.PasswordHash));
         Assert.NotNull(provider.GetRequiredService<
             Microsoft.AspNetCore.Authentication.IAuthenticationService>());
+
+        await store.SaveAsync(user with { IsActive = false });
+        Assert.False((await store.FindByUserNameAsync("admin"))!.IsActive);
+    }
+
+    [Fact]
+    public void AddLaranetAdminAuthentication_ShouldLockRepeatedFailures()
+    {
+        var services = new ServiceCollection();
+
+        services.AddLaranetAdminAuthentication(options =>
+        {
+            options.MaxFailedAttempts = 2;
+            options.LockoutDuration = TimeSpan.FromMinutes(1);
+        });
+
+        using var provider = services.BuildServiceProvider();
+        var limiter = provider.GetRequiredService<IAdminLoginRateLimiter>();
+
+        limiter.RegisterFailure("client|admin");
+        Assert.True(limiter.IsAllowed("client|admin"));
+        limiter.RegisterFailure("client|admin");
+
+        Assert.False(limiter.IsAllowed("client|admin"));
+        limiter.Reset("client|admin");
+        Assert.True(limiter.IsAllowed("client|admin"));
     }
 }

@@ -52,6 +52,9 @@
 
         @if (isAuthenticated && logoutPath is not null)
         {
+            <a class="admin-logout-button" href="@LinkGenerator.GetPathByPage(Context, page: "/Password")">
+                Change password
+            </a>
             <form method="post" action="@logoutPath" class="admin-logout-form">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="admin-logout-button">

@@ -44,10 +44,12 @@ internal static class AdminInstallRunner
                 5. Create your first resource: `laranet admin:resource <Entity>`
                 6. Run the app and visit /admin/<ResourceName>
 
-                ## Authentication
+                 ## Authentication
 
-                Configure ASP.NET Core Identity or your existing authentication
-                before using the admin panel in production.
+                 For a standalone development login, call
+                 `builder.Services.AddLaranetAdminAuthentication(...)` and configure
+                 an `IAdminUserStore`. You can also use your existing ASP.NET Core
+                 authentication scheme. Do not use the in-memory store in production.
                 """));
 
             var writer = new GenerationWriter(output, error, outputDirectory);

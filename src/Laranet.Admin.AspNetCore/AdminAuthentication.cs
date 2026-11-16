@@ -38,6 +38,13 @@ public interface IAdminUserStore
     Task<AdminUser?> FindByUserNameAsync(
         string userName,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Creates or updates a user.
+    /// </summary>
+    Task SaveAsync(
+        AdminUser user,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -88,6 +95,16 @@ public sealed class AdminAuthenticationOptions
     /// </summary>
     public CookieSecurePolicy CookieSecurePolicy { get; set; } =
         CookieSecurePolicy.SameAsRequest;
+
+    /// <summary>
+    /// Gets or sets the number of failed attempts allowed in the lockout window.
+    /// </summary>
+    public int MaxFailedAttempts { get; set; } = 5;
+
+    /// <summary>
+    /// Gets or sets the temporary lockout duration.
+    /// </summary>
+    public TimeSpan LockoutDuration { get; set; } = TimeSpan.FromMinutes(5);
 
     /// <summary>
     /// Adds an in-memory user intended for development and small demonstrations.
@@ -141,6 +158,13 @@ public static class AdminAuthenticationServiceCollectionExtensions
                 nameof(configure));
         }
 
+        if (options.MaxFailedAttempts <= 0 || options.LockoutDuration <= TimeSpan.Zero)
+        {
+            throw new ArgumentException(
+                "Login rate limiting values must be positive.",
+                nameof(configure));
+        }
+
         var hasher = new Pbkdf2AdminPasswordHasher();
         var users = options.Users
             .Select(user => new AdminUser(user.UserName, hasher.Hash(user.Password)))
@@ -150,6 +174,10 @@ public static class AdminAuthenticationServiceCollectionExtensions
         services.TryAddSingleton<IAdminPasswordHasher>(hasher);
         services.TryAddSingleton<IAdminUserStore>(
             new InMemoryAdminUserStore(users));
+        services.TryAddSingleton<IAdminLoginRateLimiter>(
+            new InMemoryAdminLoginRateLimiter(
+                options.MaxFailedAttempts,
+                options.LockoutDuration));
         services.AddAuthentication(authentication =>
             {
                 authentication.DefaultAuthenticateScheme = AdminAuthenticationDefaults.Scheme;
@@ -173,17 +201,107 @@ public static class AdminAuthenticationServiceCollectionExtensions
     }
 }
 
+/// <summary>
+/// Limits repeated failed Admin login attempts.
+/// </summary>
+public interface IAdminLoginRateLimiter
+{
+    /// <summary>
+    /// Determines whether a login attempt is currently allowed.
+    /// </summary>
+    bool IsAllowed(string key);
+
+    /// <summary>
+    /// Records a failed login attempt.
+    /// </summary>
+    void RegisterFailure(string key);
+
+    /// <summary>
+    /// Clears failures after a successful login.
+    /// </summary>
+    void Reset(string key);
+}
+
+internal sealed class InMemoryAdminLoginRateLimiter(
+    int maxFailedAttempts,
+    TimeSpan lockoutDuration) : IAdminLoginRateLimiter
+{
+    private readonly object sync = new();
+    private readonly Dictionary<string, FailureState> failures =
+        new(StringComparer.Ordinal);
+
+    public bool IsAllowed(string key)
+    {
+        lock (sync)
+        {
+            if (!failures.TryGetValue(key, out var state))
+            {
+                return true;
+            }
+
+            if (state.LockedUntil <= DateTimeOffset.UtcNow)
+            {
+                failures.Remove(key);
+                return true;
+            }
+
+            return state.Count < maxFailedAttempts;
+        }
+    }
+
+    public void RegisterFailure(string key)
+    {
+        lock (sync)
+        {
+            failures.TryGetValue(key, out var state);
+            failures[key] = new FailureState(
+                state.Count + 1,
+                DateTimeOffset.UtcNow.Add(lockoutDuration));
+        }
+    }
+
+    public void Reset(string key)
+    {
+        lock (sync)
+        {
+            failures.Remove(key);
+        }
+    }
+
+    private readonly record struct FailureState(
+        int Count,
+        DateTimeOffset LockedUntil);
+}
+
 internal sealed class InMemoryAdminUserStore(IReadOnlyList<AdminUser> users)
     : IAdminUserStore
 {
+    private readonly object sync = new();
+    private readonly Dictionary<string, AdminUser> entries =
+        users.ToDictionary(user => user.UserName, StringComparer.OrdinalIgnoreCase);
+
     public Task<AdminUser?> FindByUserNameAsync(
         string userName,
         CancellationToken cancellationToken = default)
     {
-        var user = users.FirstOrDefault(item =>
-            string.Equals(item.UserName, userName.Trim(), StringComparison.OrdinalIgnoreCase));
+        AdminUser? user;
+        lock (sync)
+        {
+            entries.TryGetValue(userName.Trim(), out user);
+        }
 
         return Task.FromResult(user);
+    }
+
+    public Task SaveAsync(
+        AdminUser user,
+        CancellationToken cancellationToken = default)
+    {
+        lock (sync)
+        {
+            entries[user.UserName] = user;
+        }
+        return Task.CompletedTask;
     }
 }
 

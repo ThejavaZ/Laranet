@@ -45,14 +45,14 @@ internal static class AdminUserRunner
                 "Seeders");
 
             var content = $$"""
-                using Microsoft.AspNetCore.Identity;
+                using Laranet.Admin.AspNetCore;
                 using Microsoft.Extensions.Configuration;
 
                 namespace {{target.Namespace}};
 
                 /// <summary>
-                /// Seeds the first administrator using credentials from
-                /// configuration or environment variables.
+                    /// Seeds an administrator using credentials from configuration
+                    /// or environment variables.
                 /// </summary>
                 public static class {{seederName}}
                 {
@@ -60,42 +60,25 @@ internal static class AdminUserRunner
                         IServiceProvider services,
                         CancellationToken cancellationToken = default)
                     {
-                        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+                        var store = services.GetRequiredService<IAdminUserStore>();
+                        var passwordHasher = services.GetRequiredService<IAdminPasswordHasher>();
                         var configuration = services.GetRequiredService<IConfiguration>();
 
-                        var email = configuration["Admin:Email"]
-                            ?? Environment.GetEnvironmentVariable("ADMIN_EMAIL")
+                        var userName = configuration["Admin:User"]
+                            ?? Environment.GetEnvironmentVariable("ADMIN_USER")
                             ?? throw new InvalidOperationException(
-                                "Set Admin:Email in configuration or the ADMIN_EMAIL environment variable.");
+                                "Set Admin:User in configuration or the ADMIN_USER environment variable.");
 
                         var password = configuration["Admin:Password"]
                             ?? Environment.GetEnvironmentVariable("ADMIN_PASSWORD")
                             ?? throw new InvalidOperationException(
                                 "Set Admin:Password in configuration or the ADMIN_PASSWORD environment variable.");
 
-                        var existing = await userManager.FindByEmailAsync(email);
-
-                        if (existing is not null)
-                        {
-                            return;
-                        }
-
-                        var user = new IdentityUser
-                        {
-                            UserName = email,
-                            Email = email,
-                            EmailConfirmed = true,
-                        };
-
-                        var result = await userManager.CreateAsync(user, password);
-
-                        if (!result.Succeeded)
-                        {
-                            throw new InvalidOperationException(
-                                string.Join("; ", result.Errors.Select(error => error.Description)));
-                        }
-
-                        await userManager.AddToRoleAsync(user, "Admin");
+                        await store.SaveAsync(
+                            new AdminUser(
+                                userName,
+                                passwordHasher.Hash(password)),
+                            cancellationToken);
                     }
                 }
                 """;
