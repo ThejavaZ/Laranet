@@ -34,6 +34,26 @@ It does not include EF Core, Identity, a database provider, a custom view engine
 JavaScript framework. The API is experimental and is not part of the current release
 train.
 
+### Standalone authentication
+
+The package includes an optional cookie-based login that does not depend on ASP.NET Core
+Identity:
+
+```csharp
+builder.Services.AddLaranetAdminAuthentication(options =>
+{
+    options.AddUser(
+        builder.Configuration["Admin:User"] ?? "admin",
+        builder.Configuration["Admin:Password"]
+            ?? throw new InvalidOperationException("Configure Admin:Password."));
+});
+```
+
+This in-memory user store is intended for development and demonstrations. Production
+applications should register an `IAdminUserStore` backed by persistent storage before
+calling `AddLaranetAdminAuthentication`. The login is available at `/admin/login` and
+uses a protected `Laranet.Admin` cookie.
+
 ```csharp
 builder.Services.AddLaranetAdmin();
 builder.Services.AddRazorPages();

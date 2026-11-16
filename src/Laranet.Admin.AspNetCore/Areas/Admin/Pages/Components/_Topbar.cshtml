@@ -4,12 +4,11 @@
     var isAuthenticated = User.Identity?.IsAuthenticated == true;
     var logoutPath = LinkGenerator.GetPathByPage(
         Context,
-        page: "/Account/Logout",
-        values: new { area = "Identity", returnUrl = "/admin" });
+        page: "/Logout");
     var loginPath = LinkGenerator.GetPathByPage(
         Context,
-        page: "/Account/Login",
-        values: new { area = "Identity", returnUrl = "/admin" });
+        page: "/Login",
+        values: new { returnUrl = Context.Request.PathBase + Context.Request.Path });
 }
 <header class="admin-topbar">
     <button class="admin-hamburger" type="button" data-hamburger aria-label="Toggle navigation" aria-expanded="false">

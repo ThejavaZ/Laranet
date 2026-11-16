@@ -59,11 +59,11 @@ admin panel. Each item should be implemented and verified independently.
 
 ### Autenticación propia
 
-- [ ] **Login propio del Admin sin Identity.** Página, modelo, validación y mensajes de error.
-- [ ] **Logout propio del Admin.** Endpoint POST con antiforgery y sin depender de `/Identity/Account/Logout`.
-- [ ] **Cookie de autenticación propia.** Nombre, expiración, `HttpOnly`, `Secure`, `SameSite` y renovación configurables.
+- [x] **Login propio del Admin sin Identity.** Página, modelo, validación y mensajes de error.
+- [x] **Logout propio del Admin.** Endpoint POST con antiforgery y sin depender de `/Identity/Account/Logout`.
+- [x] **Cookie de autenticación propia.** Nombre, expiración, `HttpOnly`, `Secure`, `SameSite` y renovación configurables.
 - [ ] **Usuarios administrativos.** Modelo, almacenamiento, estado activo/inactivo y claims mínimos.
-- [ ] **Hash seguro de contraseñas.** Usar un hasher de .NET sin incorporar el sistema completo de Identity.
+- [x] **Hash seguro de contraseñas.** Usar PBKDF2-SHA256 sin incorporar el sistema completo de Identity.
 - [ ] **Comando `admin:user` independiente de Identity.** Crear o actualizar el administrador inicial desde configuración o variables de entorno.
 - [ ] **Cambio de contraseña.** Requerir la contraseña actual y aplicar las mismas reglas de hashing.
 - [ ] **Bloqueo y rate limiting del login.** Limitar intentos y aplicar bloqueo temporal sin revelar si el usuario existe.

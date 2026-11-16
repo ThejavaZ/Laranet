@@ -20,4 +20,25 @@ public class AdminAspNetCoreTests
             provider.GetRequiredService<IAdminResourceRegistry>());
         Assert.NotNull(provider.GetRequiredService<IAdminAuthorization>());
     }
+
+    [Fact]
+    public async Task AddLaranetAdminAuthentication_ShouldRegisterStandaloneCookieAndUserStore()
+    {
+        var services = new ServiceCollection();
+
+        services.AddLaranetAdminAuthentication(options =>
+            options.AddUser("admin", "correct horse battery staple"));
+
+        using var provider = services.BuildServiceProvider();
+        var store = provider.GetRequiredService<IAdminUserStore>();
+        var hasher = provider.GetRequiredService<IAdminPasswordHasher>();
+        var user = await store.FindByUserNameAsync("ADMIN");
+
+        Assert.NotNull(user);
+        Assert.True(user.IsActive);
+        Assert.True(hasher.Verify("correct horse battery staple", user.PasswordHash));
+        Assert.False(hasher.Verify("wrong password", user.PasswordHash));
+        Assert.NotNull(provider.GetRequiredService<
+            Microsoft.AspNetCore.Authentication.IAuthenticationService>());
+    }
 }

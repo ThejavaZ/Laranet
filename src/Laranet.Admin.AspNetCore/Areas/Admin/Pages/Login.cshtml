@@ -1,0 +1,30 @@
+@page "/admin/login"
+@model Laranet.Admin.AspNetCore.Areas.Admin.Pages.LoginModel
+@{
+    Layout = "/Areas/Admin/Pages/Layouts/_AuthLayout.cshtml";
+    ViewData["Title"] = "Login";
+}
+
+<div class="admin-auth-card">
+    <div class="admin-auth-header">
+        <h1>Admin Login</h1>
+        <p>Sign in to manage your application.</p>
+    </div>
+
+    <form method="post" class="admin-form">
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div asp-validation-summary="ModelOnly" class="admin-alert admin-alert-error" role="alert"></div>
+
+        <label class="admin-field">
+            <span>Username</span>
+            <input asp-for="UserName" autocomplete="username" required autofocus />
+        </label>
+
+        <label class="admin-field">
+            <span>Password</span>
+            <input asp-for="Password" type="password" autocomplete="current-password" required />
+        </label>
+
+        <button class="admin-button" type="submit">Login</button>
+    </form>
+</div>
