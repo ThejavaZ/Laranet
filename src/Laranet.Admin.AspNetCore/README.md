@@ -89,6 +89,19 @@ Password recovery uses one-time expiring tokens through an
 nothing; applications must provide email or another delivery channel. TOTP MFA can
 be enabled at `/admin/mfa/setup` and is verified before the Admin cookie is issued.
 
+For EF Core applications, the optional
+`Laranet.Admin.EntityFrameworkCore` integration provides persistent users, MFA
+secrets, hashed recovery codes, and password reset tokens:
+
+```csharp
+builder.Services.AddDbContext<AdminAuthenticationDbContext>(options => ...);
+builder.Services.AddLaranetAdminEntityFrameworkCoreAuthentication();
+builder.Services.AddLaranetAdminAuthentication();
+```
+
+Register the EF Core store before the authentication extension so it replaces the
+development in-memory store.
+
 ```csharp
 builder.Services.AddLaranetAdmin();
 builder.Services.AddRazorPages();

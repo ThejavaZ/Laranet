@@ -8,6 +8,7 @@ namespace Laranet.Admin.AspNetCore.Areas.Admin.Pages;
 public sealed class MfaModel(
     IAdminUserStore users,
     IAdminMfaProvider mfa,
+    IAdminPasswordHasher passwordHasher,
     IAdminAuditSink audit) : PageModel
 {
     [BindProperty]
@@ -28,13 +29,27 @@ public sealed class MfaModel(
             ? null
             : await users.FindByUserNameAsync(userName, cancellationToken);
 
-        var valid = user is not null &&
+        var validTotp = user is not null &&
             user.IsActive &&
             user.MfaEnabled &&
             !string.IsNullOrWhiteSpace(user.MfaSecret) &&
             mfa.ValidateCode(user.MfaSecret, Code);
 
-        if (!valid)
+        var recoveryCodeIndex = -1;
+        if (user?.MfaRecoveryCodeHashes is { Count: > 0 } recoveryCodes)
+        {
+            for (var index = 0; index < recoveryCodes.Count; index++)
+            {
+                if (passwordHasher.Verify(Code, recoveryCodes[index]))
+                {
+                    recoveryCodeIndex = index;
+                    break;
+                }
+            }
+        }
+        var validRecovery = user is not null && recoveryCodeIndex >= 0;
+
+        if (!validTotp && !validRecovery)
         {
             TempData["AdminMfaUser"] = userName;
             TempData["AdminMfaReturnUrl"] = returnUrl;
@@ -49,11 +64,24 @@ public sealed class MfaModel(
             return Page();
         }
 
+        if (validRecovery)
+        {
+            var remainingCodes = user!.MfaRecoveryCodeHashes!
+                .Where((_, index) => index != recoveryCodeIndex)
+                .ToArray();
+            user = user with
+            {
+                MfaRecoveryCodeHashes = remainingCodes,
+                SecurityStamp = Guid.NewGuid().ToString("N"),
+            };
+            await users.SaveAsync(user, cancellationToken);
+        }
+
         await AdminSignIn.SignInAsync(HttpContext, user!);
         await AdminAudit.WriteSafeAsync(
             audit,
             HttpContext,
-            "mfa",
+            validRecovery ? "mfa-recovery-code" : "mfa",
             "success",
             cancellationToken: cancellationToken);
         return LocalRedirect(Url.IsLocalUrl(returnUrl) ? returnUrl : "/admin");

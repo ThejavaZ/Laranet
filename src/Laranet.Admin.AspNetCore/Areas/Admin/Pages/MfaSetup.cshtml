@@ -25,4 +25,14 @@
         </label>
         <button class="admin-button" type="submit">Enable MFA</button>
     </form>
+
+    @if (Model.RecoveryCodes.Count > 0)
+    {
+        <div class="admin-alert admin-alert-warning" role="alert">
+            <strong>Save these recovery codes now.</strong>
+            They are shown only once.
+            <code class="admin-recovery-codes">@string.Join(" ", Model.RecoveryCodes)</code>
+            <a class="admin-button-secondary" asp-page="/Login">Continue to login</a>
+        </div>
+    }
 </div>

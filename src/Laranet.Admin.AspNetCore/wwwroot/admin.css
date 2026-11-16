@@ -181,6 +181,19 @@ button, input, select, textarea {
     text-decoration: underline;
 }
 
+.admin-recovery-codes {
+    background: var(--admin-surface-alt);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-sm);
+    display: block;
+    font-family: var(--admin-font-mono);
+    line-height: 1.8;
+    margin: var(--admin-space-3) 0;
+    padding: var(--admin-space-3);
+    user-select: all;
+    word-break: break-word;
+}
+
 .admin-login-layout {
     background: var(--admin-surface);
     border: 1px solid var(--admin-border);

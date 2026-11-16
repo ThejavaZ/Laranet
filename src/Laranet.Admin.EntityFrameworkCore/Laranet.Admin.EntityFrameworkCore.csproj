@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Laranet.Admin/Laranet.Admin.csproj" />
+    <ProjectReference Include="../Laranet.Admin.AspNetCore/Laranet.Admin.AspNetCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

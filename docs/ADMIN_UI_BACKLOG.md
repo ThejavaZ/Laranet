@@ -81,8 +81,8 @@ admin panel. Each item should be implemented and verified independently.
 - [x] **Forgot password seguro.** Token de un solo uso, expiración corta, respuesta genérica, rate limiting y auditoría.
 - [x] **Reset administrativo de contraseña.** La CLI puede crear o actualizar una cuenta y rotar su contraseña.
 - [x] **MFA para cuentas administrativas.** TOTP compatible con aplicaciones autenticadoras y validación antes de emitir la sesión.
-- [ ] **Códigos de recuperación MFA.** Generar, mostrar una sola vez, almacenar hasheados y consumir individualmente.
-- [ ] **Proveedor persistente de recuperación y MFA.** Sustituir los stores en memoria por una integración de producción.
+- [x] **Códigos de recuperación MFA.** Generar, mostrar una sola vez, almacenar hasheados y consumir individualmente.
+- [x] **Proveedor persistente de recuperación y MFA.** Integración EF Core opcional para usuarios, secretos MFA, hashes de recuperación y tokens de reset.
 
 ### Autorización granular
 

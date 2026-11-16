@@ -9,6 +9,7 @@ namespace Laranet.Admin.AspNetCore.Areas.Admin.Pages;
 public sealed class MfaSetupModel(
     IAdminUserStore users,
     IAdminMfaProvider mfa,
+    IAdminPasswordHasher passwordHasher,
     IAdminAuditSink audit) : PageModel
 {
     [BindProperty]
@@ -17,6 +18,8 @@ public sealed class MfaSetupModel(
     public string Secret { get; private set; } = string.Empty;
 
     public string ProvisioningUri { get; private set; } = string.Empty;
+
+    public IReadOnlyList<string> RecoveryCodes { get; private set; } = [];
 
     public async Task<IActionResult> OnGetAsync(CancellationToken cancellationToken)
     {
@@ -56,23 +59,28 @@ public sealed class MfaSetupModel(
             return Page();
         }
 
+        RecoveryCodes = mfa.CreateRecoveryCodes();
+        var recoveryCodeHashes = RecoveryCodes
+            .Select(passwordHasher.Hash)
+            .ToArray();
+
         await users.SaveAsync(
             user with
             {
                 MfaEnabled = true,
                 MfaSecret = secret,
                 SecurityStamp = Guid.NewGuid().ToString("N"),
+                MfaRecoveryCodeHashes = recoveryCodeHashes,
             },
             cancellationToken);
-        await HttpContext.SignOutAsync(AdminAuthenticationDefaults.Scheme);
         await AdminAudit.WriteSafeAsync(
             audit,
             HttpContext,
             "mfa-setup",
             "success",
             cancellationToken: cancellationToken);
-        TempData["AdminMessage"] = "Two-step verification enabled. Sign in again.";
-        return RedirectToPage("/Login");
+        await HttpContext.SignOutAsync(AdminAuthenticationDefaults.Scheme);
+        return Page();
     }
 
     private Task<AdminUser?> CurrentUserAsync(CancellationToken cancellationToken) =>

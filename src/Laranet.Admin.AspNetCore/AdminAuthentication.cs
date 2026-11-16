@@ -31,7 +31,8 @@ public sealed record AdminUser(
     bool IsActive = true,
     string? SecurityStamp = null,
     bool MfaEnabled = false,
-    string? MfaSecret = null);
+    string? MfaSecret = null,
+    IReadOnlyList<string>? MfaRecoveryCodeHashes = null);
 
 /// <summary>
 /// Stores one-time password reset tokens.
@@ -87,6 +88,11 @@ public interface IAdminMfaProvider
     /// Validates a six-digit TOTP code.
     /// </summary>
     bool ValidateCode(string secret, string code);
+
+    /// <summary>
+    /// Creates one-time recovery codes.
+    /// </summary>
+    IReadOnlyList<string> CreateRecoveryCodes(int count = 8);
 }
 
 /// <summary>
@@ -641,6 +647,11 @@ internal sealed class TotpAdminMfaProvider : IAdminMfaProvider
 
         return false;
     }
+
+    public IReadOnlyList<string> CreateRecoveryCodes(int count = 8) =>
+        Enumerable.Range(0, count)
+            .Select(_ => Convert.ToHexString(RandomNumberGenerator.GetBytes(5)))
+            .ToArray();
 
     private static string ComputeCode(string secret, ulong counter)
     {
