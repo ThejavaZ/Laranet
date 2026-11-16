@@ -141,6 +141,30 @@ builder.Services.AddAuthorizationBuilder()
 roles, tokens, cookies, or antiforgery. Razor Pages supplies native antiforgery
 protection for mutating forms.
 
+## The panel
+
+`Laranet.Admin.AspNetCore` ships conventional Razor Pages under `/admin`:
+
+| Route | Page |
+| --- | --- |
+| `/admin` | Dashboard listing the resources the user is allowed to list |
+| `/admin/{resource}` | Resource list with search, filters, and pagination |
+| `/admin/{resource}/create` | Create form |
+| `/admin/{resource}/{key}` | Record details |
+| `/admin/{resource}/{key}/edit` | Edit form |
+| `/admin/login` | Login, protected by an in-memory rate limiter |
+| `/admin/logout` | Sign out |
+| `/admin/password`, `/admin/forgot-password`, `/admin/reset-password` | Password management |
+| `/admin/mfa`, `/admin/mfa/setup` | Two-factor authentication |
+
+Every page challenges unauthenticated requests and evaluates the resource's
+permission policy through `IAdminAuthorization` before rendering data. The
+panel does not ship its own identity store: it authenticates through the
+services registered by `AddLaranetAdminAuthentication(...)`, where users are
+provided by configuration (`options.AddUser(...)`) or by an application-provided
+`IAdminUserStore`. The complete wiring is validated in
+[`Laranet.Samples.Admin`](../samples/Laranet.Samples.Admin).
+
 ## Auto-discovery
 
 Resources can be auto-discovered from an assembly using the `AdminResourceAttribute`:
