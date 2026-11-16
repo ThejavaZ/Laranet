@@ -66,6 +66,32 @@ public class EfCoreAdminDataAdapterTests
         Assert.NotNull(entity.DeletedAt);
     }
 
+    [Fact]
+    public async Task Adapter_ShouldApplyValuesFromFields_WhenFormIsNotDefined()
+    {
+        await using var connection = new SqliteConnection("Data Source=:memory:");
+        await connection.OpenAsync();
+        await using var db = CreateDb(connection);
+        var adapter = new EfCoreAdminDataAdapter(db);
+
+        await adapter.CreateAsync(
+            ResourceWithoutForm,
+            new Dictionary<string, object?>
+            {
+                ["Id"] = "",
+                ["Name"] = "Keyboard",
+                ["Price"] = "99",
+                ["IsActive"] = "true",
+            });
+
+        var entity = await db.Products.SingleAsync();
+
+        Assert.Equal("Keyboard", entity.Name);
+        Assert.Equal(99m, entity.Price);
+        Assert.True(entity.IsActive);
+        Assert.False(entity.IsDeleted);
+    }
+
     private static AdminDbContext CreateDb(SqliteConnection connection)
     {
         var options = new DbContextOptionsBuilder<AdminDbContext>()
@@ -96,6 +122,20 @@ public class EfCoreAdminDataAdapterTests
             new AdminField("Price", "Price", typeof(decimal)),
             new AdminField("IsActive", "Active", typeof(bool)),
         ]));
+
+    private static AdminResource ResourceWithoutForm { get; } = new(
+        "Products",
+        typeof(AdminProduct),
+        [
+            new AdminField("Id", "ID", typeof(int), IsKey: true, IsReadOnly: true),
+            new AdminField("Name", "Name", typeof(string)),
+            new AdminField("Price", "Price", typeof(decimal)),
+            new AdminField("IsActive", "Active", typeof(bool)),
+            new AdminField("IsDeleted", "Deleted", typeof(bool), IsReadOnly: true),
+            new AdminField("DeletedAt", "Deleted at", typeof(DateTimeOffset?), IsReadOnly: true),
+        ],
+        [],
+        []);
 
     private sealed class AdminProduct
     {

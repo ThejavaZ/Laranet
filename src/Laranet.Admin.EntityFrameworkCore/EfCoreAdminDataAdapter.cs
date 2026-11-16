@@ -376,8 +376,13 @@ public sealed class EfCoreAdminDataAdapter : IAdminDataAdapter, IAdminEnhancemen
         object entity,
         IReadOnlyDictionary<string, object?> values)
     {
-        foreach (var field in resource.Form?.Fields ?? [])
+        foreach (var field in resource.Form?.Fields ?? resource.Fields)
         {
+            if (field.IsKey || field.IsReadOnly)
+            {
+                continue;
+            }
+
             if (!values.TryGetValue(field.Name, out var value))
             {
                 continue;
