@@ -60,11 +60,11 @@ admin panel. Each item should be implemented and verified independently.
 ## Código y mantenimiento
 
 - [x] **Mover `FormatValue` y `L(...)` a helper compartido.** (Ya existe `AdminPageModelHelper`).
-- [ ] **Propiedad `Singular` en `AdminResource`.** En lugar de `TrimEnd('s')`.
-- [ ] **Idioma consistente.** Decidir inglés o español para toda la UI.
+- [x] **Propiedad `Singular` en `AdminResource`.** En lugar de `TrimEnd('s')`.
+- [x] **Idioma consistente.** La UI base usa inglés de forma consistente.
 - [x] **Logout sin dependencia de Identity.** Revisar si el README lo documenta.
 - [x] **Badge "Development" desde `IWebHostEnvironment`.**
-- [ ] **Icono de dashboard por recurso.** No usar el mismo para todos.
+- [x] **Icono de dashboard por recurso.** No usar el mismo para todos.
 
 ## Lo que ya está bien ✅
 

@@ -101,8 +101,22 @@ public sealed record AdminResource(
     string? DefaultOrderField = null,
     bool DefaultOrderDescending = false,
     IReadOnlyList<AdminRelation>? Relations = null,
-    Func<object, CancellationToken, Task<string?>>? DeleteValidator = null)
+    Func<object, CancellationToken, Task<string?>>? DeleteValidator = null,
+    string? Singular = null,
+    string? Icon = null)
 {
+    /// <summary>
+    /// Gets the singular display name used for one record.
+    /// </summary>
+    public string SingularName => string.IsNullOrWhiteSpace(Singular)
+        ? DefaultSingularName(Name)
+        : Singular;
+
+    /// <summary>
+    /// Gets the dashboard icon name for the resource.
+    /// </summary>
+    public string IconName => string.IsNullOrWhiteSpace(Icon) ? "box" : Icon;
+
     /// <summary>
     /// Gets the field used as the resource key.
     /// </summary>
@@ -133,6 +147,27 @@ public sealed record AdminResource(
     /// Gets the configured relationships.
     /// </summary>
     public IReadOnlyList<AdminRelation> RelationDefinitions => Relations ?? [];
+
+    /// <summary>
+    /// Derives a singular name when the resource does not declare one.
+    /// </summary>
+    private static string DefaultSingularName(string name)
+    {
+        if (name.Length > 3 &&
+            name.EndsWith("ies", StringComparison.OrdinalIgnoreCase))
+        {
+            return name[..^3] + "y";
+        }
+
+        if (name.Length > 1 &&
+            name.EndsWith("s", StringComparison.Ordinal) &&
+            !name.EndsWith("ss", StringComparison.Ordinal))
+        {
+            return name[..^1];
+        }
+
+        return name;
+    }
 
     /// <summary>
     /// Validates the metadata before it is registered.

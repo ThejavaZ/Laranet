@@ -18,6 +18,18 @@ The Razor UI is organized by responsibility:
 Form fields are grouped into native `<fieldset>` sections when `AdminField.Section` is
 set, either through the record constructor or `Field(...).Section("Name")` in the builder.
 
+Resources can provide an explicit singular label and dashboard icon:
+
+```csharp
+new AdminResource(/* ... */, Singular: "Product", Icon: "box")
+```
+
+Typed resources can configure the same values by overriding `Singular` and `Icon`.
+Supported dashboard icons include `box`, `users`, `cart`, `file`, `tag`, `calendar`,
+`chart`, `settings`, `folder`, `key`, `shield`, and `globe`.
+
+The built-in admin UI uses English consistently for its labels, actions, and messages.
+
 It does not include EF Core, Identity, a database provider, a custom view engine, or a
 JavaScript framework. The API is experimental and is not part of the current release
 train.

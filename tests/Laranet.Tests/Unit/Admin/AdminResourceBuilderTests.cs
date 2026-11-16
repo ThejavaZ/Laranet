@@ -13,6 +13,8 @@ public class AdminResourceBuilderTests
         var price = Assert.Single(definition.Fields, field => field.Name == "Price");
 
         Assert.Equal("Products", definition.Name);
+        Assert.Equal("Product", definition.SingularName);
+        Assert.Equal("box", definition.IconName);
         Assert.True(name.IsSearchable);
         Assert.True(name.IsOrderable);
         Assert.Equal("General", name.Section);
@@ -34,6 +36,36 @@ public class AdminResourceBuilderTests
         Assert.Equal(typeof(int), definition.KeyField.Type);
     }
 
+    [Fact]
+    public void AdminResource_ShouldDeriveSingularAndDefaultIcon_WhenNotConfigured()
+    {
+        var definition = new AdminResource(
+            "Categories",
+            typeof(Product),
+            [new AdminField("Id", "ID", typeof(int), IsKey: true)],
+            [],
+            []);
+
+        Assert.Equal("Category", definition.SingularName);
+        Assert.Equal("box", definition.IconName);
+    }
+
+    [Fact]
+    public void AdminResource_ShouldUseExplicitSingularAndIcon_WhenConfigured()
+    {
+        var definition = new AdminResource(
+            "People",
+            typeof(Product),
+            [new AdminField("Id", "ID", typeof(int), IsKey: true)],
+            [],
+            [],
+            Singular: "Person",
+            Icon: "users");
+
+        Assert.Equal("Person", definition.SingularName);
+        Assert.Equal("users", definition.IconName);
+    }
+
     private sealed class ProductResource : AdminResource<Product>
     {
         protected override void Configure(AdminResourceBuilder<Product> resource)
@@ -46,6 +78,10 @@ public class AdminResourceBuilderTests
             resource.Permission("Admin.Products");
             resource.OrderBy(product => product.Name);
         }
+
+        protected override string? Singular => "Product";
+
+        protected override string? Icon => "box";
     }
 
     private sealed class Product

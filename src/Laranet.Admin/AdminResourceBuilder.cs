@@ -15,6 +15,8 @@ public sealed class AdminResourceBuilder<TModel>
     private string? permissionPolicy;
     private string? defaultOrder;
     private bool orderDescending;
+    private string? singular;
+    private string? icon;
     private Func<object, CancellationToken, Task<string?>>? deleteValidator;
 
     /// <summary>
@@ -106,6 +108,24 @@ public sealed class AdminResourceBuilder<TModel>
     }
 
     /// <summary>
+    /// Sets the singular display name used for one record.
+    /// </summary>
+    public void Singular(string singular)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(singular);
+        this.singular = singular;
+    }
+
+    /// <summary>
+    /// Sets the dashboard icon name used by the resource.
+    /// </summary>
+    public void Icon(string icon)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(icon);
+        this.icon = icon;
+    }
+
+    /// <summary>
     /// Sets the default ordering field.
     /// </summary>
     public void OrderBy<TValue>(
@@ -135,7 +155,9 @@ public sealed class AdminResourceBuilder<TModel>
             defaultOrder,
             orderDescending,
             relations,
-            deleteValidator);
+            deleteValidator,
+            singular,
+            icon);
     }
 
     internal void MarkSearchable(int index)
@@ -559,10 +581,30 @@ public abstract class AdminResource<TModel>
     /// </summary>
     protected virtual string ResourceName => typeof(TModel).Name + "s";
 
+    /// <summary>
+    /// Gets the optional singular display name used for one record.
+    /// </summary>
+    protected virtual string? Singular => null;
+
+    /// <summary>
+    /// Gets the optional dashboard icon name.
+    /// </summary>
+    protected virtual string? Icon => null;
+
     private AdminResource BuildDefinition()
     {
         var builder = new AdminResourceBuilder<TModel>();
         Configure(builder);
+
+        if (Singular is not null)
+        {
+            builder.Singular(Singular);
+        }
+
+        if (Icon is not null)
+        {
+            builder.Icon(Icon);
+        }
 
         return builder.Build(ResourceName);
     }

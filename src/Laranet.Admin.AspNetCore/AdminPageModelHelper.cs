@@ -51,15 +51,8 @@ internal static class AdminPageModelHelper
         };
     }
 
-    public static string SingularName(AdminResource resource)
-    {
-        var name = resource.Name;
-        if (name.EndsWith("s", StringComparison.Ordinal) && name.Length > 1)
-        {
-            return name[..^1];
-        }
-        return name;
-    }
+    public static string SingularName(AdminResource resource) =>
+        resource.SingularName;
 
     public static IReadOnlyDictionary<string, string?> ReadFilters(AdminResource resource, Microsoft.AspNetCore.Http.HttpRequest request)
     {

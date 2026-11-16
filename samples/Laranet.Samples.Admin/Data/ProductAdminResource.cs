@@ -23,5 +23,7 @@ public static class ProductAdminResource
             new AdminAction("Edit", "Edit product", MutatesData: true),
             new AdminAction("Delete", "Delete product", MutatesData: true),
         ],
-        "Admin.Products");
+        "Admin.Products",
+        Singular: "Product",
+        Icon: "box");
 }
