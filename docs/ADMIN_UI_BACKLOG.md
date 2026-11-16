@@ -71,12 +71,12 @@ admin panel. Each item should be implemented and verified independently.
 
 ### Autorización granular
 
-- [ ] **Proteger el dashboard.** No exponer recursos ni metadatos a usuarios anónimos.
-- [ ] **Filtrar recursos por autorización.** Mostrar únicamente los recursos cuyo permiso `List` esté autorizado.
-- [ ] **Usar `AdminOperation` en la autorización real.** Diferenciar `List`, `Read`, `Create`, `Update`, `Delete` y `BulkAction`.
-- [ ] **Permisos por recurso y operación.** Permitir políticas o claims como `Admin.Products.Update`.
-- [ ] **Política segura por defecto.** Denegar si no existe autenticación o autorización explícita.
-- [ ] **Eliminar el bypass anónimo del sample.** Permitirlo únicamente mediante una opción de demo explícita.
+- [x] **Proteger el dashboard.** No exponer recursos ni metadatos a usuarios anónimos.
+- [x] **Filtrar recursos por autorización.** Mostrar únicamente los recursos cuyo permiso `List` esté autorizado.
+- [x] **Usar `AdminOperation` en la autorización real.** Diferenciar `List`, `Read`, `Create`, `Update`, `Delete` y `BulkAction`.
+- [x] **Permisos por recurso y operación.** Permitir políticas o claims como `Admin.Products.Update`.
+- [x] **Política segura por defecto.** Denegar si no existe autenticación o autorización explícita.
+- [x] **Eliminar el bypass anónimo del sample.** El sample exige autenticación y registra políticas por operación.
 
 ### Protección web y auditoría
 

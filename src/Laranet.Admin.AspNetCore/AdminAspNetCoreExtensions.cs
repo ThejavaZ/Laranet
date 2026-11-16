@@ -29,7 +29,8 @@ public static class AdminAspNetCoreExtensions
 }
 
 internal sealed class AspNetCoreAdminAuthorization(
-    IAuthorizationService authorization)
+    IAuthorizationService authorization,
+    IAuthorizationPolicyProvider policies)
     : IAdminAuthorization
 {
     public async Task<bool> AuthorizeAsync(
@@ -38,14 +39,40 @@ internal sealed class AspNetCoreAdminAuthorization(
         AdminOperation operation,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(resource.PermissionPolicy))
+        if (principal.Identity?.IsAuthenticated != true)
         {
-            return principal.Identity?.IsAuthenticated == true;
+            return false;
         }
 
-        var result = await authorization.AuthorizeAsync(
-            principal,
-            resource.PermissionPolicy);
+        var operationPolicy = resource.PermissionFor(operation);
+        if (operationPolicy is null)
+        {
+            return false;
+        }
+
+        if (principal.HasClaim(
+                AdminPermissionClaimTypes.Permission,
+                operationPolicy))
+        {
+            return true;
+        }
+
+        var operationDefinition = await policies.GetPolicyAsync(operationPolicy);
+        if (operationDefinition is not null)
+        {
+            var operationResult = await authorization.AuthorizeAsync(
+                principal,
+                operationDefinition);
+            return operationResult.Succeeded;
+        }
+
+        var baseDefinition = await policies.GetPolicyAsync(resource.PermissionPolicy!);
+        if (baseDefinition is null)
+        {
+            return false;
+        }
+
+        var result = await authorization.AuthorizeAsync(principal, baseDefinition);
 
         return result.Succeeded;
     }

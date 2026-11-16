@@ -54,6 +54,26 @@ applications should register an `IAdminUserStore` backed by persistent storage b
 calling `AddLaranetAdminAuthentication`. The login is available at `/admin/login` and
 uses a protected `Laranet.Admin` cookie.
 
+### Granular authorization
+
+Each resource operation uses the conventional permission
+`{PermissionPolicy}.{Operation}`, for example `Admin.Products.Update`. Register
+operation-specific ASP.NET Core policies to enforce different permissions:
+
+```csharp
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("Admin.Products.List", policy => policy.RequireClaim(
+        AdminPermissionClaimTypes.Permission,
+        "Admin.Products.List"))
+    .AddPolicy("Admin.Products.Update", policy => policy.RequireClaim(
+        AdminPermissionClaimTypes.Permission,
+        "Admin.Products.Update"));
+```
+
+An authenticated principal may also carry the permission directly as a
+`laranet_admin_permission` claim. If no operation-specific policy exists, the
+resource's base policy is used; if neither exists, access is denied.
+
 ```csharp
 builder.Services.AddLaranetAdmin();
 builder.Services.AddRazorPages();

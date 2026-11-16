@@ -33,7 +33,7 @@ public sealed class EditModel(
         string key,
         CancellationToken cancellationToken)
     {
-        if (!TryGetResource(resource, AdminOperation.Read))
+        if (!TryGetResource(resource, AdminOperation.Update))
         {
             return ChallengeOrForbid();
         }

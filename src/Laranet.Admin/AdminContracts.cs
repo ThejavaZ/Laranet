@@ -128,3 +128,14 @@ public interface IAdminAuthorization
         AdminOperation operation,
         CancellationToken cancellationToken = default);
 }
+
+/// <summary>
+/// Defines claim types used by Admin authorization integrations.
+/// </summary>
+public static class AdminPermissionClaimTypes
+{
+    /// <summary>
+    /// Gets the claim type containing permission names.
+    /// </summary>
+    public const string Permission = "laranet_admin_permission";
+}

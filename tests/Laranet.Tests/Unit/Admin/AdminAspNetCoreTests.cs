@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Laranet.Admin;
 using Laranet.Admin.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,5 +67,53 @@ public class AdminAspNetCoreTests
         Assert.False(limiter.IsAllowed("client|admin"));
         limiter.Reset("client|admin");
         Assert.True(limiter.IsAllowed("client|admin"));
+    }
+
+    [Fact]
+    public async Task Authorization_ShouldRequireAuthenticationAndOperationPermission()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddLaranetAdmin();
+        services.AddAuthorizationBuilder()
+            .AddPolicy("Admin.Products.Update", policy =>
+                policy.RequireClaim(AdminPermissionClaimTypes.Permission, "Admin.Products.Update"));
+
+        using var provider = services.BuildServiceProvider();
+        var authorization = provider.GetRequiredService<IAdminAuthorization>();
+        var resource = new AdminResource(
+            "Products",
+            typeof(AuthProduct),
+            [new AdminField("Id", "ID", typeof(int), IsKey: true)],
+            [],
+            [],
+            PermissionPolicy: "Admin.Products");
+
+        var anonymous = new ClaimsPrincipal(new ClaimsIdentity());
+        var authenticated = new ClaimsPrincipal(new ClaimsIdentity(
+            [
+                new Claim(
+                    AdminPermissionClaimTypes.Permission,
+                    "Admin.Products.Update"),
+            ],
+            "test"));
+
+        Assert.False(await authorization.AuthorizeAsync(
+            anonymous,
+            resource,
+            AdminOperation.Update));
+        Assert.True(await authorization.AuthorizeAsync(
+            authenticated,
+            resource,
+            AdminOperation.Update));
+        Assert.False(await authorization.AuthorizeAsync(
+            authenticated,
+            resource,
+            AdminOperation.Delete));
+    }
+
+    private sealed class AuthProduct
+    {
+        public int Id { get; set; }
     }
 }

@@ -16,22 +16,16 @@ builder.Services
     .AddEntityFrameworkStores<AdminDbContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddLaranetAdmin();
-builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("Admin.Products", policy =>
-    {
-        if (builder.Environment.IsDevelopment())
-        {
-            policy.RequireAssertion(_ => true);
-        }
-        else
-        {
-            policy.RequireAuthenticatedUser();
-        }
-    });
+var authorizationBuilder = builder.Services.AddAuthorizationBuilder();
+foreach (var operation in Enum.GetValues<AdminOperation>())
+{
+    authorizationBuilder.AddPolicy(
+        $"Admin.Products.{operation}",
+        policy => policy.RequireAuthenticatedUser());
+}
 builder.Services.AddScoped<IAdminDataAdapter>(services =>
     new EfCoreAdminDataAdapter(
         services.GetRequiredService<AdminDbContext>()));
-builder.Services.AddScoped<IAdminAuthorization, IdentityAdminAuthorization>();
 builder.Services.AddSingleton<IAdminResourceRegistry>(services =>
 {
     var registry = new AdminResourceRegistry();

@@ -118,6 +118,14 @@ public sealed record AdminResource(
     public string IconName => string.IsNullOrWhiteSpace(Icon) ? "box" : Icon;
 
     /// <summary>
+    /// Gets the conventional permission name for an operation.
+    /// </summary>
+    public string? PermissionFor(AdminOperation operation) =>
+        string.IsNullOrWhiteSpace(PermissionPolicy)
+            ? null
+            : $"{PermissionPolicy}.{operation}";
+
+    /// <summary>
     /// Gets the field used as the resource key.
     /// </summary>
     public AdminField KeyField => Fields.First(item => item.IsKey);
