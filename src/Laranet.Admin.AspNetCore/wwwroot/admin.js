@@ -169,6 +169,67 @@
         });
     });
 
+    // Table skeleton: show while a list navigation is in flight
+    var tableSkeleton = document.querySelector("[data-table-skeleton]");
+    var tableWrap = document.querySelector(".admin-table-wrap");
+    var tableFooter = document.querySelector(".admin-footer");
+
+    function showTableSkeleton() {
+        if (!tableSkeleton) return;
+
+        tableSkeleton.hidden = false;
+        tableSkeleton.removeAttribute("aria-hidden");
+
+        if (tableWrap) tableWrap.hidden = true;
+        if (tableFooter) tableFooter.hidden = true;
+    }
+
+    document
+        .querySelectorAll("a.admin-sort-link, .admin-pagination a")
+        .forEach(function (link) {
+            link.addEventListener("click", showTableSkeleton);
+        });
+
+    document
+        .querySelectorAll("form.admin-search, form.admin-page-size")
+        .forEach(function (form) {
+            form.addEventListener("submit", showTableSkeleton);
+        });
+
+    // Bulk selection: select-all reflects the current page selection
+    var selectAll = document.querySelector("[data-select-all]");
+    if (selectAll) {
+        var rowCheckboxes = Array.from(
+            document.querySelectorAll('input[name="keys"][form="bulk-form"]')
+        ).filter(function (checkbox) {
+            return checkbox !== selectAll;
+        });
+
+        var syncSelectAll = function () {
+            var checkedCount = rowCheckboxes.filter(function (checkbox) {
+                return checkbox.checked;
+            }).length;
+
+            selectAll.checked =
+                rowCheckboxes.length > 0 && checkedCount === rowCheckboxes.length;
+            selectAll.indeterminate =
+                checkedCount > 0 && checkedCount < rowCheckboxes.length;
+        };
+
+        selectAll.addEventListener("change", function () {
+            rowCheckboxes.forEach(function (checkbox) {
+                checkbox.checked = selectAll.checked;
+            });
+            syncSelectAll();
+        });
+
+        rowCheckboxes.forEach(function (checkbox) {
+            checkbox.addEventListener("change", syncSelectAll);
+        });
+
+        syncSelectAll();
+    }
+
     // Toasts
     document.querySelectorAll("[data-toast]").forEach(function (toast) {
         var close = toast.querySelector("[data-toast-close]");
@@ -186,23 +247,5 @@
         window.setTimeout(remove, 4500);
     });
 
-    // Responsive table: add data-label for mobile card view
-    function setupResponsiveTables() {
-        document.querySelectorAll(".admin-table").forEach(function (table) {
-            var headers = Array.from(table.querySelectorAll("thead th")).map(function (th) {
-                return th.textContent.trim();
-            });
-
-            table.querySelectorAll("tbody tr").forEach(function (row) {
-                row.querySelectorAll("td").forEach(function (cell, index) {
-                    if (headers[index]) {
-                        cell.setAttribute("data-label", headers[index]);
-                    }
-                });
-            });
-        });
-    }
-
-    setupResponsiveTables();
     console.log("[admin.js] initialized");
 })();
