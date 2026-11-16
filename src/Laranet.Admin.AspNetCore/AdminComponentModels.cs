@@ -106,3 +106,10 @@ public sealed record AdminFormView(
     Func<AdminField, string> Label,
     Func<AdminField, object?> Value,
     Func<AdminField, IReadOnlyList<AdminLookupOption>?> Options);
+
+/// <summary>
+/// Describes one item in the admin breadcrumb trail.
+/// </summary>
+/// <param name="Label">The displayed label.</param>
+/// <param name="Href">The optional link target. The last item is rendered as current.</param>
+public sealed record AdminBreadcrumb(string Label, string? Href = null);

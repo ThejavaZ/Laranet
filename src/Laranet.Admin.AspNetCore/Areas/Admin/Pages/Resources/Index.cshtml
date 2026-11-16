@@ -1,5 +1,12 @@
 @page "/admin/{resource}"
 @model Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources.IndexModel
+@{
+    ViewData["Breadcrumbs"] = new List<AdminBreadcrumb>
+    {
+        new("Dashboard", Url.Page("/Index")),
+        new(Model.Resource.Name),
+    };
+}
 
 <div class="admin-page-heading">
     <div>

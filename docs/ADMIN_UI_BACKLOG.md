@@ -39,7 +39,7 @@ admin panel. Each item should be implemented and verified independently.
 
 - [x] **Paginación real.** Botones First/Prev/Next/Last + números de página.
 - [x] **Preservar estado en sort/filtros/page size.** No perder filtros al ordenar o cambiar tamaño.
-- [ ] **Breadcrumbs.** Mostrar ruta actual.
+- [x] **Breadcrumbs.** Mostrar ruta actual.
 - [x] **Estado activo en sidebar.** `aria-current="page"`.
 
 ## Feedback visual

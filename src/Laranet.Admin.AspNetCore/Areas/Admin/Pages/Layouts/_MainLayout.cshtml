@@ -21,6 +21,12 @@
         <main class="admin-content" id="main-content">
             <a href="#main-content" class="admin-skip-link">Skip to content</a>
             @await Html.PartialAsync("~/Areas/Admin/Pages/Components/_Toast.cshtml")
+            @if (ViewData["Breadcrumbs"] is IReadOnlyList<AdminBreadcrumb> breadcrumbs)
+            {
+                @await Html.PartialAsync(
+                    "~/Areas/Admin/Pages/Components/_Breadcrumbs.cshtml",
+                    breadcrumbs)
+            }
             @RenderBody()
         </main>
     </div>

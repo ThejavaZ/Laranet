@@ -1,5 +1,13 @@
 @page "/admin/{resource}/{key}/edit"
 @model Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources.EditModel
+@{
+    ViewData["Breadcrumbs"] = new List<AdminBreadcrumb>
+    {
+        new("Dashboard", Url.Page("/Index")),
+        new(Model.Resource.Name, Url.Page("/Resources/Index", new { resource = Model.Resource.Name })),
+        new($"Edit {AdminPageModelHelper.SingularName(Model.Resource)}"),
+    };
+}
 
 <div class="admin-page-heading">
     <div>

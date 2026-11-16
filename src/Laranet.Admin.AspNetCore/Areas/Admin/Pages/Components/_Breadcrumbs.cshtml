@@ -1,0 +1,23 @@
+@model IReadOnlyList<AdminBreadcrumb>
+@if (Model.Count > 1)
+{
+    <nav class="admin-breadcrumbs" aria-label="Breadcrumb">
+        <ol>
+            @for (var index = 0; index < Model.Count; index++)
+            {
+                var item = Model[index];
+                var isCurrent = index == Model.Count - 1;
+                <li>
+                    @if (!isCurrent && item.Href is not null)
+                    {
+                        <a href="@item.Href">@item.Label</a>
+                    }
+                    else
+                    {
+                        <span aria-current="@(isCurrent ? "page" : null)">@item.Label</span>
+                    }
+                </li>
+            }
+        </ol>
+    </nav>
+}
