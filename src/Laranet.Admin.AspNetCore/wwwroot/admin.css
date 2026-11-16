@@ -137,6 +137,50 @@ button, input, select, textarea {
     max-width: 980px;
 }
 
+.admin-auth-card {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-lg);
+    box-shadow: var(--admin-shadow);
+    margin: 0 auto;
+    max-width: 460px;
+    padding: var(--admin-space-8);
+}
+
+.admin-auth-header {
+    margin-bottom: var(--admin-space-6);
+}
+
+.admin-auth-header h1 {
+    color: var(--admin-text-strong);
+    font-size: var(--admin-text-2xl);
+    letter-spacing: -.03em;
+    margin: 0 0 var(--admin-space-2);
+}
+
+.admin-auth-header p {
+    color: var(--admin-muted);
+    font-size: var(--admin-text-sm);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.admin-auth-link {
+    font-size: var(--admin-text-sm);
+    margin: var(--admin-space-5) 0 0;
+    text-align: center;
+}
+
+.admin-auth-link a {
+    color: var(--admin-primary);
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.admin-auth-link a:hover {
+    text-decoration: underline;
+}
+
 .admin-login-layout {
     background: var(--admin-surface);
     border: 1px solid var(--admin-border);

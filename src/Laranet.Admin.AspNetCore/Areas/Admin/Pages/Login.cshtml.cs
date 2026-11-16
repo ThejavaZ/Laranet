@@ -74,26 +74,15 @@ public sealed class LoginModel(
             await users.SaveAsync(authenticatedUser, cancellationToken);
         }
 
-        var claims = new[]
+        if (authenticatedUser.MfaEnabled &&
+            !string.IsNullOrWhiteSpace(authenticatedUser.MfaSecret))
         {
-            new Claim(ClaimTypes.NameIdentifier, authenticatedUser.UserName),
-            new Claim(ClaimTypes.Name, authenticatedUser.UserName),
-            new Claim(ClaimTypes.Role, "Admin"),
-            new Claim(
-                AdminAuthenticationClaimTypes.SecurityStamp,
-                authenticatedUser.SecurityStamp!),
-        };
+            TempData["AdminMfaUser"] = authenticatedUser.UserName;
+            TempData["AdminMfaReturnUrl"] = ValidateReturnUrl(ReturnUrl);
+            return RedirectToPage("/Mfa");
+        }
 
-        await HttpContext.SignInAsync(
-            AdminAuthenticationDefaults.Scheme,
-            new ClaimsPrincipal(new ClaimsIdentity(
-                claims,
-                AdminAuthenticationDefaults.Scheme)),
-            new AuthenticationProperties
-            {
-                IsPersistent = false,
-                AllowRefresh = true,
-            });
+        await AdminSignIn.SignInAsync(HttpContext, authenticatedUser);
 
         await AdminAudit.WriteSafeAsync(
             audit,

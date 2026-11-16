@@ -1,0 +1,22 @@
+@page "/admin/mfa"
+@model Laranet.Admin.AspNetCore.Areas.Admin.Pages.MfaModel
+@{
+    Layout = "/Areas/Admin/Pages/Layouts/_AuthLayout.cshtml";
+    ViewData["Title"] = "Verification";
+}
+
+<div class="admin-auth-card">
+    <div class="admin-auth-header">
+        <h1>Two-step verification</h1>
+        <p>Enter the six-digit code from your authenticator app.</p>
+    </div>
+
+    <form method="post" class="admin-form">
+        <div asp-validation-summary="ModelOnly" class="admin-alert admin-alert-error" role="alert"></div>
+        <label class="admin-field">
+            <span>Authentication code</span>
+            <input asp-for="Code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required autofocus />
+        </label>
+        <button class="admin-button" type="submit">Verify code</button>
+    </form>
+</div>

@@ -78,9 +78,11 @@ admin panel. Each item should be implemented and verified independently.
 - [ ] **Mostrar el entorno en login.** Mantener visible `Development`, `Staging` o `Production` sin confundir al usuario.
 - [ ] **Mensaje de sesión expirada.** Informar cuando el usuario vuelve al login por expiración o revocación.
 - [x] **Sin registro público.** Las cuentas deben crearse mediante administrador, CLI, seed o invitación controlada.
-- [ ] **Forgot password seguro.** Token de un solo uso, expiración corta, respuesta genérica, rate limiting y auditoría.
-- [ ] **Reset administrativo de contraseña.** Permitir que otro administrador o la CLI restablezca una cuenta.
-- [ ] **MFA para cuentas administrativas.** Evaluar segundo factor antes de considerar el login listo para producción.
+- [x] **Forgot password seguro.** Token de un solo uso, expiración corta, respuesta genérica, rate limiting y auditoría.
+- [x] **Reset administrativo de contraseña.** La CLI puede crear o actualizar una cuenta y rotar su contraseña.
+- [x] **MFA para cuentas administrativas.** TOTP compatible con aplicaciones autenticadoras y validación antes de emitir la sesión.
+- [ ] **Códigos de recuperación MFA.** Generar, mostrar una sola vez, almacenar hasheados y consumir individualmente.
+- [ ] **Proveedor persistente de recuperación y MFA.** Sustituir los stores en memoria por una integración de producción.
 
 ### Autorización granular
 

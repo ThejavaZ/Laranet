@@ -1,0 +1,28 @@
+@page "/admin/mfa/setup"
+@model Laranet.Admin.AspNetCore.Areas.Admin.Pages.MfaSetupModel
+@{
+    Layout = "/Areas/Admin/Pages/Layouts/_AuthLayout.cshtml";
+    ViewData["Title"] = "Set up MFA";
+}
+
+<div class="admin-auth-card">
+    <div class="admin-auth-header">
+        <h1>Set up two-step verification</h1>
+        <p>Scan this URI with your authenticator app and confirm the generated code.</p>
+    </div>
+
+    <div class="admin-alert admin-alert-info" role="status">
+        <strong>Secret:</strong> <code>@Model.Secret</code>
+        <br />
+        <small>@Model.ProvisioningUri</small>
+    </div>
+
+    <form method="post" class="admin-form">
+        <div asp-validation-summary="ModelOnly" class="admin-alert admin-alert-error" role="alert"></div>
+        <label class="admin-field">
+            <span>Authentication code</span>
+            <input asp-for="Code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required autofocus />
+        </label>
+        <button class="admin-button" type="submit">Enable MFA</button>
+    </form>
+</div>

@@ -137,6 +137,28 @@ public class AdminAspNetCoreTests
                     .SingleOrDefault()));
     }
 
+    [Fact]
+    public async Task Authentication_ShouldProvideSingleUseResetTokensAndTotpSetup()
+    {
+        var services = new ServiceCollection();
+        services.AddLaranetAdminAuthentication();
+
+        using var provider = services.BuildServiceProvider();
+        var tokens = provider.GetRequiredService<IAdminPasswordResetTokenStore>();
+        var mfa = provider.GetRequiredService<IAdminMfaProvider>();
+        var token = await tokens.CreateAsync(
+            "admin",
+            DateTimeOffset.UtcNow.AddMinutes(1));
+
+        Assert.Equal("admin", await tokens.ConsumeAsync(token));
+        Assert.Null(await tokens.ConsumeAsync(token));
+
+        var secret = mfa.CreateSecret();
+        Assert.Equal(32, secret.Length);
+        Assert.StartsWith("otpauth://totp/", mfa.CreateProvisioningUri("admin", secret));
+        Assert.False(mfa.ValidateCode(secret, "000000"));
+    }
+
     private sealed class AuthProduct
     {
         public int Id { get; set; }

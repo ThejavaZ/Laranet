@@ -84,6 +84,11 @@ Applications can register an `IAdminAuditSink` to receive login, logout, passwor
 change, read, list, export, create, update, delete, and bulk-action events. The
 default sink is a no-op and audit failures never interrupt an Admin request.
 
+Password recovery uses one-time expiring tokens through an
+`IAdminPasswordResetSender` implementation. The built-in sender intentionally does
+nothing; applications must provide email or another delivery channel. TOTP MFA can
+be enabled at `/admin/mfa/setup` and is verified before the Admin cookie is issued.
+
 ```csharp
 builder.Services.AddLaranetAdmin();
 builder.Services.AddRazorPages();

@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authentication;
@@ -26,7 +28,65 @@ public sealed record AdminUser(
     string UserName,
     string PasswordHash,
     bool IsActive = true,
-    string? SecurityStamp = null);
+    string? SecurityStamp = null,
+    bool MfaEnabled = false,
+    string? MfaSecret = null);
+
+/// <summary>
+/// Stores one-time password reset tokens.
+/// </summary>
+public interface IAdminPasswordResetTokenStore
+{
+    /// <summary>
+    /// Creates a single-use token for a user.
+    /// </summary>
+    Task<string> CreateAsync(
+        string userName,
+        DateTimeOffset expiresAt,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Consumes a valid token and returns its user.
+    /// </summary>
+    Task<string?> ConsumeAsync(
+        string token,
+        CancellationToken cancellationToken = default);
+}
+
+/// <summary>
+/// Delivers password reset links through an application-provided channel.
+/// </summary>
+public interface IAdminPasswordResetSender
+{
+    /// <summary>
+    /// Sends a password reset link.
+    /// </summary>
+    Task SendAsync(
+        string userName,
+        string resetUrl,
+        CancellationToken cancellationToken = default);
+}
+
+/// <summary>
+/// Provides time-based one-time password operations for Admin MFA.
+/// </summary>
+public interface IAdminMfaProvider
+{
+    /// <summary>
+    /// Creates a new Base32 secret.
+    /// </summary>
+    string CreateSecret();
+
+    /// <summary>
+    /// Creates an authenticator provisioning URI.
+    /// </summary>
+    string CreateProvisioningUri(string userName, string secret);
+
+    /// <summary>
+    /// Validates a six-digit TOTP code.
+    /// </summary>
+    bool ValidateCode(string secret, string code);
+}
 
 /// <summary>
 /// Contains claims used by the standalone Admin authentication cookie.
@@ -119,6 +179,11 @@ public sealed class AdminAuthenticationOptions
     public TimeSpan LockoutDuration { get; set; } = TimeSpan.FromMinutes(5);
 
     /// <summary>
+    /// Gets or sets the password reset token lifetime.
+    /// </summary>
+    public TimeSpan PasswordResetTokenLifetime { get; set; } = TimeSpan.FromMinutes(20);
+
+    /// <summary>
     /// Adds an in-memory user intended for development and small demonstrations.
     /// Production applications should replace the store with persistent storage.
     /// </summary>
@@ -177,6 +242,13 @@ public static class AdminAuthenticationServiceCollectionExtensions
                 nameof(configure));
         }
 
+        if (options.PasswordResetTokenLifetime <= TimeSpan.Zero)
+        {
+            throw new ArgumentException(
+                "The password reset token lifetime must be positive.",
+                nameof(configure));
+        }
+
         var hasher = new Pbkdf2AdminPasswordHasher();
         var users = options.Users
             .Select(user => new AdminUser(
@@ -193,6 +265,9 @@ public static class AdminAuthenticationServiceCollectionExtensions
             new InMemoryAdminLoginRateLimiter(
                 options.MaxFailedAttempts,
                 options.LockoutDuration));
+        services.TryAddSingleton<IAdminPasswordResetTokenStore, InMemoryAdminPasswordResetTokenStore>();
+        services.TryAddSingleton<IAdminPasswordResetSender, NullAdminPasswordResetSender>();
+        services.TryAddSingleton<IAdminMfaProvider, TotpAdminMfaProvider>();
         services.AddScoped<AdminCookieEvents>();
         services.AddAuthentication(authentication =>
             {
@@ -249,6 +324,28 @@ internal sealed class AdminCookieEvents(IAdminUserStore users)
         context.RejectPrincipal();
         await context.HttpContext.SignOutAsync(AdminAuthenticationDefaults.Scheme);
     }
+}
+
+internal static class AdminSignIn
+{
+    public static Task SignInAsync(HttpContext context, AdminUser user) =>
+        context.SignInAsync(
+            AdminAuthenticationDefaults.Scheme,
+            new ClaimsPrincipal(new ClaimsIdentity(
+            [
+                new Claim(ClaimTypes.NameIdentifier, user.UserName),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, "Admin"),
+                new Claim(
+                    AdminAuthenticationClaimTypes.SecurityStamp,
+                    user.SecurityStamp!),
+            ],
+            AdminAuthenticationDefaults.Scheme)),
+            new AuthenticationProperties
+            {
+                IsPersistent = false,
+                AllowRefresh = true,
+            });
 }
 
 /// <summary>
@@ -413,5 +510,161 @@ internal sealed class Pbkdf2AdminPasswordHasher : IAdminPasswordHasher
         {
             return false;
         }
+    }
+}
+
+internal sealed class InMemoryAdminPasswordResetTokenStore
+    : IAdminPasswordResetTokenStore
+{
+    private readonly object sync = new();
+    private readonly Dictionary<string, ResetToken> tokens = new(StringComparer.Ordinal);
+
+    public Task<string> CreateAsync(
+        string userName,
+        DateTimeOffset expiresAt,
+        CancellationToken cancellationToken = default)
+    {
+        var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
+        var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
+
+        lock (sync)
+        {
+            tokens[hash] = new ResetToken(userName, expiresAt);
+        }
+
+        return Task.FromResult(token);
+    }
+
+    public Task<string?> ConsumeAsync(
+        string token,
+        CancellationToken cancellationToken = default)
+    {
+        var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
+        lock (sync)
+        {
+            if (!tokens.Remove(hash, out var resetToken) ||
+                resetToken.ExpiresAt <= DateTimeOffset.UtcNow)
+            {
+                return Task.FromResult<string?>(null);
+            }
+
+            return Task.FromResult<string?>(resetToken.UserName);
+        }
+    }
+
+    private readonly record struct ResetToken(
+        string UserName,
+        DateTimeOffset ExpiresAt);
+}
+
+internal sealed class NullAdminPasswordResetSender : IAdminPasswordResetSender
+{
+    public Task SendAsync(
+        string userName,
+        string resetUrl,
+        CancellationToken cancellationToken = default) =>
+        Task.CompletedTask;
+}
+
+internal sealed class TotpAdminMfaProvider : IAdminMfaProvider
+{
+    private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+    private const int StepSeconds = 30;
+
+    public string CreateSecret()
+    {
+        var bytes = RandomNumberGenerator.GetBytes(20);
+        var result = new StringBuilder(32);
+        var buffer = 0;
+        var bits = 0;
+
+        foreach (var value in bytes)
+        {
+            buffer = (buffer << 8) | value;
+            bits += 8;
+            while (bits >= 5)
+            {
+                bits -= 5;
+                result.Append(Alphabet[(buffer >> bits) & 31]);
+            }
+        }
+
+        if (bits > 0)
+        {
+            result.Append(Alphabet[(buffer << (5 - bits)) & 31]);
+        }
+
+        return result.ToString();
+    }
+
+    public string CreateProvisioningUri(string userName, string secret) =>
+        $"otpauth://totp/Laranet%20Admin:{Uri.EscapeDataString(userName)}" +
+        $"?secret={secret}&issuer=Laranet%20Admin&algorithm=SHA1&digits=6&period=30";
+
+    public bool ValidateCode(string secret, string code)
+    {
+        if (string.IsNullOrWhiteSpace(code) ||
+            !int.TryParse(code, NumberStyles.None, CultureInfo.InvariantCulture, out var value) ||
+            value is < 0 or > 999999)
+        {
+            return false;
+        }
+
+        var normalized = code.PadLeft(6, '0');
+        var counter = (ulong)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() / StepSeconds);
+        for (var offset = -1; offset <= 1; offset++)
+        {
+            if (ComputeCode(secret, (ulong)((long)counter + offset)) == normalized)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static string ComputeCode(string secret, ulong counter)
+    {
+        var key = DecodeBase32(secret);
+        var data = BitConverter.GetBytes(counter);
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(data);
+        }
+
+        using var hmac = new System.Security.Cryptography.HMACSHA1(key);
+        var hash = hmac.ComputeHash(data);
+        var index = hash[^1] & 0x0f;
+        var binary = ((hash[index] & 0x7f) << 24)
+            | (hash[index + 1] << 16)
+            | (hash[index + 2] << 8)
+            | hash[index + 3];
+        return (binary % 1_000_000).ToString("D6", CultureInfo.InvariantCulture);
+    }
+
+    private static byte[] DecodeBase32(string value)
+    {
+        var buffer = new List<byte>();
+        var bits = 0;
+        var current = 0;
+        foreach (var character in value.ToUpperInvariant())
+        {
+            var index = Alphabet.IndexOf(character);
+            if (index < 0)
+            {
+                continue;
+            }
+
+            current = (current << 5) | index;
+            bits += 5;
+            if (bits >= 8)
+            {
+                bits -= 8;
+                buffer.Add((byte)(current >> bits));
+                current &= (1 << bits) - 1;
+            }
+        }
+
+        return buffer.ToArray();
     }
 }
