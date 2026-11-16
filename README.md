@@ -70,6 +70,7 @@ dotnet tool install --global Laranet.Cli
 ## Contributing
 
 - [Contributing guidelines](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Development workflow](docs/development/development-workflow.md)
 - [Testing guidelines](docs/development/testing-guidelines.md)
 - [Security policy](SECURITY.md)

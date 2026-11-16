@@ -142,7 +142,8 @@ in the [roadmap](roadmap/README.md); it does not describe them as available feat
 Laranet welcomes bug reports, feature requests, documentation improvements, and code
 contributions.
 
-Before contributing, please read our [Contributing Guidelines](../CONTRIBUTING.md).
+Before contributing, please read our [Contributing Guidelines](../CONTRIBUTING.md)
+and our [Code of Conduct](../CODE_OF_CONDUCT.md).
 
 ## License
 
