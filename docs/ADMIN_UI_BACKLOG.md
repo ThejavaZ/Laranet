@@ -57,6 +57,35 @@ admin panel. Each item should be implemented and verified independently.
 - [x] **Bulk delete sin selección.** Validar y mostrar mensaje correcto.
 - [x] **Bulk solo con soft-delete real.** Mostrar selección y formulario bulk únicamente cuando el modelo tiene `IsDeleted`; el handler responde con toast si se invoca sin soporte.
 
+### Autenticación propia
+
+- [ ] **Login propio del Admin sin Identity.** Página, modelo, validación y mensajes de error.
+- [ ] **Logout propio del Admin.** Endpoint POST con antiforgery y sin depender de `/Identity/Account/Logout`.
+- [ ] **Cookie de autenticación propia.** Nombre, expiración, `HttpOnly`, `Secure`, `SameSite` y renovación configurables.
+- [ ] **Usuarios administrativos.** Modelo, almacenamiento, estado activo/inactivo y claims mínimos.
+- [ ] **Hash seguro de contraseñas.** Usar un hasher de .NET sin incorporar el sistema completo de Identity.
+- [ ] **Comando `admin:user` independiente de Identity.** Crear o actualizar el administrador inicial desde configuración o variables de entorno.
+- [ ] **Cambio de contraseña.** Requerir la contraseña actual y aplicar las mismas reglas de hashing.
+- [ ] **Bloqueo y rate limiting del login.** Limitar intentos y aplicar bloqueo temporal sin revelar si el usuario existe.
+- [ ] **Expiración y revocación de sesiones.** Cierre por inactividad, logout efectivo e invalidación de sesiones.
+
+### Autorización granular
+
+- [ ] **Proteger el dashboard.** No exponer recursos ni metadatos a usuarios anónimos.
+- [ ] **Filtrar recursos por autorización.** Mostrar únicamente los recursos cuyo permiso `List` esté autorizado.
+- [ ] **Usar `AdminOperation` en la autorización real.** Diferenciar `List`, `Read`, `Create`, `Update`, `Delete` y `BulkAction`.
+- [ ] **Permisos por recurso y operación.** Permitir políticas o claims como `Admin.Products.Update`.
+- [ ] **Política segura por defecto.** Denegar si no existe autenticación o autorización explícita.
+- [ ] **Eliminar el bypass anónimo del sample.** Permitirlo únicamente mediante una opción de demo explícita.
+
+### Protección web y auditoría
+
+- [ ] **Validar `returnUrl`.** Aceptar únicamente rutas locales y evitar open redirects.
+- [ ] **Revisar cookies y encabezados de seguridad.** Configurar HSTS, CSP, `X-Content-Type-Options`, `Referrer-Policy` y políticas relacionadas.
+- [ ] **Auditoría de acciones administrativas.** Registrar login, logout, fallos de login y operaciones CRUD/bulk.
+- [ ] **Extensión de auditoría desacoplada.** Exponer un `IAdminAuditSink` opcional sin imponer almacenamiento.
+- [ ] **Pruebas de seguridad del panel.** Cubrir acceso anónimo, `Challenge`, `Forbid`, CSRF, permisos por operación y aislamiento de recursos.
+
 ## Código y mantenimiento
 
 - [x] **Mover `FormatValue` y `L(...)` a helper compartido.** (Ya existe `AdminPageModelHelper`).
