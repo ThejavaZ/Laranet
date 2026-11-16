@@ -64,9 +64,9 @@ admin panel. Each item should be implemented and verified independently.
 - [x] **Cookie de autenticación propia.** Nombre, expiración, `HttpOnly`, `Secure`, `SameSite` y renovación configurables.
 - [x] **Usuarios administrativos.** Contrato de usuario/store, estado activo/inactivo y claims mínimos.
 - [x] **Hash seguro de contraseñas.** Usar PBKDF2-SHA256 sin incorporar el sistema completo de Identity.
-- [ ] **Comando `admin:user` independiente de Identity.** Crear o actualizar el administrador inicial desde configuración o variables de entorno.
-- [ ] **Cambio de contraseña.** Requerir la contraseña actual y aplicar las mismas reglas de hashing.
-- [ ] **Bloqueo y rate limiting del login.** Limitar intentos y aplicar bloqueo temporal sin revelar si el usuario existe.
+- [x] **Comando `admin:user` independiente de Identity.** Crear o actualizar el administrador inicial desde configuración o variables de entorno.
+- [x] **Cambio de contraseña.** Requerir la contraseña actual y aplicar las mismas reglas de hashing.
+- [x] **Bloqueo y rate limiting del login.** Limitar intentos y aplicar bloqueo temporal sin revelar si el usuario existe.
 - [ ] **Expiración y revocación de sesiones.** Cierre por inactividad, logout efectivo e invalidación de sesiones.
 
 ### Autorización granular
