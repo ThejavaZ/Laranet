@@ -1,30 +1,79 @@
 @page "/admin/login"
 @model Laranet.Admin.AspNetCore.Areas.Admin.Pages.LoginModel
+@inject IWebHostEnvironment HostEnvironment
 @{
     Layout = "/Areas/Admin/Pages/Layouts/_AuthLayout.cshtml";
     ViewData["Title"] = "Login";
 }
 
-<div class="admin-auth-card">
-    <div class="admin-auth-header">
-        <h1>Admin Login</h1>
-        <p>Sign in to manage your application.</p>
-    </div>
+<div class="admin-login-layout">
+    <aside class="admin-login-brand">
+        <div class="admin-login-brand-mark" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2 2 7l10 5 10-5-10-5z"></path>
+                <path d="M2 17l10 5 10-5"></path>
+                <path d="M2 12l10 5 10-5"></path>
+            </svg>
+        </div>
+        <p class="admin-login-eyebrow">Laranet</p>
+        <h1>Admin workspace</h1>
+        <p class="admin-login-brand-copy">
+            A focused workspace to manage your application data with confidence.
+        </p>
+        <div class="admin-login-brand-line" aria-hidden="true"></div>
+        <p class="admin-login-brand-meta">Secure access · @HostEnvironment.EnvironmentName</p>
+    </aside>
 
-    <form method="post" class="admin-form">
-        <input type="hidden" asp-for="ReturnUrl" />
-        <div asp-validation-summary="ModelOnly" class="admin-alert admin-alert-error" role="alert"></div>
+    <section class="admin-login-card" aria-labelledby="login-title">
+        <div class="admin-login-header">
+            <div>
+                <span class="admin-login-kicker">Welcome back</span>
+                <h2 id="login-title">Sign in to continue</h2>
+                <p>Use your administrator account to access the dashboard.</p>
+            </div>
+            <span class="admin-environment">@HostEnvironment.EnvironmentName</span>
+        </div>
 
-        <label class="admin-field">
-            <span>Username</span>
-            <input asp-for="UserName" autocomplete="username" required autofocus />
-        </label>
+        <form method="post" class="admin-login-form">
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div asp-validation-summary="ModelOnly" class="admin-alert admin-alert-error" role="alert"></div>
 
-        <label class="admin-field">
-            <span>Password</span>
-            <input asp-for="Password" type="password" autocomplete="current-password" required />
-        </label>
+            <div class="admin-login-field">
+                <label asp-for="UserName">Username</label>
+                <div class="admin-login-input">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M20 21a8 8 0 0 0-16 0"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <input asp-for="UserName" autocomplete="username" required autofocus />
+                </div>
+                <span asp-validation-for="UserName" class="admin-field-error"></span>
+            </div>
 
-        <button class="admin-button" type="submit">Login</button>
-    </form>
+            <div class="admin-login-field">
+                <label asp-for="Password">Password</label>
+                <div class="admin-login-input">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <input asp-for="Password" type="password" autocomplete="current-password" required />
+                </div>
+                <span asp-validation-for="Password" class="admin-field-error"></span>
+            </div>
+
+            <button class="admin-login-submit" type="submit">
+                <span>Sign in</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linecap="round" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
+        </form>
+
+        <div class="admin-login-footer">
+            <span class="admin-login-status" aria-hidden="true"></span>
+            <span>Protected administrator access</span>
+        </div>
+    </section>
 </div>

@@ -16,6 +16,10 @@ builder.Services
     .AddEntityFrameworkStores<AdminDbContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddLaranetAdmin();
+builder.Services.AddLaranetAdminAuthentication(options =>
+    options.AddUser(
+        builder.Configuration["Admin:User"] ?? "admin",
+        builder.Configuration["Admin:Password"] ?? "DevelopmentAdminPassword!"));
 var authorizationBuilder = builder.Services.AddAuthorizationBuilder();
 foreach (var operation in Enum.GetValues<AdminOperation>())
 {

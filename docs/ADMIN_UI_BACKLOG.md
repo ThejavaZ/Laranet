@@ -69,6 +69,19 @@ admin panel. Each item should be implemented and verified independently.
 - [x] **Bloqueo y rate limiting del login.** Limitar intentos y aplicar bloqueo temporal sin revelar si el usuario existe.
 - [x] **Expiración y revocación de sesiones.** Cookie con expiración deslizante, logout efectivo y `SecurityStamp` validado para invalidar sesiones tras cambio de contraseña.
 
+### Experiencia de acceso y recuperación
+
+- [x] **Rediseñar visualmente el login.** Igualar la calidad visual del dashboard y mantener el branding de Laranet.
+- [ ] **Logo e identidad visual en login.** Añadir icono/logo, mejor jerarquía visual y descripción clara.
+- [ ] **Mejorar inputs y estados del formulario.** Iconos, foco visible, errores claros y botón principal destacado.
+- [ ] **Mostrar/ocultar contraseña.** Añadir control accesible para alternar la visibilidad.
+- [ ] **Mostrar el entorno en login.** Mantener visible `Development`, `Staging` o `Production` sin confundir al usuario.
+- [ ] **Mensaje de sesión expirada.** Informar cuando el usuario vuelve al login por expiración o revocación.
+- [x] **Sin registro público.** Las cuentas deben crearse mediante administrador, CLI, seed o invitación controlada.
+- [ ] **Forgot password seguro.** Token de un solo uso, expiración corta, respuesta genérica, rate limiting y auditoría.
+- [ ] **Reset administrativo de contraseña.** Permitir que otro administrador o la CLI restablezca una cuenta.
+- [ ] **MFA para cuentas administrativas.** Evaluar segundo factor antes de considerar el login listo para producción.
+
 ### Autorización granular
 
 - [x] **Proteger el dashboard.** No exponer recursos ni metadatos a usuarios anónimos.

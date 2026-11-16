@@ -134,7 +134,230 @@ button, input, select, textarea {
 
 .admin-auth-content {
     width: 100%;
-    max-width: 420px;
+    max-width: 980px;
+}
+
+.admin-login-layout {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-lg);
+    box-shadow: var(--admin-shadow);
+    display: grid;
+    grid-template-columns: minmax(280px, .85fr) minmax(380px, 1.15fr);
+    min-height: 560px;
+    overflow: hidden;
+}
+
+.admin-login-brand {
+    background:
+        radial-gradient(circle at 18% 12%, rgba(139, 92, 246, .35), transparent 34%),
+        linear-gradient(145deg, #312e81, #4f46e5 54%, #7c3aed);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--admin-space-10);
+    position: relative;
+}
+
+.admin-login-brand::after {
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 50%;
+    content: "";
+    height: 240px;
+    position: absolute;
+    right: -90px;
+    top: -80px;
+    width: 240px;
+}
+
+.admin-login-brand-mark {
+    align-items: center;
+    background: rgba(255, 255, 255, .16);
+    border: 1px solid rgba(255, 255, 255, .24);
+    border-radius: var(--admin-radius);
+    display: inline-flex;
+    height: 58px;
+    justify-content: center;
+    margin-bottom: var(--admin-space-8);
+    width: 58px;
+}
+
+.admin-login-eyebrow,
+.admin-login-kicker {
+    font-size: var(--admin-text-xs);
+    font-weight: 750;
+    letter-spacing: .12em;
+    margin: 0 0 var(--admin-space-3);
+    text-transform: uppercase;
+}
+
+.admin-login-eyebrow {
+    color: rgba(255, 255, 255, .72);
+}
+
+.admin-login-brand h1 {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    letter-spacing: -.04em;
+    line-height: 1.05;
+    margin: 0;
+    max-width: 260px;
+}
+
+.admin-login-brand-copy {
+    color: rgba(255, 255, 255, .78);
+    font-size: var(--admin-text-base);
+    line-height: 1.65;
+    margin: var(--admin-space-5) 0 0;
+    max-width: 280px;
+}
+
+.admin-login-brand-line {
+    background: rgba(255, 255, 255, .3);
+    height: 1px;
+    margin: var(--admin-space-10) 0 var(--admin-space-4);
+    width: 48px;
+}
+
+.admin-login-brand-meta {
+    color: rgba(255, 255, 255, .65);
+    font-size: var(--admin-text-xs);
+    margin: 0;
+}
+
+.admin-login-card {
+    background: var(--admin-surface);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--admin-space-10);
+}
+
+.admin-login-header {
+    align-items: flex-start;
+    display: flex;
+    gap: var(--admin-space-4);
+    justify-content: space-between;
+    margin-bottom: var(--admin-space-8);
+}
+
+.admin-login-kicker {
+    color: var(--admin-primary);
+}
+
+.admin-login-header h2 {
+    color: var(--admin-text-strong);
+    font-size: var(--admin-text-2xl);
+    letter-spacing: -.03em;
+    margin: 0 0 var(--admin-space-2);
+}
+
+.admin-login-header p {
+    color: var(--admin-muted);
+    font-size: var(--admin-text-sm);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.admin-login-header .admin-environment {
+    flex-shrink: 0;
+}
+
+.admin-login-form {
+    display: grid;
+    gap: var(--admin-space-5);
+}
+
+.admin-login-field {
+    display: grid;
+    gap: var(--admin-space-2);
+}
+
+.admin-login-field label {
+    color: var(--admin-text);
+    font-size: var(--admin-text-sm);
+    font-weight: 650;
+}
+
+.admin-login-input {
+    align-items: center;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-sm);
+    display: flex;
+    gap: var(--admin-space-3);
+    padding: 0 var(--admin-space-3);
+    transition: border-color var(--admin-transition), box-shadow var(--admin-transition);
+}
+
+.admin-login-input svg {
+    color: var(--admin-muted);
+    flex-shrink: 0;
+}
+
+.admin-login-input:focus-within {
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .14);
+}
+
+.admin-login-input input {
+    background: transparent;
+    border: 0;
+    color: var(--admin-text);
+    min-height: 48px;
+    outline: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.admin-login-input input:focus {
+    box-shadow: none;
+}
+
+.admin-login-submit {
+    align-items: center;
+    background: var(--admin-primary);
+    border: 0;
+    border-radius: var(--admin-radius-sm);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    font: inherit;
+    font-weight: 700;
+    justify-content: space-between;
+    margin-top: var(--admin-space-2);
+    min-height: 50px;
+    padding: 0 var(--admin-space-4);
+    transition: background var(--admin-transition), box-shadow var(--admin-transition), transform var(--admin-transition);
+}
+
+.admin-login-submit:hover {
+    background: var(--admin-primary-dark);
+    box-shadow: var(--admin-shadow-sm);
+    transform: translateY(-1px);
+}
+
+.admin-login-submit:focus-visible {
+    outline: 2px solid var(--admin-primary);
+    outline-offset: 3px;
+}
+
+.admin-login-footer {
+    align-items: center;
+    border-top: 1px solid var(--admin-border);
+    color: var(--admin-muted);
+    display: flex;
+    font-size: var(--admin-text-xs);
+    gap: var(--admin-space-2);
+    margin-top: var(--admin-space-8);
+    padding-top: var(--admin-space-4);
+}
+
+.admin-login-status {
+    background: var(--admin-success);
+    border-radius: 50%;
+    height: 7px;
+    width: 7px;
 }
 
 /* ===== Topbar ===== */
@@ -1691,6 +1914,48 @@ body[data-theme="dark"] .admin-checkbox-box {
     .admin-modal {
         width: 95%;
         margin: var(--admin-space-4);
+    }
+
+    .admin-auth-shell {
+        padding: var(--admin-space-4);
+    }
+
+    .admin-login-layout {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+
+    .admin-login-brand {
+        min-height: 230px;
+        padding: var(--admin-space-6);
+    }
+
+    .admin-login-brand-mark {
+        height: 46px;
+        margin-bottom: var(--admin-space-5);
+        width: 46px;
+    }
+
+    .admin-login-brand h1 {
+        font-size: var(--admin-text-2xl);
+    }
+
+    .admin-login-brand-copy {
+        margin-top: var(--admin-space-3);
+    }
+
+    .admin-login-brand-line,
+    .admin-login-brand-meta {
+        display: none;
+    }
+
+    .admin-login-card {
+        padding: var(--admin-space-6);
+    }
+
+    .admin-login-header {
+        flex-direction: column;
+        margin-bottom: var(--admin-space-6);
     }
 }
 
