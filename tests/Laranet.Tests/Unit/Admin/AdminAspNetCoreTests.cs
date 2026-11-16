@@ -1,7 +1,11 @@
 using System.Security.Claims;
 using Laranet.Admin;
 using Laranet.Admin.AspNetCore;
+using Laranet.Admin.AspNetCore.Areas.Admin.Pages;
+using Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using ResourcesIndexModel = Laranet.Admin.AspNetCore.Areas.Admin.Pages.Resources.IndexModel;
 
 namespace Laranet.Tests.Unit.Admin;
 
@@ -20,6 +24,7 @@ public class AdminAspNetCoreTests
         Assert.IsType<AdminResourceRegistry>(
             provider.GetRequiredService<IAdminResourceRegistry>());
         Assert.NotNull(provider.GetRequiredService<IAdminAuthorization>());
+        Assert.NotNull(provider.GetRequiredService<IAdminAuditSink>());
     }
 
     [Fact]
@@ -110,6 +115,26 @@ public class AdminAspNetCoreTests
             authenticated,
             resource,
             AdminOperation.Delete));
+    }
+
+    [Fact]
+    public void MutationHandlers_ShouldRequireAntiforgery()
+    {
+        var handlers = new[]
+        {
+            typeof(CreateModel).GetMethod(nameof(CreateModel.OnPostAsync)),
+            typeof(EditModel).GetMethod(nameof(EditModel.OnPostAsync)),
+            typeof(ResourcesIndexModel).GetMethod(nameof(ResourcesIndexModel.OnPostDeleteAsync)),
+            typeof(ResourcesIndexModel).GetMethod(nameof(ResourcesIndexModel.OnPostBulkAsync)),
+            typeof(LogoutModel).GetMethod(nameof(LogoutModel.OnPostAsync)),
+            typeof(PasswordModel).GetMethod(nameof(PasswordModel.OnPostAsync)),
+        };
+
+        Assert.All(
+            handlers,
+            handler => Assert.NotNull(
+                handler!.GetCustomAttributes(typeof(ValidateAntiForgeryTokenAttribute), true)
+                    .SingleOrDefault()));
     }
 
     private sealed class AuthProduct

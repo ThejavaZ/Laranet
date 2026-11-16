@@ -22,6 +22,7 @@ public static class AdminAspNetCoreExtensions
         services.AddAuthorization();
         services.AddLocalization();
         services.TryAddSingleton<IAdminResourceRegistry, AdminResourceRegistry>();
+        services.TryAddSingleton<IAdminAuditSink, NullAdminAuditSink>();
         services.TryAddScoped<IAdminAuthorization, AspNetCoreAdminAuthorization>();
 
         return services;

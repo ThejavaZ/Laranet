@@ -10,7 +10,8 @@ namespace Laranet.Admin.AspNetCore.Areas.Admin.Pages;
 public sealed class LoginModel(
     IAdminUserStore users,
     IAdminPasswordHasher passwordHasher,
-    IAdminLoginRateLimiter rateLimiter) : PageModel
+    IAdminLoginRateLimiter rateLimiter,
+    IAdminAuditSink audit) : PageModel
 {
     [BindProperty]
     public string UserName { get; set; } = string.Empty;
@@ -30,6 +31,13 @@ public sealed class LoginModel(
     {
         if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrEmpty(Password))
         {
+            await AdminAudit.WriteSafeAsync(
+                audit,
+                HttpContext,
+                "login",
+                "failure",
+                details: "Missing credentials",
+                cancellationToken: cancellationToken);
             ModelState.AddModelError(string.Empty, "Enter your username and password.");
             return Page();
         }
@@ -44,6 +52,13 @@ public sealed class LoginModel(
         if (!valid)
         {
             rateLimiter.RegisterFailure(key);
+            await AdminAudit.WriteSafeAsync(
+                audit,
+                HttpContext,
+                "login",
+                "failure",
+                details: "Invalid credentials or locked account",
+                cancellationToken: cancellationToken);
             ModelState.AddModelError(string.Empty, "Invalid username or password.");
             return Page();
         }
@@ -79,6 +94,13 @@ public sealed class LoginModel(
                 IsPersistent = false,
                 AllowRefresh = true,
             });
+
+        await AdminAudit.WriteSafeAsync(
+            audit,
+            HttpContext,
+            "login",
+            "success",
+            cancellationToken: cancellationToken);
 
         return LocalRedirect(ValidateReturnUrl(ReturnUrl));
     }

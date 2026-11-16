@@ -9,6 +9,7 @@ public sealed class IndexModel(
     IAdminResourceRegistry resources,
     IAdminDataAdapter adapter,
     IAdminAuthorization authorization,
+    IAdminAuditSink audit,
     IStringLocalizerFactory localizerFactory) : PageModel
 {
     private readonly IStringLocalizer localizer =
@@ -101,6 +102,15 @@ public sealed class IndexModel(
                 SortDescending),
             cancellationToken);
 
+        await AdminAudit.WriteSafeAsync(
+            audit,
+            HttpContext,
+            "list",
+            "success",
+            Resource,
+            AdminOperation.List,
+            cancellationToken: cancellationToken);
+
         RouteValues = BuildRouteValues();
 
         return Page();
@@ -149,6 +159,16 @@ public sealed class IndexModel(
             keys.Cast<object>().ToArray(),
             cancellationToken);
 
+        await AdminAudit.WriteSafeAsync(
+            audit,
+            HttpContext,
+            "bulk",
+            "success",
+            definition,
+            AdminOperation.BulkAction,
+            $"{action}; count={count}",
+            cancellationToken);
+
         return RedirectToPage(new
         {
             resource,
@@ -185,6 +205,14 @@ public sealed class IndexModel(
         }
 
         var bytes = new System.Text.UTF8Encoding(true).GetBytes(sb.ToString());
+        await AdminAudit.WriteSafeAsync(
+            audit,
+            HttpContext,
+            "export",
+            "success",
+            definition,
+            AdminOperation.List,
+            cancellationToken: cancellationToken);
         return File(bytes, "text/csv", $"{definition.Name}.csv");
     }
 
@@ -201,6 +229,15 @@ public sealed class IndexModel(
 
         var definition = resources.Get(resource);
         await adapter.DeleteAsync(definition, key, cancellationToken);
+        await AdminAudit.WriteSafeAsync(
+            audit,
+            HttpContext,
+            "delete",
+            "success",
+            definition,
+            AdminOperation.Delete,
+            key,
+            cancellationToken);
 
         return RedirectToPage(new
         {

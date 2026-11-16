@@ -74,6 +74,16 @@ An authenticated principal may also carry the permission directly as a
 `laranet_admin_permission` claim. If no operation-specific policy exists, the
 resource's base policy is used; if neither exists, access is denied.
 
+For browser security headers on Admin responses, add the middleware explicitly:
+
+```csharp
+app.UseLaranetAdminSecurityHeaders();
+```
+
+Applications can register an `IAdminAuditSink` to receive login, logout, password
+change, read, list, export, create, update, delete, and bulk-action events. The
+default sink is a no-op and audit failures never interrupt an Admin request.
+
 ```csharp
 builder.Services.AddLaranetAdmin();
 builder.Services.AddRazorPages();

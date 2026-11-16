@@ -8,7 +8,8 @@ namespace Laranet.Admin.AspNetCore.Areas.Admin.Pages;
 [Authorize(AuthenticationSchemes = AdminAuthenticationDefaults.Scheme)]
 public sealed class PasswordModel(
     IAdminUserStore users,
-    IAdminPasswordHasher passwordHasher) : PageModel
+    IAdminPasswordHasher passwordHasher,
+    IAdminAuditSink audit) : PageModel
 {
     [BindProperty]
     public string CurrentPassword { get; set; } = string.Empty;
@@ -64,6 +65,11 @@ public sealed class PasswordModel(
             cancellationToken);
 
         await HttpContext.SignOutAsync(AdminAuthenticationDefaults.Scheme);
+        await AdminAudit.WriteSafeAsync(
+            audit,
+            HttpContext,
+            "password-change",
+            "success");
         TempData["AdminMessage"] = "Password changed. Sign in again.";
         return RedirectToPage("/Login");
     }

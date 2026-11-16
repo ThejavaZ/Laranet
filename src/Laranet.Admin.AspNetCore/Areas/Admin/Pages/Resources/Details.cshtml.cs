@@ -9,6 +9,7 @@ public sealed class DetailsModel(
     IAdminResourceRegistry resources,
     IAdminDataAdapter adapter,
     IAdminAuthorization authorization,
+    IAdminAuditSink audit,
     IStringLocalizerFactory localizerFactory) : PageModel
 {
     private readonly IStringLocalizer localizer =
@@ -42,6 +43,16 @@ public sealed class DetailsModel(
         {
             return NotFound();
         }
+
+        await AdminAudit.WriteSafeAsync(
+            audit,
+            HttpContext,
+            "read",
+            "success",
+            Resource,
+            AdminOperation.Read,
+            key,
+            cancellationToken);
 
         return Page();
     }

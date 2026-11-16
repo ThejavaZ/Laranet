@@ -9,6 +9,7 @@ public sealed class CreateModel(
     IAdminResourceRegistry resources,
     IAdminDataAdapter adapter,
     IAdminAuthorization authorization,
+    IAdminAuditSink audit,
     IStringLocalizerFactory localizerFactory) : PageModel
 {
     private readonly IStringLocalizer localizer =
@@ -60,9 +61,26 @@ public sealed class CreateModel(
         try
         {
             await adapter.CreateAsync(Resource, ReadValues(), cancellationToken);
+            await AdminAudit.WriteSafeAsync(
+                audit,
+                HttpContext,
+                "create",
+                "success",
+                Resource,
+                AdminOperation.Create,
+                cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {
+            await AdminAudit.WriteSafeAsync(
+                audit,
+                HttpContext,
+                "create",
+                "failure",
+                Resource,
+                AdminOperation.Create,
+                ex.GetType().Name,
+                cancellationToken);
             ModelState.AddModelError(string.Empty, ex.Message);
             await LoadLookupsAsync(cancellationToken);
             return Page();

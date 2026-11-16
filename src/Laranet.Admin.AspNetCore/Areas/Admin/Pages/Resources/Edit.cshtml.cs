@@ -9,6 +9,7 @@ public sealed class EditModel(
     IAdminResourceRegistry resources,
     IAdminDataAdapter adapter,
     IAdminAuthorization authorization,
+    IAdminAuditSink audit,
     IStringLocalizerFactory localizerFactory) : PageModel
 {
     private readonly IStringLocalizer localizer =
@@ -71,9 +72,27 @@ public sealed class EditModel(
         try
         {
             await adapter.UpdateAsync(Resource, key, ReadValues(), cancellationToken);
+            await AdminAudit.WriteSafeAsync(
+                audit,
+                HttpContext,
+                "update",
+                "success",
+                Resource,
+                AdminOperation.Update,
+                key,
+                cancellationToken);
         }
         catch (Exception ex)
         {
+            await AdminAudit.WriteSafeAsync(
+                audit,
+                HttpContext,
+                "update",
+                "failure",
+                Resource,
+                AdminOperation.Update,
+                $"{key}; {ex.GetType().Name}",
+                cancellationToken);
             ModelState.AddModelError(string.Empty, ex.Message);
             await LoadLookupsAsync(cancellationToken);
             return Page();

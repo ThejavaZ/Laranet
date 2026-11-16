@@ -80,11 +80,11 @@ admin panel. Each item should be implemented and verified independently.
 
 ### Protección web y auditoría
 
-- [ ] **Validar `returnUrl`.** Aceptar únicamente rutas locales y evitar open redirects.
-- [ ] **Revisar cookies y encabezados de seguridad.** Configurar HSTS, CSP, `X-Content-Type-Options`, `Referrer-Policy` y políticas relacionadas.
-- [ ] **Auditoría de acciones administrativas.** Registrar login, logout, fallos de login y operaciones CRUD/bulk.
-- [ ] **Extensión de auditoría desacoplada.** Exponer un `IAdminAuditSink` opcional sin imponer almacenamiento.
-- [ ] **Pruebas de seguridad del panel.** Cubrir acceso anónimo, `Challenge`, `Forbid`, CSRF, permisos por operación y aislamiento de recursos.
+- [x] **Validar `returnUrl`.** Aceptar únicamente rutas locales y evitar open redirects.
+- [x] **Revisar cookies y encabezados de seguridad.** Configurar HSTS, CSP, `X-Content-Type-Options`, `Referrer-Policy` y políticas relacionadas.
+- [x] **Auditoría de acciones administrativas.** Registrar login, logout, fallos de login y operaciones CRUD/bulk.
+- [x] **Extensión de auditoría desacoplada.** Exponer un `IAdminAuditSink` opcional sin imponer almacenamiento.
+- [x] **Pruebas de seguridad del panel.** Cubrir acceso anónimo, `Challenge`, `Forbid`, CSRF, permisos por operación y aislamiento de recursos.
 
 ## Código y mantenimiento
 
