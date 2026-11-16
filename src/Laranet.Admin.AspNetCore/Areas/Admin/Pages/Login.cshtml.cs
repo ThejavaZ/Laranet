@@ -22,6 +22,12 @@ public sealed class LoginModel(
     [BindProperty(SupportsGet = true)]
     public string? ReturnUrl { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public string? Reason { get; set; }
+
+    public bool SessionExpired =>
+        string.Equals(Reason, "expired", StringComparison.OrdinalIgnoreCase);
+
     public void OnGet()
     {
     }

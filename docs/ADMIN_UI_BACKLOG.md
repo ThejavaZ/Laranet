@@ -75,8 +75,8 @@ admin panel. Each item should be implemented and verified independently.
 - [x] **Logo e identidad visual en login.** Añadir icono/logo, mejor jerarquía visual y descripción clara.
 - [x] **Mejorar inputs y estados del formulario.** Iconos, foco visible, errores claros y botón principal destacado.
 - [x] **Mostrar/ocultar contraseña.** Añadir control accesible para alternar la visibilidad.
-- [ ] **Mostrar el entorno en login.** Mantener visible `Development`, `Staging` o `Production` sin confundir al usuario.
-- [ ] **Mensaje de sesión expirada.** Informar cuando el usuario vuelve al login por expiración o revocación.
+- [x] **Mostrar el entorno en login.** Mantener visible `Development`, `Staging` o `Production` sin confundir al usuario.
+- [x] **Mensaje de sesión expirada.** Informar cuando el usuario vuelve al login por expiración o revocación.
 - [x] **Sin registro público.** Las cuentas deben crearse mediante administrador, CLI, seed o invitación controlada.
 - [x] **Forgot password seguro.** Token de un solo uso, expiración corta, respuesta genérica, rate limiting y auditoría.
 - [x] **Reset administrativo de contraseña.** La CLI puede crear o actualizar una cuenta y rotar su contraseña.

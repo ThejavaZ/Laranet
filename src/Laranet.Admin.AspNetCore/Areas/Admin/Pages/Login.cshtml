@@ -31,11 +31,20 @@
                 <h2 id="login-title">Sign in to continue</h2>
                 <p>Use your administrator account to access the dashboard.</p>
             </div>
-            <span class="admin-environment">@HostEnvironment.EnvironmentName</span>
+            <span class="admin-environment"
+                  aria-label="Environment: @HostEnvironment.EnvironmentName">
+                Environment: @HostEnvironment.EnvironmentName
+            </span>
         </div>
 
         <form method="post" class="admin-login-form">
             <input type="hidden" asp-for="ReturnUrl" />
+            @if (Model.SessionExpired)
+            {
+                <div class="admin-alert admin-alert-warning" role="status">
+                    Your session expired or was revoked. Please sign in again.
+                </div>
+            }
             <div asp-validation-summary="ModelOnly" class="admin-alert admin-alert-error" role="alert"></div>
 
             <div class="admin-login-field">

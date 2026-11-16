@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -321,8 +322,26 @@ internal sealed class AdminCookieEvents(IAdminUserStore users)
 
     private static async Task RejectAsync(CookieValidatePrincipalContext context)
     {
+        context.HttpContext.Items["Laranet.Admin.SessionExpired"] = true;
         context.RejectPrincipal();
         await context.HttpContext.SignOutAsync(AdminAuthenticationDefaults.Scheme);
+    }
+
+    public override Task RedirectToLogin(
+        RedirectContext<CookieAuthenticationOptions> context)
+    {
+        if (context.Request.Path.StartsWithSegments("/admin") &&
+            (context.HttpContext.Items.ContainsKey("Laranet.Admin.SessionExpired") ||
+             context.Request.Cookies.ContainsKey(context.Options.Cookie.Name!)))
+        {
+            context.RedirectUri = QueryHelpers.AddQueryString(
+                context.RedirectUri,
+                "reason",
+                "expired");
+        }
+
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
     }
 }
 
