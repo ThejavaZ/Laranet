@@ -1,0 +1,26 @@
+@model AdminButtonView
+@{
+    var cssClass = Model.Variant switch
+    {
+        "secondary" => "admin-button-secondary",
+        "danger" => "admin-button admin-button-danger",
+        _ => "admin-button",
+    };
+}
+@if (Model.Href is not null)
+{
+    <a class="@cssClass"
+       href="@Model.Href"
+       aria-disabled="@(Model.IsDisabled ? "true" : null)">
+        @Model.Label
+    </a>
+}
+else
+{
+    <button class="@cssClass"
+            type="@Model.Type"
+            disabled="@(Model.IsDisabled ? "disabled" : null)"
+            data-loading-button="@(Model.ShowLoading ? "true" : null)">
+        @Model.Label
+    </button>
+}

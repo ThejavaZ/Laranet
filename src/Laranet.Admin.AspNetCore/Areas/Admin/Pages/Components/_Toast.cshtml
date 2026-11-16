@@ -1,0 +1,50 @@
+@{
+    var messages = new List<(string Type, string Message)>();
+
+    if (TempData["AdminError"] is string tempError)
+    {
+        messages.Add(("error", tempError));
+    }
+
+    if (Context.Request.Query.TryGetValue("adminMessage", out var success))
+    {
+        messages.Add(("success", success.ToString()));
+    }
+
+    if (Context.Request.Query.TryGetValue("adminError", out var error))
+    {
+        messages.Add(("error", error.ToString()));
+    }
+
+    if (Context.Request.Query.TryGetValue("adminWarning", out var warning))
+    {
+        messages.Add(("warning", warning.ToString()));
+    }
+
+    if (Context.Request.Query.TryGetValue("adminInfo", out var info))
+    {
+        messages.Add(("info", info.ToString()));
+    }
+}
+@foreach (var message in messages)
+{
+    <div class="admin-toast admin-toast-@message.Type" role="status" aria-live="polite" data-toast>
+        @if (message.Type == "success")
+        {
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        }
+        else
+        {
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        }
+        <span>@message.Message</span>
+        <button type="button" data-toast-close aria-label="Close notification">×</button>
+    </div>
+}

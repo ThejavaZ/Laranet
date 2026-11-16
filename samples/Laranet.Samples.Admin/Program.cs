@@ -64,5 +64,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
+app.MapGet("/", () => Results.Redirect("/admin"));
 
 app.Run();

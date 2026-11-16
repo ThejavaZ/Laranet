@@ -7,8 +7,15 @@ pagination, creating, editing, and deleting resource rows. Applications provide 
 `IAdminDataAdapter`, register resources, and configure native ASP.NET Core
 authentication and authorization.
 
-It does not include EF Core, Identity, a database provider, a custom view engine, or
-frontend components. The API is experimental and is not part of the current release
+The Razor UI is organized by responsibility:
+
+- `Areas/Admin/Pages/Layouts` contains the application shell layouts.
+- `Areas/Admin/Pages/Components` contains reusable partials such as the topbar,
+  sidebar, toast, dialog, form field, button, table, pagination, and empty state.
+- `Areas/Admin/Pages/Resources` contains the page models and page orchestration.
+
+It does not include EF Core, Identity, a database provider, a custom view engine, or a
+JavaScript framework. The API is experimental and is not part of the current release
 train.
 
 ```csharp

@@ -1,0 +1,82 @@
+@using System.Globalization
+@model AdminFieldView
+@{
+    var field = Model.Field;
+    var value = Model.Value;
+    var stringValue = Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty;
+    var inputType = AdminInputTypeResolver.Resolve(field);
+    var step = AdminInputTypeResolver.ResolveStep(field);
+    var error = ViewData.ModelState.TryGetValue(field.Name, out var entry)
+        ? entry.Errors.FirstOrDefault()?.ErrorMessage
+        : null;
+
+    var isChecked = value switch
+    {
+        bool boolean => boolean,
+        string text when bool.TryParse(text, out var parsed) => parsed,
+        _ => false,
+    };
+}
+<div class="admin-form-field @(error is not null ? "has-error" : null)">
+    <label class="admin-field-label" for="@field.Name">
+        @Model.Label
+        @if (field.IsRequired)
+        {
+            <span class="admin-required" aria-hidden="true">*</span>
+        }
+    </label>
+
+    @if (Model.Options is not null)
+    {
+        @await Html.PartialAsync(
+            "~/Areas/Admin/Pages/Components/_Select.cshtml",
+            new AdminSelectView(field.Name, Model.Options, stringValue, field.IsRequired))
+    }
+    else if (field.Type == typeof(bool))
+    {
+        <label class="admin-toggle">
+            <input id="@field.Name"
+                   name="@field.Name"
+                   type="checkbox"
+                   value="true"
+                   checked="@(isChecked ? "checked" : null)" />
+            <span class="admin-toggle-track">
+                <span class="admin-toggle-thumb"></span>
+            </span>
+            <span class="admin-toggle-label">@(isChecked ? "Enabled" : "Disabled")</span>
+        </label>
+        <input type="hidden" name="@field.Name" value="false" />
+    }
+    else if (field.FieldType == AdminFieldType.TextArea)
+    {
+        <textarea id="@field.Name"
+                  name="@field.Name"
+                  rows="@(field.Rows ?? 4)"
+                  placeholder="@field.Placeholder"
+                  required="@(field.IsRequired ? "required" : null)">@stringValue</textarea>
+    }
+    else
+    {
+        <input id="@field.Name"
+               name="@field.Name"
+               type="@inputType"
+               placeholder="@field.Placeholder"
+               value="@stringValue"
+               min="@field.Min"
+               max="@field.Max"
+               step="@step"
+               maxlength="@(field.MaxLength?.ToString(CultureInfo.InvariantCulture))"
+               minlength="@(field.MinLength?.ToString(CultureInfo.InvariantCulture))"
+               required="@(field.IsRequired ? "required" : null)" />
+    }
+
+    @if (field.HelpText is not null)
+    {
+        <span class="admin-field-help">@field.HelpText</span>
+    }
+
+    @if (error is not null)
+    {
+        <span class="admin-field-error" role="alert">@error</span>
+    }
+</div>

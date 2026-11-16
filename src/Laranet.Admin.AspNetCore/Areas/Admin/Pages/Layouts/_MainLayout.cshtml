@@ -1,0 +1,32 @@
+@{
+    var direction = Context.Request.Query["dir"] == "rtl" ? "rtl" : "ltr";
+}
+<!DOCTYPE html>
+<html lang="en" dir="@direction">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] · Laranet Admin</title>
+    <link rel="stylesheet" href="/_content/Laranet.Admin.AspNetCore/admin.css" />
+    <script defer src="/_content/Laranet.Admin.AspNetCore/admin.js"></script>
+</head>
+<body class="admin-shell" data-theme="light">
+    @await Html.PartialAsync("~/Areas/Admin/Pages/Components/_Topbar.cshtml")
+
+    <div class="admin-layout">
+        @await Html.PartialAsync("~/Areas/Admin/Pages/Components/_Sidebar.cshtml")
+
+        <div class="admin-sidebar-overlay" data-sidebar-overlay></div>
+
+        <main class="admin-content" id="main-content">
+            <a href="#main-content" class="admin-skip-link">Skip to content</a>
+            @await Html.PartialAsync("~/Areas/Admin/Pages/Components/_Toast.cshtml")
+            @RenderBody()
+        </main>
+    </div>
+
+    @await Html.PartialAsync("~/Areas/Admin/Pages/Components/_Dialog.cshtml")
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

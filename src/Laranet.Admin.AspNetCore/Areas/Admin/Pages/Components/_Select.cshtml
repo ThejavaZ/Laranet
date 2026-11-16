@@ -1,0 +1,15 @@
+@using System.Globalization
+@model AdminSelectView
+@{
+    var emptyLabel = Model.EmptyLabel ?? "Select...";
+}
+<select id="@Model.Name" name="@Model.Name" required="@(Model.IsRequired ? "required" : null)">
+    <option value="">@emptyLabel</option>
+    @foreach (var option in Model.Options)
+    {
+        var optionValue = Convert.ToString(option.Key, CultureInfo.InvariantCulture) ?? string.Empty;
+        <option value="@optionValue" selected="@(string.Equals(optionValue, Model.Value, StringComparison.Ordinal) ? "selected" : null)">
+            @option.Label
+        </option>
+    }
+</select>

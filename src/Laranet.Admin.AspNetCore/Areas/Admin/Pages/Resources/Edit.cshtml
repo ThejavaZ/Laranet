@@ -3,7 +3,7 @@
 
 <div class="admin-page-heading">
     <div>
-        <h1>Edit @Model.Resource.Name.TrimEnd('s')</h1>
+        <h1>Edit @AdminPageModelHelper.SingularName(Model.Resource)</h1>
         <p>Update this record.</p>
     </div>
 </div>
@@ -21,59 +21,24 @@
     }
     @foreach (var field in Model.Resource.Form?.Fields ?? Model.Resource.Fields)
     {
-        <div class="admin-form-field">
-            <label>
-            @Model.L(field)
-            @if (Model.Lookups.TryGetValue(field.Name, out var options))
-            {
-                <select name="@field.Name">
-                    @foreach (var option in options)
-                    {
-                        <option value="@option.Key"
-                                selected="@(Convert.ToString(Model.Values.GetValueOrDefault(field.Name)) == Convert.ToString(option.Key))">
-                            @option.Label
-                        </option>
-                    }
-                </select>
-            }
-            else if (field.FieldType == AdminFieldType.TextArea)
-            {
-                <textarea name="@field.Name" rows="@(field.Rows ?? 4)">@Model.Values.GetValueOrDefault(field.Name)</textarea>
-            }
-            else if (field.Type == typeof(bool))
-            {
-                var isChecked = Convert.ToBoolean(Model.Values.GetValueOrDefault(field.Name));
-                <label class="admin-toggle">
-                    <input name="@field.Name" type="checkbox" value="true" checked="@(isChecked ? "checked" : null)" />
-                    <span class="admin-toggle-track">
-                        <span class="admin-toggle-thumb"></span>
-                    </span>
-                    <span class="admin-toggle-label">@(isChecked ? "Enabled" : "Disabled")</span>
-                </label>
-                <input type="hidden" name="@field.Name" value="false" />
-            }
-            else if (field.FieldType == AdminFieldType.TextArea)
-            {
-                <textarea name="@field.Name" rows="@(field.Rows ?? 4)">@Model.Values.GetValueOrDefault(field.Name)</textarea>
-            }
-            else
-            {
-                <input name="@field.Name"
-                       type="@Laranet.Admin.AspNetCore.AdminInputTypeResolver.Resolve(field)"
-                       value="@Model.Values.GetValueOrDefault(field.Name)"
-                       min="@field.Min"
-                       max="@field.Max"
-                       step="@Laranet.Admin.AspNetCore.AdminInputTypeResolver.ResolveStep(field)"
-                       maxlength="@(field.MaxLength?.ToString())"
-                       minlength="@(field.MinLength?.ToString())"
-                       required="@(field.IsRequired ? "required" : null)" />
-            }
-            </label>
-        </div>
+        @await Html.PartialAsync(
+            "~/Areas/Admin/Pages/Components/_Field.cshtml",
+            new AdminFieldView(
+                field,
+                Model.L(field),
+                Model.Values.GetValueOrDefault(field.Name),
+                Model.Lookups.GetValueOrDefault(field.Name)))
     }
     <div class="admin-form-actions">
-        <button class="admin-button" type="submit" data-loading-button>Save</button>
-        <a class="admin-button-secondary" asp-page="/Resources/Index" asp-route-resource="@Model.Resource.Name">Cancel</a>
+        @await Html.PartialAsync(
+            "~/Areas/Admin/Pages/Components/_Button.cshtml",
+            new AdminButtonView("Save", Type: "submit", ShowLoading: true))
+        @await Html.PartialAsync(
+            "~/Areas/Admin/Pages/Components/_Button.cshtml",
+            new AdminButtonView(
+                "Cancel",
+                Url.Page("/Resources/Index", new { resource = Model.Resource.Name }),
+                Variant: "secondary"))
     </div>
 </form>
 </div>

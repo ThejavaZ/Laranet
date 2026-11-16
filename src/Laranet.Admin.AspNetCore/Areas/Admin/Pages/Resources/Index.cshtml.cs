@@ -18,6 +18,21 @@ public sealed class IndexModel(
 
     public AdminPage Results { get; private set; } = new([], 1, 25, 0);
 
+    public Dictionary<string, string> RouteValues { get; private set; } =
+        new(StringComparer.OrdinalIgnoreCase);
+
+    public AdminTableModel Table => new(
+        Resource,
+        Results,
+        SortBy,
+        SortDescending,
+        SupportsBulk,
+        RouteValues,
+        f => L(f),
+        FormatValue);
+
+    public AdminPaginationModel Pagination => new(Results, RouteValues);
+
     public string L(AdminField field) =>
         AdminPageModelHelper.L(localizer, field);
 
@@ -83,6 +98,8 @@ public sealed class IndexModel(
                 SortBy,
                 SortDescending),
             cancellationToken);
+
+        RouteValues = BuildRouteValues();
 
         return Page();
     }
@@ -212,6 +229,37 @@ public sealed class IndexModel(
             return Challenge();
         }
         return Forbid();
+    }
+
+    private Dictionary<string, string> BuildRouteValues()
+    {
+        var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["resource"] = Resource.Name,
+            ["PageSize"] = PageSize.ToString(
+                System.Globalization.CultureInfo.InvariantCulture),
+            ["SortDescending"] = SortDescending.ToString(),
+        };
+
+        if (!string.IsNullOrWhiteSpace(Search))
+        {
+            values["Search"] = Search;
+        }
+
+        if (!string.IsNullOrWhiteSpace(SortBy))
+        {
+            values["SortBy"] = SortBy;
+        }
+
+        foreach (var filter in Filters)
+        {
+            if (!string.IsNullOrEmpty(filter.Value))
+            {
+                values[filter.Key] = filter.Value;
+            }
+        }
+
+        return values;
     }
 
     private IReadOnlyDictionary<string, string?> ReadFilters()

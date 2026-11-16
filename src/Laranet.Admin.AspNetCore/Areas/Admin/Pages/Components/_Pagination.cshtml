@@ -1,0 +1,65 @@
+@using System.Globalization
+@model AdminPaginationModel
+@{
+    var pageSizes = Model.PageSizes ?? [10, 25, 50, 100];
+    var totalPages = Math.Max(Model.Results.TotalPages, 1);
+    var firstPage = Math.Max(1, Model.Results.Page - 2);
+    var lastPage = Math.Min(totalPages, Model.Results.Page + 2);
+}
+<div class="admin-footer">
+    <form method="get" class="admin-page-size">
+        @foreach (var routeValue in Model.RouteValues)
+        {
+            if (string.Equals(routeValue.Key, "PageSize", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            <input type="hidden" name="@routeValue.Key" value="@routeValue.Value" />
+        }
+        <label>
+            Page size
+            <select name="PageSize" onchange="this.form.requestSubmit()">
+                @foreach (var size in pageSizes)
+                {
+                    <option value="@size" selected="@(Model.Results.PageSize == size ? "selected" : null)">@size</option>
+                }
+            </select>
+        </label>
+    </form>
+
+    <nav class="admin-pagination" aria-label="Pagination">
+        @if (Model.Results.Page > 1)
+        {
+            <a class="admin-page-link"
+               asp-page="/Resources/Index"
+               asp-all-route-data="@Model.RouteValues"
+               asp-route-PageNumber="1">First</a>
+            <a class="admin-page-link"
+               asp-page="/Resources/Index"
+               asp-all-route-data="@Model.RouteValues"
+               asp-route-PageNumber="@(Model.Results.Page - 1)">Prev</a>
+        }
+
+        @for (var page = firstPage; page <= lastPage; page++)
+        {
+            <a class="admin-page-link @(page == Model.Results.Page ? "is-active" : null)"
+               asp-page="/Resources/Index"
+               asp-all-route-data="@Model.RouteValues"
+               asp-route-PageNumber="@(page)"
+               aria-current="@(page == Model.Results.Page ? "page" : null)">@(page)</a>
+        }
+
+        @if (Model.Results.Page < totalPages)
+        {
+            <a class="admin-page-link"
+               asp-page="/Resources/Index"
+               asp-all-route-data="@Model.RouteValues"
+               asp-route-PageNumber="@(Model.Results.Page + 1)">Next</a>
+            <a class="admin-page-link"
+               asp-page="/Resources/Index"
+               asp-all-route-data="@Model.RouteValues"
+               asp-route-PageNumber="@totalPages">Last</a>
+        }
+    </nav>
+</div>

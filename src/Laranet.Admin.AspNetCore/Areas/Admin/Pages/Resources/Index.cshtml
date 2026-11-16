@@ -7,7 +7,7 @@
         <p>Manage your @Model.Resource.Name.ToLowerInvariant() from one place.</p>
     </div>
     <a class="admin-button" asp-page="/Resources/Create" asp-route-resource="@Model.Resource.Name">
-        Create @Model.Resource.Name.TrimEnd('s')
+        Create @AdminPageModelHelper.SingularName(Model.Resource)
     </a>
 </div>
 
@@ -47,7 +47,7 @@
 {
     <form id="bulk-form" class="admin-bulk-form" method="post" asp-page-handler="Bulk"
           asp-route-resource="@Model.Resource.Name"
-          data-confirm="Apply soft-delete to the selected records?"
+          data-confirm-form="Apply soft-delete to the selected records?"
           data-loading-form>
         <input type="hidden" name="action" value="soft-delete" />
         <button class="admin-button-secondary" type="submit" data-loading-button>
@@ -56,165 +56,22 @@
     </form>
 }
 
+@await Html.PartialAsync("~/Areas/Admin/Pages/Components/_TableSkeleton.cshtml")
+
 @if (Model.Results.Items.Count == 0)
 {
-    <div class="admin-empty-state">
-        <div class="admin-empty-icon">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-        </div>
-        <h2>No records found</h2>
-        <p>Try adjusting your search or filters, or create a new record.</p>
-        <a class="admin-button" asp-page="/Resources/Create" asp-route-resource="@Model.Resource.Name">Create @Model.Resource.Name.TrimEnd('s')</a>
-    </div>
+    @await Html.PartialAsync(
+        "~/Areas/Admin/Pages/Components/_EmptyState.cshtml",
+        new AdminEmptyStateView(
+            "No records found",
+            "Try adjusting your search or filters, or create a new record.",
+            $"Create {AdminPageModelHelper.SingularName(Model.Resource)}",
+            Url.Page("/Resources/Create", new { resource = Model.Resource.Name }),
+            "search"))
 }
 else
 {
-<table class="admin-table" aria-label="Data table">
-    <thead>
-        <tr>
-        @foreach (var field in Model.Resource.Fields)
-        {
-            <th>
-            @if (field.IsOrderable)
-            {
-                var descending = Model.SortBy == field.Name && !Model.SortDescending;
-                <a class="admin-sort-link"
-                   asp-page="/Resources/Index"
-                   asp-route-resource="@Model.Resource.Name"
-                   asp-route-Search="@Model.Search"
-                   asp-route-PageSize="@Model.PageSize"
-                   asp-route-PageNumber="1"
-                   asp-route-SortBy="@field.Name"
-                   asp-route-SortDescending="@descending">
-                    @(Model.L(field))
-                    @if (Model.SortBy == field.Name)
-                    {
-                        <span aria-hidden="true">@(Model.SortDescending ? "↓" : "↑")</span>
-                    }
-                </a>
-            }
-            else
-            {
-                @(Model.L(field))
-            }
-            </th>
-        }
-        <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Results.Items)
-    {
-        <tr>
-        @foreach (var field in Model.Resource.Fields)
-        {
-            <td>
-                @if (field.IsKey)
-                {
-                    <a class="admin-link" asp-page="/Resources/Details"
-                       asp-route-resource="@Model.Resource.Name"
-                       asp-route-key="@item.GetValueOrDefault(field.Name)">
-                        @Model.FormatValue(field, item.GetValueOrDefault(field.Name))
-                    </a>
-                }
-                else
-                {
-                    @Model.FormatValue(field, item.GetValueOrDefault(field.Name))
-                }
-            </td>
-        }
-        <td class="admin-actions">
-            @if (Model.SupportsBulk)
-            {
-                <input type="checkbox" name="keys" value="@item.GetValueOrDefault(Model.Resource.KeyField.Name)" form="bulk-form" />
-            }
-            <a asp-page="/Resources/Edit"
-               asp-route-resource="@Model.Resource.Name"
-               asp-route-key="@item.GetValueOrDefault(Model.Resource.KeyField.Name)">Edit</a>
-            <form method="post"
-                  data-confirm-form="Delete this record?"
-                  data-loading-form
-                  asp-page-handler="Delete"
-                  asp-route-resource="@Model.Resource.Name"
-                  asp-route-key="@item.GetValueOrDefault(Model.Resource.KeyField.Name)">
-                <button class="admin-danger" type="submit" data-loading-button>Delete</button>
-            </form>
-        </td>
-        </tr>
-    }
-    </tbody>
-</table>
+    @await Html.PartialAsync("~/Areas/Admin/Pages/Components/_Table.cshtml", Model.Table)
+    @await Html.PartialAsync("~/Areas/Admin/Pages/Components/_Pagination.cshtml", Model.Pagination)
 }
-
-<div class="admin-footer">
-    <form method="get" class="admin-page-size">
-        <input type="hidden" name="resource" value="@Model.Resource.Name" />
-        <input type="hidden" name="Search" value="@Model.Search" />
-        @foreach (var filter in Model.Resource.Filters)
-        {
-            <input type="hidden" name="@filter.Name" value="@Request.Query[filter.Name]" />
-        }
-        <input type="hidden" name="SortBy" value="@Model.SortBy" />
-        <input type="hidden" name="SortDescending" value="@Model.SortDescending" />
-        <label>
-            Page size
-            <select name="PageSize" onchange="this.form.submit()">
-                <option value="10" selected="@(Model.PageSize == 10)">10</option>
-                <option value="25" selected="@(Model.PageSize == 25)">25</option>
-                <option value="50" selected="@(Model.PageSize == 50)">50</option>
-                <option value="100" selected="@(Model.PageSize == 100)">100</option>
-            </select>
-        </label>
-    </form>
-    <nav class="admin-pagination" aria-label="Pagination">
-        @if (Model.Results.Page > 1)
-        {
-            <a class="admin-page-link" asp-page="/Resources/Index"
-               asp-route-resource="@Model.Resource.Name"
-               asp-route-Search="@Model.Search"
-               asp-route-PageSize="@Model.PageSize"
-               asp-route-SortBy="@Model.SortBy"
-               asp-route-SortDescending="@Model.SortDescending"
-               asp-route-PageNumber="1">First</a>
-            <a class="admin-page-link" asp-page="/Resources/Index"
-               asp-route-resource="@Model.Resource.Name"
-               asp-route-Search="@Model.Search"
-               asp-route-PageSize="@Model.PageSize"
-               asp-route-SortBy="@Model.SortBy"
-               asp-route-SortDescending="@Model.SortDescending"
-               asp-route-PageNumber="@(Model.Results.Page - 1)">Prev</a>
-        }
-        @for (var i = Math.Max(1, Model.Results.Page - 2); i <= Math.Min(Model.Results.TotalPages, Model.Results.Page + 2); i++)
-        {
-            <a class="admin-page-link @(i == Model.Results.Page ? "is-active" : "")" asp-page="/Resources/Index"
-               asp-route-resource="@Model.Resource.Name"
-               asp-route-Search="@Model.Search"
-               asp-route-PageSize="@Model.PageSize"
-               asp-route-SortBy="@Model.SortBy"
-               asp-route-SortDescending="@Model.SortDescending"
-               asp-route-PageNumber="@i">@i</a>
-        }
-        @if (Model.Results.Page < Model.Results.TotalPages)
-        {
-            <a class="admin-page-link" asp-page="/Resources/Index"
-               asp-route-resource="@Model.Resource.Name"
-               asp-route-Search="@Model.Search"
-               asp-route-PageSize="@Model.PageSize"
-               asp-route-SortBy="@Model.SortBy"
-               asp-route-SortDescending="@Model.SortDescending"
-               asp-route-PageNumber="@(Model.Results.Page + 1)">Next</a>
-            <a class="admin-page-link" asp-page="/Resources/Index"
-               asp-route-resource="@Model.Resource.Name"
-               asp-route-Search="@Model.Search"
-               asp-route-PageSize="@Model.PageSize"
-               asp-route-SortBy="@Model.SortBy"
-               asp-route-SortDescending="@Model.SortDescending"
-               asp-route-PageNumber="@Model.Results.TotalPages">Last</a>
-        }
-    </nav>
-    <span>@Model.Results.TotalCount items</span>
-</div>
 </div>
