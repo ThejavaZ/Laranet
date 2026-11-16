@@ -51,10 +51,11 @@ admin panel. Each item should be implemented and verified independently.
 ## Seguridad
 
 - [x] **Validar `SortBy` contra lista blanca.** Prevenir inyección.
-- [ ] **Limitar `PageSize` y `PageNumber`.** Clamped a rangos válidos.
+- [x] **Limitar `PageSize` y `PageNumber`.** Clamped a rangos válidos.
 - [x] **Challenge/Forbid en vez de 404.** 401 para anónimos, 403 para no autorizados.
 - [x] **Export CSV con BOM.** UTF-8 con BOM para Excel.
 - [x] **Bulk delete sin selección.** Validar y mostrar mensaje correcto.
+- [x] **Bulk solo con soft-delete real.** Mostrar selección y formulario bulk únicamente cuando el modelo tiene `IsDeleted`; el handler responde con toast si se invoca sin soporte.
 
 ## Código y mantenimiento
 

@@ -45,7 +45,9 @@ public sealed class IndexModel(
     public string FormatValue(AdminField field, object? value) =>
         AdminPageModelHelper.FormatValue(field, value);
 
-    public bool SupportsBulk => adapter is IAdminEnhancementAdapter;
+    public bool SupportsBulk =>
+        adapter is IAdminEnhancementAdapter &&
+        SupportsSoftDelete(Resource);
 
     [BindProperty(SupportsGet = true)]
     public string? Search { get; set; }
@@ -119,7 +121,7 @@ public sealed class IndexModel(
         if (keys is null || keys.Length == 0)
         {
             TempData["AdminError"] = "No records selected.";
-            return RedirectToPage(new { resource, adminMessage = "No records selected." });
+            return RedirectToPage(new { resource });
         }
 
         if (adapter is not IAdminEnhancementAdapter enhancements)
@@ -128,6 +130,19 @@ public sealed class IndexModel(
         }
 
         var definition = resources.Get(resource);
+
+        if (!string.Equals(action, "soft-delete", StringComparison.OrdinalIgnoreCase))
+        {
+            TempData["AdminError"] = $"Unsupported bulk action '{action}'.";
+            return RedirectToPage(new { resource });
+        }
+
+        if (!SupportsSoftDelete(definition))
+        {
+            TempData["AdminError"] = "This resource does not support bulk soft-delete.";
+            return RedirectToPage(new { resource });
+        }
+
         var count = await enhancements.ExecuteBulkActionAsync(
             definition,
             action,
@@ -230,6 +245,9 @@ public sealed class IndexModel(
         }
         return Forbid();
     }
+
+    private static bool SupportsSoftDelete(AdminResource resource) =>
+        resource.ModelType.GetProperty("IsDeleted")?.PropertyType == typeof(bool);
 
     private Dictionary<string, string> BuildRouteValues()
     {
