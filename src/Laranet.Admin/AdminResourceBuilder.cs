@@ -1,4 +1,8 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Laranet.Admin;
 
@@ -20,6 +24,79 @@ public sealed class AdminResourceBuilder<TModel>
     private Func<object, CancellationToken, Task<string?>>? deleteValidator;
 
     /// <summary>
+    /// Seeds the default field set from the model's public properties, honoring
+    /// DataAnnotations (ADR-0015). Runs once per resource at startup; explicit
+    /// <see cref="Field"/> declarations override the inferred values.
+    /// Properties marked with <c>[ScaffoldColumn(false)]</c> are excluded.
+    /// </summary>
+    public void InferFields()
+    {
+        var properties = typeof(TModel).GetProperties(
+            BindingFlags.Public | BindingFlags.Instance);
+        var useKeyAttribute = properties.Any(property =>
+            property.GetCustomAttribute<KeyAttribute>() is not null);
+        var keyAssigned = false;
+
+        foreach (var property in properties)
+        {
+            if (property.GetIndexParameters().Length > 0 || !property.CanRead)
+            {
+                continue;
+            }
+
+            if (property.GetCustomAttribute<ScaffoldColumnAttribute>() is { Scaffold: false })
+            {
+                continue;
+            }
+
+            if (fields.Any(field => field.Name == property.Name))
+            {
+                continue;
+            }
+
+            var display = property.GetCustomAttribute<DisplayAttribute>();
+            var range = property.GetCustomAttribute<RangeAttribute>();
+            var stringLength = property.GetCustomAttribute<StringLengthAttribute>();
+            var maxLength = property.GetCustomAttribute<MaxLengthAttribute>();
+
+            bool isKey;
+            if (useKeyAttribute)
+            {
+                // Validation allows exactly one key: the first [Key] wins.
+                isKey = !keyAssigned
+                    && property.GetCustomAttribute<KeyAttribute>() is not null;
+            }
+            else
+            {
+                isKey = property.Name.Equals("Id", StringComparison.OrdinalIgnoreCase);
+            }
+
+            keyAssigned |= isKey;
+
+            fields.Add(new AdminField(
+                property.Name,
+                display?.Name ?? property.Name,
+                property.PropertyType,
+                IsKey: isKey,
+                IsReadOnly: !property.CanWrite
+                    || property.GetCustomAttribute<EditableAttribute>() is { AllowEdit: false },
+                FieldType: InferFieldType(property.PropertyType, property.Name),
+                IsRequired: property.GetCustomAttribute<RequiredAttribute>() is not null,
+                MaxLength: stringLength?.MaximumLength ?? maxLength?.Length,
+                MinLength: stringLength is { MinimumLength: > 0 }
+                    ? stringLength.MinimumLength
+                    : null,
+                Min: range is null
+                    ? null
+                    : Convert.ToString(range.Minimum, CultureInfo.InvariantCulture),
+                Max: range is null
+                    ? null
+                    : Convert.ToString(range.Maximum, CultureInfo.InvariantCulture),
+                HelpText: display?.Description));
+        }
+    }
+
+    /// <summary>
     /// Adds a model field to the resource.
     /// </summary>
     public AdminFieldBuilder<TModel, TValue> Field<TValue>(
@@ -32,21 +109,24 @@ public sealed class AdminResourceBuilder<TModel>
                 $"Property '{name}' does not exist on {typeof(TModel).Name}.",
                 nameof(selector));
         var index = fields.FindIndex(field => field.Name == name);
-        var fieldType = InferFieldType(property.PropertyType, name);
-        var field = new AdminField(
-            name,
-            label ?? name,
-            property.PropertyType,
-            IsKey: name.Equals("Id", StringComparison.OrdinalIgnoreCase),
-            FieldType: fieldType);
+
         if (index >= 0)
         {
-            fields[index] = field;
-            index = fields.Count - 1;
+            // Explicit arguments win; inferred and previously configured values
+            // are preserved (ADR-0015).
+            if (label is not null)
+            {
+                fields[index] = fields[index] with { Label = label };
+            }
         }
         else
         {
-            fields.Add(field);
+            fields.Add(new AdminField(
+                name,
+                label ?? name,
+                property.PropertyType,
+                IsKey: name.Equals("Id", StringComparison.OrdinalIgnoreCase),
+                FieldType: InferFieldType(property.PropertyType, name)));
             index = fields.Count - 1;
         }
 
@@ -594,6 +674,7 @@ public abstract class AdminResource<TModel>
     private AdminResource BuildDefinition()
     {
         var builder = new AdminResourceBuilder<TModel>();
+        builder.InferFields();
         Configure(builder);
 
         if (Singular is not null)

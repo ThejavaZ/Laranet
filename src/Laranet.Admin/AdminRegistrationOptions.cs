@@ -85,6 +85,35 @@ public sealed class AdminRegistrationOptions
     }
 
     /// <summary>
+    /// Registers a resource inferred from the model itself: fields come from
+    /// public properties and DataAnnotations, so no resource class is required
+    /// for standard CRUD. Use <paramref name="configure"/> for overrides
+    /// (ADR-0015).
+    /// </summary>
+    /// <typeparam name="TModel">The entity type.</typeparam>
+    /// <param name="permissionPolicy">
+    /// The base permission policy. Required: the authorization bridge denies
+    /// operations when a resource has no policy.
+    /// </param>
+    /// <param name="configure">Optional overrides for fields, filters, and actions.</param>
+    /// <returns>The same options instance, for chaining.</returns>
+    /// <exception cref="ArgumentException"><paramref name="permissionPolicy"/> is null or whitespace.</exception>
+    public AdminRegistrationOptions AddResourceFromModel<TModel>(
+        string permissionPolicy,
+        Action<AdminResourceBuilder<TModel>>? configure = null)
+        where TModel : class
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(permissionPolicy);
+
+        var builder = new AdminResourceBuilder<TModel>();
+        builder.InferFields();
+        configure?.Invoke(builder);
+        builder.Permission(permissionPolicy);
+
+        return AddResource(builder.Build());
+    }
+
+    /// <summary>
     /// Discovers every class marked with <see cref="AdminResourceAttribute"/>
     /// that exposes a <c>Definition</c> property in the given assembly.
     /// </summary>
