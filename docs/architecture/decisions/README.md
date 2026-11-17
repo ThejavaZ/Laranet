@@ -24,6 +24,7 @@ Their purpose is to preserve architectural knowledge and provide transparency in
 | [0012](0012-admin-boundary-and-prototype.md) | Keep the Admin Core Provider-Neutral | Accepted for prototype |
 | [0013](0013-admin-architecture-and-security.md) | Define the Admin Architecture and Security Boundary | Accepted for implementation |
 | [0014](0014-reduce-registration-ceremony.md) | Reduce Registration Ceremony with Declarative Options | Accepted |
+| [0015](0015-field-inference-from-model-metadata.md) | Infer Admin Fields from Model Metadata | Accepted |
 
 ## ADR Status
 
