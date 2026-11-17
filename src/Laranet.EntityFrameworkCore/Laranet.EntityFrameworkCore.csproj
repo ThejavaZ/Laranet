@@ -7,7 +7,7 @@
 
     <!-- Package metadata -->
     <PackageId>Laranet.EntityFrameworkCore</PackageId>
-    <Version>0.4.5</Version>
+    <Version>0.4.6</Version>
     <Description>
       Entity Framework Core integration for asynchronous pagination and optional
       auditing and soft-delete conventions.

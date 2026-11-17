@@ -4,6 +4,41 @@ All notable changes to Laranet will be documented in this file.
 
 This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.6] - 2026-11-16
+
+### Added
+
+- Declarative admin registration: `AddLaranetAdmin(options => ...)` with
+  `AddResource(...)`, `AddResourceFromModel<TModel>(...)`,
+  `DiscoverResources(assembly)`, and `AddAdapter(...)`
+  ([ADR-0014](docs/architecture/decisions/0014-reduce-registration-ceremony.md),
+  [ADR-0015](docs/architecture/decisions/0015-field-inference-from-model-metadata.md)).
+- Field inference from model properties and DataAnnotations (`[Key]`,
+  `[Required]`, `[StringLength]`, `[Range]`, `[Display]`, `[Editable]`,
+  `[ScaffoldColumn]`); `Configure()` now only declares overrides.
+- `UseEfCore<TContext>()` registration sugar in `Laranet.Admin.EntityFrameworkCore`.
+- Per-operation admin policies (`Resource.Operation`) are materialized from the
+  registered base policy on demand by a custom `IAuthorizationPolicyProvider`
+  ([ADR-0016](docs/architecture/decisions/0016-synthesized-operation-policies.md)).
+- Documentation: ADR-0014–0016, the admin field-inference guide, `Admin_ROADMAP`,
+  FAQ, and Code of Conduct.
+
+### Fixed
+
+- Admin resource discovery matched no supported resource shape and ignored
+  `AdminResourceAttribute` metadata.
+- Updating a non-last field in `AdminResourceBuilder` returned the builder for
+  the last field, so chained configuration landed on the wrong property.
+- Per-operation policy loops are no longer required: the authorization bridge
+  and every policy consumer fall back to the resource's base policy.
+- Documentation version references now consistently describe the `0.4.x` line.
+
+### Changed
+
+- The sample registers a typed resource with inferred fields instead of an
+  explicit metadata literal.
+- Field redeclarations merge instead of resetting: explicit arguments win.
+
 ## [0.4.4] - 2026-11-15
 
 ### Added
