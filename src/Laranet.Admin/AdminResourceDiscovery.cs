@@ -26,16 +26,16 @@ public static class AdminResourceDiscovery
 {
     /// <summary>
     /// Discovers all types decorated with <see cref="AdminResourceAttribute"/>
-    /// in the specified assembly.
+    /// that expose a <c>Definition</c> property (typed <c>AdminResource&lt;T&gt;</c>
+    /// classes or static classes with a <c>Definition</c> property).
     /// </summary>
     public static IReadOnlyList<Type> Discover(Assembly assembly)
     {
         ArgumentNullException.ThrowIfNull(assembly);
 
         return assembly.GetTypes()
-            .Where(type => !type.IsAbstract
-                           && type.GetCustomAttribute<AdminResourceAttribute>() is not null
-                           && typeof(AdminResource).IsAssignableFrom(type))
+            .Where(type => type.GetCustomAttribute<AdminResourceAttribute>() is not null
+                           && type.GetProperty("Definition") is not null)
             .ToArray();
     }
 
@@ -51,17 +51,52 @@ public static class AdminResourceDiscovery
 
         foreach (var type in Discover(assembly))
         {
-            var instance = Activator.CreateInstance(type);
-
-            if (instance is not null)
+            var definitionProperty = type.GetProperty("Definition");
+            if (definitionProperty is null)
             {
-                var definitionProperty = type.GetProperty("Definition");
+                continue;
+            }
 
-                if (definitionProperty?.GetValue(instance) is AdminResource definition)
-                {
-                    registry.Add(definition);
-                }
+            object? instance = null;
+            if (!type.IsAbstract)
+            {
+                instance = Activator.CreateInstance(type);
+            }
+            else if (definitionProperty.GetMethod?.IsStatic != true)
+            {
+                // An abstract class cannot expose an instance definition.
+                continue;
+            }
+
+            if (definitionProperty.GetValue(instance) is AdminResource definition)
+            {
+                registry.Add(ApplyAttributeMetadata(type, definition));
             }
         }
+    }
+
+    /// <summary>
+    /// Applies registration metadata from <see cref="AdminResourceAttribute"/>
+    /// (name and permission policy) when it is explicitly set, so both explicit
+    /// and discovered registrations honor the attribute contract.
+    /// </summary>
+    internal static AdminResource ApplyAttributeMetadata(
+        Type type,
+        AdminResource definition)
+    {
+        var attribute = type.GetCustomAttribute<AdminResourceAttribute>();
+        if (attribute is null)
+        {
+            return definition;
+        }
+
+        return definition with
+        {
+            Name = string.IsNullOrWhiteSpace(attribute.Name)
+                ? definition.Name
+                : attribute.Name,
+            PermissionPolicy = attribute.PermissionPolicy
+                ?? definition.PermissionPolicy,
+        };
     }
 }
