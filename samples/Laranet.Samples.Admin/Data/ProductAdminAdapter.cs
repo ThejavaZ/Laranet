@@ -6,6 +6,10 @@ namespace Laranet.Samples.Admin.Data;
 
 public sealed class ProductAdminAdapter(AdminDbContext db) : IAdminDataAdapter
 {
+    // The typed resource caches its Definition per instance; the registry owns
+    // its own instance, so comparisons fall back to the resource name below.
+    private static readonly AdminResource Definition = new ProductAdminResource().Definition;
+
     public async Task<AdminPage> ListAsync(
         AdminResource resource,
         AdminQuery query,
@@ -123,8 +127,8 @@ public sealed class ProductAdminAdapter(AdminDbContext db) : IAdminDataAdapter
 
     private static void EnsureResource(AdminResource resource)
     {
-        if (!ReferenceEquals(resource, ProductAdminResource.Definition)
-            && !string.Equals(resource.Name, ProductAdminResource.Definition.Name, StringComparison.Ordinal))
+        if (!ReferenceEquals(resource, Definition)
+            && !string.Equals(resource.Name, Definition.Name, StringComparison.Ordinal))
         {
             throw new ArgumentException("This adapter only supports the Products resource.", nameof(resource));
         }

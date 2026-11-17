@@ -40,7 +40,7 @@ Razor Pages surface:
 
 ```csharp
 builder.Services.AddLaranetAdmin(options => options
-    .AddResource(ProductAdminResource.Definition)
+    .AddResource<ProductAdminResource>()
     .UseEfCore<AdminDbContext>());
 builder.Services.AddRazorPages();
 
@@ -58,19 +58,27 @@ authorization policies. The package does not include EF Core or Identity.
 
 ## Resource registration
 
-Register resources explicitly through the options callback:
-
-```csharp
-builder.Services.AddLaranetAdmin(options => options
-    .AddResource(ProductAdminResource.Definition));
-```
-
-Typed resources use the generic overload, which reads the resource's
-`Definition`:
+Register typed resources through the generic overload — the definition is built
+from `Configure`:
 
 ```csharp
 builder.Services.AddLaranetAdmin(options => options
     .AddResource<ProductResource>());
+```
+
+Standard CRUD resources can skip the class entirely; the model alone is enough
+(see [Field inference](#field-inference)):
+
+```csharp
+builder.Services.AddLaranetAdmin(options => options
+    .AddResourceFromModel<Product>("Admin.Products"));
+```
+
+For full manual control, an explicit `AdminResource` literal still works:
+
+```csharp
+builder.Services.AddLaranetAdmin(options => options
+    .AddResource(ProductAdminResource.Definition));
 ```
 
 A resource defines fields, filters, actions, and a permission policy name:
@@ -115,6 +123,42 @@ public sealed class ProductResource : AdminResource<Product>
 
 The builder produces provider-neutral metadata. It does not execute queries or render
 pages, and its exact API remains experimental until a real application validates it.
+
+## Field inference
+
+`AdminResource<TModel>` seeds its fields from the model before `Configure`
+runs, so the model stays the single source of truth (ADR-0015):
+
+```csharp
+public sealed class ProductResource : AdminResource<Product>
+{
+    protected override void Configure(AdminResourceBuilder<Product> resource)
+    {
+        // Only overrides: fields, labels, and validation come from the model.
+        resource.Field(product => product.Price).FormatAs("currency");
+        resource.Permission("Admin.Products");
+    }
+}
+```
+
+Inferred from the model:
+
+| Source | Result |
+| --- | --- |
+| Public instance properties (declaration order) | Fields; indexers and static properties are excluded |
+| `[Key]` (first key only), otherwise a property named `Id` | Key field |
+| `[Required]` | Required |
+| `[StringLength]`, `[MaxLength]`, `[MinLength]` | Length limits |
+| `[Range]` | Minimum and maximum |
+| `[Display(Name)]`, `[Display(Description)]` | Label and help text |
+| `[Editable(false)]` or a getter-only property | Read-only |
+| `[ScaffoldColumn(false)]` | Field excluded |
+| CLR type | Input control (existing type inference) |
+
+Explicit declarations always win: `Field(selector, label)` overrides the
+inferred values for that field and preserves the rest. With no configuration at
+all a model still produces a complete field surface; actions, filters, and
+ordering remain explicit metadata.
 
 ## Adapter boundary
 

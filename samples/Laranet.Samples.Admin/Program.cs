@@ -16,7 +16,7 @@ builder.Services
     .AddEntityFrameworkStores<AdminDbContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddLaranetAdmin(options => options
-    .AddResource(ProductAdminResource.Definition)
+    .AddResource<ProductAdminResource>()
     .UseEfCore<AdminDbContext>());
 builder.Services.AddLaranetAdminAuthentication(options =>
     options.AddUser(

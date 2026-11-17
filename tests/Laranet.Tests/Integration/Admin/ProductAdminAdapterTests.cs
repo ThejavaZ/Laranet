@@ -21,7 +21,7 @@ public class ProductAdminAdapterTests
         var adapter = new ProductAdminAdapter(db);
 
         var page = await adapter.ListAsync(
-            ProductAdminResource.Definition,
+            new ProductAdminResource().Definition,
             new Laranet.Admin.AdminQuery(Page: 1, PageSize: 1, Search: "Monitor"));
 
         Assert.Equal(1, page.TotalCount);
@@ -38,7 +38,7 @@ public class ProductAdminAdapterTests
         var adapter = new ProductAdminAdapter(db);
 
         var created = await adapter.CreateAsync(
-            ProductAdminResource.Definition,
+            new ProductAdminResource().Definition,
             new Dictionary<string, object?>
             {
                 ["Name"] = "Keyboard",
@@ -48,13 +48,13 @@ public class ProductAdminAdapterTests
         var id = Convert.ToInt32(created["Id"]);
 
         var updated = await adapter.UpdateAsync(
-            ProductAdminResource.Definition,
+            new ProductAdminResource().Definition,
             id,
             new Dictionary<string, object?> { ["Name"] = "Mechanical Keyboard" });
-        await adapter.DeleteAsync(ProductAdminResource.Definition, id);
+        await adapter.DeleteAsync(new ProductAdminResource().Definition, id);
 
         Assert.Equal("Mechanical Keyboard", updated["Name"]);
-        Assert.Null(await adapter.ReadAsync(ProductAdminResource.Definition, id));
+        Assert.Null(await adapter.ReadAsync(new ProductAdminResource().Definition, id));
     }
 
     private static AdminDbContext CreateDb(SqliteConnection connection)
