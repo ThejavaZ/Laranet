@@ -15,28 +15,13 @@ builder.Services
     .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<AdminDbContext>();
 builder.Services.AddRazorPages();
-builder.Services.AddLaranetAdmin();
+builder.Services.AddLaranetAdmin(options => options
+    .AddResource(ProductAdminResource.Definition)
+    .UseEfCore<AdminDbContext>());
 builder.Services.AddLaranetAdminAuthentication(options =>
     options.AddUser(
         builder.Configuration["Admin:User"] ?? "admin",
         builder.Configuration["Admin:Password"] ?? "DevelopmentAdminPassword!"));
-var authorizationBuilder = builder.Services.AddAuthorizationBuilder();
-foreach (var operation in Enum.GetValues<AdminOperation>())
-{
-    authorizationBuilder.AddPolicy(
-        $"Admin.Products.{operation}",
-        policy => policy.RequireAuthenticatedUser());
-}
-builder.Services.AddScoped<IAdminDataAdapter>(services =>
-    new EfCoreAdminDataAdapter(
-        services.GetRequiredService<AdminDbContext>()));
-builder.Services.AddSingleton<IAdminResourceRegistry>(services =>
-{
-    var registry = new AdminResourceRegistry();
-    registry.Add(ProductAdminResource.Definition);
-
-    return registry;
-});
 
 var app = builder.Build();
 

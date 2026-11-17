@@ -39,11 +39,18 @@ The experimental `Laranet.Admin.AspNetCore` package can provide the conventional
 Razor Pages surface:
 
 ```csharp
-builder.Services.AddLaranetAdmin();
+builder.Services.AddLaranetAdmin(options => options
+    .AddResource(ProductAdminResource.Definition)
+    .UseEfCore<AdminDbContext>());
 builder.Services.AddRazorPages();
 
 app.MapRazorPages();
 ```
+
+The options callback registers the resource metadata, the EF Core data adapter,
+and the resource's base authorization policy — only when the application has not
+registered one itself. See
+[ADR-0014](../architecture/decisions/0014-reduce-registration-ceremony.md).
 
 It exposes `/admin/{resource}` plus conventional create and edit routes. The
 application still provides `IAdminDataAdapter`, resources, authentication, and
@@ -51,11 +58,19 @@ authorization policies. The package does not include EF Core or Identity.
 
 ## Resource registration
 
-Register resources explicitly:
+Register resources explicitly through the options callback:
 
 ```csharp
-var registry = new AdminResourceRegistry();
-registry.Add(ProductAdminResource.Definition);
+builder.Services.AddLaranetAdmin(options => options
+    .AddResource(ProductAdminResource.Definition));
+```
+
+Typed resources use the generic overload, which reads the resource's
+`Definition`:
+
+```csharp
+builder.Services.AddLaranetAdmin(options => options
+    .AddResource<ProductResource>());
 ```
 
 A resource defines fields, filters, actions, and a permission policy name:
@@ -105,7 +120,9 @@ pages, and its exact API remains experimental until a real application validates
 
 Implement `IAdminDataAdapter` in the application or an integration package. The
 adapter receives `AdminResource` and `AdminQuery`, then owns provider-specific
-filtering, ordering, pagination, mapping, and CRUD:
+filtering, ordering, pagination, mapping, and CRUD. Register it with
+`options.AddAdapter(...)`; the EF Core package contributes
+`options.UseEfCore<TContext>()` as sugar for `EfCoreAdminDataAdapter`:
 
 ```csharp
 public interface IAdminDataAdapter
@@ -136,6 +153,12 @@ and protects every Products page with the `Admin.Products` policy:
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("Admin.Products", policy => policy.RequireAuthenticatedUser());
 ```
+
+When the resource is registered through `AddLaranetAdmin(options => ...)`, this
+base policy is registered automatically with `RequireAuthenticatedUser` —
+register it explicitly only to provide stricter requirements. Per-operation
+policies such as `Admin.Products.Create` are optional: the authorization bridge
+falls back to the base policy when they are not registered.
 
 `IAdminAuthorization` is only a permission hook. It does not manage users, passwords,
 roles, tokens, cookies, or antiforgery. Razor Pages supplies native antiforgery
@@ -186,12 +209,8 @@ public sealed class ProductAdminResource : AdminResource<Product>
 Register all discovered resources:
 
 ```csharp
-builder.Services.AddSingleton<IAdminResourceRegistry>(services =>
-{
-    var registry = new AdminResourceRegistry();
-    AdminResourceDiscovery.RegisterAll(registry, typeof(Program).Assembly);
-    return registry;
-});
+builder.Services.AddLaranetAdmin(options => options
+    .DiscoverResources(typeof(Program).Assembly));
 ```
 
 Auto-discovery is optional. Explicit registration remains the recommended approach
