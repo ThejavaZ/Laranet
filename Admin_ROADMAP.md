@@ -49,12 +49,11 @@ Shipped with ADR-0014, sample migration, guide updates, and tests.
   from the model alone — no resource class required. Shipped with ADR-0015,
   sample migration, guide updates, and tests.
 
-## Later — P4: synthesized operation policies
-
-- An `AuthorizationPolicyProvider` (standard ASP.NET Core pattern) that
-  materializes `Resource.Operation` policies from the base policy on demand:
-  zero registration for per-operation granularity.
-- Registering an explicit operation policy still overrides the synthesized one.
+- **P4 — Synthesized operation policies.** An `IAuthorizationPolicyProvider`
+  materializes `Resource.Operation` policies from the registered base policy on
+  demand: `[Authorize(Policy = "Admin.Products.Delete")]` works with zero
+  registration, and an explicit operation policy still overrides the
+  synthesized one. Shipped with ADR-0016.
 
 ## Later — polish
 

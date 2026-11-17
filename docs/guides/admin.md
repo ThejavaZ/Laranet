@@ -200,9 +200,16 @@ builder.Services.AddAuthorizationBuilder()
 
 When the resource is registered through `AddLaranetAdmin(options => ...)`, this
 base policy is registered automatically with `RequireAuthenticatedUser` —
-register it explicitly only to provide stricter requirements. Per-operation
-policies such as `Admin.Products.Create` are optional: the authorization bridge
-falls back to the base policy when they are not registered.
+register it explicitly only to provide stricter requirements.
+
+Per-operation policies such as `Admin.Products.Create` never need registration:
+the admin policy provider materializes them from the base policy on demand, so
+`[Authorize(Policy = "Admin.Products.Delete")]` and the authorization bridge
+resolve them directly. Register an operation policy explicitly only to
+specialize a single operation (for example, requiring a role for `Delete`) —
+the explicit registration always wins. An application that registers its own
+`IAuthorizationPolicyProvider` before `AddLaranetAdmin` keeps it, because the
+admin provider uses `TryAdd` (ADR-0016).
 
 `IAdminAuthorization` is only a permission hook. It does not manage users, passwords,
 roles, tokens, cookies, or antiforgery. Razor Pages supplies native antiforgery
