@@ -41,18 +41,13 @@ and policies derived from metadata that already exists.
 
 Shipped with ADR-0014, sample migration, guide updates, and tests.
 
-## Next — P3: field inference (the Django step)
-
-- Infer the default field set from the model's public properties — no more
-  declaring `Id`, `Name`, `Price` one by one.
-- Honor DataAnnotations as the single source of truth: `[Key]`, `[Required]`,
-  `[MaxLength]`, `[Display(Name = ...)]`, `[Editable(false)]`, range attributes.
-- `Configure()` becomes overrides only; a resource with no configuration still
-  produces a complete CRUD surface.
-- Evaluate a model-first overload (`AddResource<Product>("Admin.Products")`) so
-  standard resources need no class at all.
-- Metadata resolved once at startup — no per-request reflection (ADR-0006).
-- **Rule: explicit always wins over inferred.**
+- **P3 — Field inference from model metadata.** `AdminResource<TModel>` seeds
+  the field set from public properties and DataAnnotations (`[Key]`,
+  `[Required]`, `[Display]`, `[Range]`, `[Editable]`, `[ScaffoldColumn]`);
+  `Field()` merges so explicit declarations always win; and
+  `AddResourceFromModel<TModel>("Admin.Policy", ...)` builds a complete resource
+  from the model alone — no resource class required. Shipped with ADR-0015,
+  sample migration, guide updates, and tests.
 
 ## Later — P4: synthesized operation policies
 
