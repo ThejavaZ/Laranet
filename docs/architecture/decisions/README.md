@@ -23,6 +23,7 @@ Their purpose is to preserve architectural knowledge and provide transparency in
 | [0011](0011-optional-fluentvalidation-integration.md) | Add an Optional FluentValidation Integration | Accepted |
 | [0012](0012-admin-boundary-and-prototype.md) | Keep the Admin Core Provider-Neutral | Accepted for prototype |
 | [0013](0013-admin-architecture-and-security.md) | Define the Admin Architecture and Security Boundary | Accepted for implementation |
+| [0014](0014-reduce-registration-ceremony.md) | Reduce Registration Ceremony with Declarative Options | Accepted |
 
 ## ADR Status
 
