@@ -19,6 +19,12 @@ public static class AdminAspNetCoreExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
+        // Registered before AddAuthorization so the admin provider occupies the
+        // slot the default one would take. TryAdd: an application-provided
+        // provider registered first still wins (ADR-0016).
+        services.TryAddSingleton<
+            IAuthorizationPolicyProvider,
+            AdminAuthorizationPolicyProvider>();
         services.AddAuthorization();
         services.AddLocalization();
         services.TryAddSingleton<IAdminResourceRegistry, AdminResourceRegistry>();
